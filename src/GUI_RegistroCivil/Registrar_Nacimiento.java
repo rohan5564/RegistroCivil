@@ -42,6 +42,7 @@ import javafx.stage.StageStyle;
 import Interfaces.Chile;
 import colecciones.Poblacion;
 import java.util.Map;
+import javafx.scene.control.Tooltip;
 
 /**
  *
@@ -123,10 +124,10 @@ public class Registrar_Nacimiento {
         madre.setMaxSize(200, 40);
         madre.setTranslateX(-30);
         madre.setPromptText("identificador de madre");
-        //CheckBox extMadre = new CheckBox();
-        //extMadre.setTranslateX(65);
-        //extMadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
-        parienteMadre.getChildren().addAll(madre/*, extMadre*/);
+        CheckBox extMadre = new CheckBox();
+        extMadre.setTranslateX(65);
+        extMadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
+        parienteMadre.getChildren().addAll(madre, extMadre);
         
         ComboBox region = new ComboBox();
         region.setPromptText(" Region");
@@ -164,9 +165,9 @@ public class Registrar_Nacimiento {
         padre.setTranslateX(-30);
         padre.setPromptText("identificador de padre");
         CheckBox extPadre = new CheckBox();
-        /*extPadre.setTranslateX(65);
-        extPadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));*/
-        parientePadre.getChildren().addAll(padre/*, extPadre*/);
+        extPadre.setTranslateX(65);
+        extPadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
+        parientePadre.getChildren().addAll(padre, extPadre);
         TextArea comentario = new TextArea();
         comentario.setWrapText(true);
         comentario.setPromptText("comentarios");
@@ -207,22 +208,23 @@ public class Registrar_Nacimiento {
             //requisitos opcionales
             if(!comentario.getText().isEmpty())
                 aux.setComentarioNacimiento(comentario.getText());
+            
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
             if(!madre.getText().isEmpty() && poblacion.getPoblacion().containsKey(madre.getText())){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
                 aux.agregarParientes(madre.getText(), mama);
-                /*if(extMadre.isSelected()){
+                if(extMadre.isSelected()){
                     aux.setNacionalidades(mama.getNacionalidades());
-                }*/
+                }
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
             if(!padre.getText().isEmpty() && poblacion.getPoblacion().containsKey(padre.getText())){
                 papa.setEstadoCivil(EstadoCivil.PADRE);
                 aux.agregarParientes(padre.getText(), papa);
-                /*if(extPadre.isSelected()){
+                if(extPadre.isSelected()){
                     aux.setNacionalidades(papa.getNacionalidades());
-                }*/
+                }
             }
             
             rut.clear();

@@ -14,7 +14,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  *
  * @author Jean
  */
-public class !CertificadoNacimiento {
+public class CertificadoNacimiento {
     
     public String DEST = "certificado_nacimiento.pdf";
     public String SRC = "Resources/nacimiento.pdf";

@@ -56,8 +56,10 @@ public abstract class Ciudadano implements Personas {
         sexo = null;
         nacimiento = null;
         horaNacimiento = null;
+        comentarioNacimiento = null;
         defuncion = null;
         horaDefuncion = null;
+        comentarioDefuncion = null;
         pasaporte = null;
         profesion = null;
         estadoCivil = new ArrayList<>();

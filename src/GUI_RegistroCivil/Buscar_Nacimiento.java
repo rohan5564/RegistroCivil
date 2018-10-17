@@ -8,6 +8,8 @@ package GUI_RegistroCivil;
 import Enums.EstadoCivil;
 import Enums.Nacionalidad;
 import Enums.Sexo;
+import static GUI_RegistroCivil.Elementos.checkRut;
+import static GUI_RegistroCivil.Elementos.hora;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import java.time.LocalDateTime;
@@ -40,8 +42,14 @@ import javafx.stage.StageStyle;
 import utilidades.ArchivoProperties;
 import Interfaces.Chile;
 import colecciones.Poblacion;
+import static com.sun.deploy.security.ruleset.DRSHelper.check;
 import java.time.LocalDate;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  *
@@ -61,6 +69,7 @@ public class Buscar_Nacimiento {
     }
     
     public void buscarNacimiento(MouseEvent click){
+        //creacion de ventana
         Stage ventana = new Stage();
         ventana.setX(370);
         ventana.setY(80);
@@ -71,16 +80,23 @@ public class Buscar_Nacimiento {
         ventana.setMinWidth(650);
         ventana.setMaxHeight(620);
         ventana.setMaxWidth(650);
+        //se restringe uso de tabulador para seguridad del software
+        EventHandler filtroTab = new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent evento) {
+                if(evento.getCode() == KeyCode.TAB)
+                    evento.consume();
+            }
+        };
+        ventana.addEventFilter(KeyEvent.KEY_PRESSED, filtroTab);
+        
+        //ventana cuadriculada
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER_LEFT);
         grid.setHgap(50);
         grid.setVgap(20);
         grid.setPadding(new Insets(50,50,50,50));
         
-        TextField nombre = Elementos.textfield("nombre", 240, 40);
-        TextField apellido = Elementos.textfield("apellido", 240, 40);
-        DatePicker nacimiento = Elementos.fecha("fecha de nacimiento");
-        Spinner<LocalTime> hora = Elementos.hora("hora del nacimiento");
+        //creacion del campo Rut
         StackPane checkRut = Elementos.checkRut();
         ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().get(1);
         TextField rut = (TextField)checkRut.getChildrenUnmodifiable().get(0);
@@ -89,7 +105,9 @@ public class Buscar_Nacimiento {
         editar.setVisible(false);
         editar.setTooltip(new Tooltip("Modificar datos"));
         editar.setTranslateX(120);
-        checkRut.getChildren().add(editar);
+        checkRut.getChildren().add(editar);        
+        
+        //se comprueba que el rut este registrado
         rut.textProperty().addListener((observable, o, n)->{
             if(n.length()<8){
                 check.setVisible(false);
@@ -110,19 +128,53 @@ public class Buscar_Nacimiento {
                 editar.setVisible(false);
             }
         });
+        
+        //creacion del campo que captura el nombre
+        TextField nombre = Elementos.textfield("nombre", 240, 40);
+        nombre.setDisable(true);
+        nombre.setMouseTransparent(true);
+        
+        //creacion del campo que captura el apellido
+        TextField apellido = Elementos.textfield("apellido", 240, 40);
+        apellido.setDisable(true);
+        apellido.setMouseTransparent(true);
+        
+        //creacion del campo que captura la fecha de nacimiento
+        DatePicker nacimiento = Elementos.fecha("fecha de nacimiento");
+        nacimiento.setDisable(true);
+        nacimiento.setMouseTransparent(true);
+        
+        //creacion del campo que captura la hora de nacimiento
+        Spinner<LocalTime> hora = Elementos.hora("hora del nacimiento");
+        hora.setDisable(true);
+        hora.setMouseTransparent(true);
+        
+        //creacion del campo que captura el sexo del individuo
         ToggleGroup sexo = new ToggleGroup();
         RadioButton f = new RadioButton("femenino");
         f.setToggleGroup(sexo);
+        f.setDisable(true);
+        f.setMouseTransparent(true);
         RadioButton m = new RadioButton("masculino");
         m.setToggleGroup(sexo);
-        HBox sexoBox = new HBox(f, m);        
+        m.setDisable(true);
+        m.setMouseTransparent(true);
+        HBox sexoBox = new HBox(f, m);
         
+        //creacion del campo que captura el identificador de la madre
         StackPane parienteMadre = new StackPane();
         TextField madre = Elementos.textfield("identificador madre", 240, 40);
+        madre.setEditable(false);
+        
+        //creacion del campo que captura el identificador del padre
         StackPane parientePadre = new StackPane();
         TextField padre = Elementos.textfield("identificador padre", 240, 40);
+        padre.setEditable(false);        
         
+        //creacion del campo que captura la region de residencia actual
         ComboBox region = new ComboBox();
+        region.setDisable(true);
+        region.setMouseTransparent(true);
         region.setPromptText(" Region");
         region.setMaxSize(120, 40);
         region.setMinSize(120, 40);
@@ -133,7 +185,11 @@ public class Buscar_Nacimiento {
         ObservableList<String> listaRegiones = FXCollections.observableArrayList();
         listaRegiones.addAll(regiones);
         region.getItems().setAll(listaRegiones);
+        
+        //creacion del campo que captura la comuna de residencia actual
         ComboBox comuna = new ComboBox();
+        comuna.setDisable(true);
+        comuna.setMouseTransparent(true);
         comuna.setPromptText(" Comuna");
         comuna.setMaxSize(120, 40);
         comuna.setMinSize(120, 40);
@@ -152,33 +208,49 @@ public class Buscar_Nacimiento {
         });
         HBox ciudadOrigen = new HBox(20, region, comuna);
         
+        //creacion del campo que captura los comentarios de nacimiento
         TextArea comentario = new TextArea();
+        comentario.setDisable(true);
+        comentario.setMouseTransparent(true);
         comentario.setWrapText(true);
-        comentario.setPromptText("comentarios");
+        comentario.setPromptText("comentarios de nacimiento");
         comentario.setMaxSize(400, 200);
         
+        //creacion del botones principales
         Button guardar = new Button("guardar");
-        guardar.setDisable(true);
-        Button salir = new Button("salir");
+        guardar.disableProperty().bind(editar.selectedProperty().not());
+        Button salir = new Button("salir");                      
         
+        //se evalua el estado del rut ingresado (valido y registrado)
         check.visibleProperty().addListener((obs, o, n) -> {
-            if(n.booleanValue()){
-                editar.setVisible(true);
+            //si es valido y esta registrado, se muestran los datos por pantalla y se permite la modificacion
+            if(n.booleanValue()){        
                 aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
+                
+                editar.setVisible(true);
+                
+                nombre.setDisable(false);
                 nombre.setText(aux.getNombre());
+                
+                apellido.setDisable(false);
                 apellido.setText(aux.getApellido());
+                
+                nacimiento.setDisable(false);
                 nacimiento.setValue(aux.getNacimiento());
+                
+                hora.setDisable(false);
                 hora.getValueFactory().setValue(LocalTime.parse(aux.getHoraNacimiento()));
-                if(aux.getParientes().size()== 1)
-                    madre.setText(aux.getParientes().keySet().stream().findFirst().get());
-                else if(aux.getParientes().size()> 1)
-                    padre.setText(aux.getParientes().keySet().stream().skip(1).findFirst().get());
+                
+                f.setDisable(false);
+                m.setDisable(false);
                 if(aux.getSexo().equals(Sexo.FEMENINO))
                     f.setSelected(true);
                 else 
                     m.setSelected(true);
-                ObservableList<String>itemsRegion = region.getItems();
+                
                 int casilla=0;
+                region.setDisable(false);
+                ObservableList<String>itemsRegion = region.getItems();
                 for(String i : itemsRegion){
                     if(i.equals(aux.getRegion())){
                         region.getSelectionModel().select(casilla);
@@ -187,6 +259,8 @@ public class Buscar_Nacimiento {
                     }
                     casilla++;
                 }
+                
+                comuna.setDisable(false);
                 ObservableList<String>itemsComuna = comuna.getItems();
                 for(String i : itemsComuna){
                     if(i.equals(aux.getComuna())){
@@ -196,79 +270,100 @@ public class Buscar_Nacimiento {
                     }
                     casilla++;
                 }
-                /*comuna.setValue(true);*/
+                
+                comentario.setDisable(false);
                 comentario.setText(aux.getComentarioNacimiento());
+
+                
+                if(aux.getParientes().size()== 1)
+                    madre.setText(aux.getParientes().keySet().stream().findFirst().get());
+                else if(aux.getParientes().size()> 1)
+                    padre.setText(aux.getParientes().keySet().stream().skip(1).findFirst().get());
             }
-            else{
-                editar.setVisible(true);
-                aux = null;
+            //si es invalido o no esta registrado, no se muestra nada por pantalla
+            else{                
+                editar.setVisible(false);
+                
+                nombre.setDisable(true);
                 nombre.clear();
+                
+                apellido.setDisable(true);
                 apellido.clear();
+                
+                nacimiento.setDisable(true);
                 nacimiento.setValue(LocalDate.MIN);
+                
+                hora.setDisable(true);
                 hora.getValueFactory().setValue(LocalTime.MIDNIGHT);
+                
+                f.setDisable(true);
+                f.setSelected(false);
+                
+                m.setDisable(true);
+                m.setSelected(false);
+                
+                region.setDisable(true);
+                region.getSelectionModel().clearSelection();
+                
+                comuna.setDisable(true);
+                comuna.getSelectionModel().clearSelection();
+                
                 madre.clear();
                 padre.clear();
+                
+                comentario.setDisable(true);
                 comentario.clear();
+                
+                aux = null;
             }
         });
         
-        nombre.setEditable(false);
-        apellido.setEditable(false);
-        nacimiento.setEditable(false);
-        hora.setEditable(false);
-        madre.setEditable(false);
-        padre.setEditable(false);
-        region.setEditable(false);
-        comuna.setEditable(false);
-        comentario.setEditable(false);
-        guardar.setDisable(true);
+        //se evalua el estado de la casilla que permite modificar datos de un usuario por su rut
         editar.selectedProperty().addListener((obs, o, n)->{
+            //si la casilla esta tickeada, se permite la modificacion de datos
             if(n.booleanValue()){
-                nombre.setEditable(true);
-                apellido.setEditable(true);
-                nacimiento.setEditable(true);
-                hora.setEditable(true);
-                madre.setEditable(true);
-                padre.setEditable(true);
-                region.setEditable(true);
-                comuna.setEditable(true);
-                comentario.setEditable(true);
-                guardar.setDisable(false);
+                //navegacion con tabulador desactivada
+                ventana.removeEventFilter(KeyEvent.KEY_PRESSED, filtroTab);
+                
+                nombre.setMouseTransparent(false);
+                apellido.setMouseTransparent(false);
+                nacimiento.setMouseTransparent(false);
+                hora.setMouseTransparent(false);
+                madre.setMouseTransparent(false);
+                padre.setMouseTransparent(false);
+                region.setMouseTransparent(false);
+                comuna.setMouseTransparent(false);
+                f.setMouseTransparent(false);
+                m.setMouseTransparent(false);
+                comentario.setMouseTransparent(false);
             }
+            //si la casilla no esta tickeada, no se permite la modificacion de datos
             else{
-                nombre.setEditable(false);
-                apellido.setEditable(false);
-                nacimiento.setEditable(false);
-                hora.setEditable(false);
-                madre.setEditable(false);
-                padre.setEditable(false);
-                region.setEditable(false);
-                comuna.setEditable(false);
-                comentario.setEditable(false);
-                guardar.setDisable(true);
+                //navegacion con tabulador activada
+                ventana.addEventFilter(KeyEvent.KEY_PRESSED, filtroTab);
+                
+                nombre.setMouseTransparent(true);
+                apellido.setMouseTransparent(true);
+                nacimiento.setMouseTransparent(true);
+                hora.setMouseTransparent(true);
+                madre.setMouseTransparent(true);
+                padre.setMouseTransparent(true);
+                region.setMouseTransparent(true);
+                comuna.setMouseTransparent(true);
+                f.setMouseTransparent(true);
+                m.setMouseTransparent(true);
+                comentario.setMouseTransparent(true);
             }
         });
         
-        BooleanBinding validacion = 
-                nombre.textProperty().isEmpty().or(
-                apellido.textProperty().isEmpty().or(
-                nacimiento.valueProperty().isNull().or(
-                check.visibleProperty().not().or(
-                f.selectedProperty().or(
-                m.selectedProperty()).not()).or(
-                region.valueProperty().isNull().or(
-                comuna.valueProperty().isNull().or(
-                hora.valueProperty().isNull()
-                ))))));
-        
-        guardar.disableProperty().bind(validacion);
-        
+        //si se clickea el boton guardar se sobreescriben los datos del usuario
         guardar.setOnMouseClicked(lambda -> {
             Chileno aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
             //requisitos minimos
             aux.setNombre(nombre.getText());
             aux.setApellido(apellido.getText());
-            aux.setRegion(comuna.getSelectionModel().getSelectedItem().toString()+", "+region.getSelectionModel().getSelectedItem().toString());
+            aux.setRegion(region.getSelectionModel().getSelectedItem().toString());
+            aux.setComuna(comuna.getSelectionModel().getSelectedItem().toString());
             aux.setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO);
             aux.setNacimiento(nacimiento.getValue());
             aux.setHoraNacimiento(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
@@ -278,7 +373,9 @@ public class Buscar_Nacimiento {
             
             //requisitos opcionales
             if(!comentario.getText().isEmpty())
+                aqui error de captura datos
                 aux.setComentarioNacimiento(comentario.getText());
+            
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
             if(!madre.getText().isEmpty() && poblacion.getPoblacion().containsKey(madre.getText())){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
@@ -297,35 +394,12 @@ public class Buscar_Nacimiento {
                 }*/
             }
             
-            rut.clear();
+            logReporte.appendText(
+                    "["+horaActual+"] "+"datos del ciudadano con rut: "+aux.getRut()+" modificados\n"
+            );
+            Elementos.popMensaje("Operacion Exitosa!", 300, 100);
             
-            if(aux.registrarNacimiento()){
-                if(poblacion.getPoblacion().containsKey(aux.getRut()))
-                    Elementos.popMensaje("Rut ya registrado", 300, 100);
-                else{
-                    //limpiar casillas
-                    nombre.clear();
-                    apellido.clear();
-                    if(f.isSelected())
-                        f.setSelected(false);
-                    else
-                        m.setSelected(false);
-                    nacimiento.setValue(null);
-                    hora.setUserData(null);
-                    rut.clear();
-                    madre.clear();
-                    //extMadre.setSelected(false);
-                    padre.clear();
-                    //extPadre.setSelected(false);
-                    
-                    //registrar nacido
-                    poblacion.getPoblacion().put(aux.getRut(), aux);
-                    logReporte.appendText(
-                            "["+horaActual+"]"+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
-                            ", rut: "+aux.getRut()+" registrado \n");
-                    Elementos.popMensaje("Operacion Exitosa!", 300, 100);
-                }
-            }
+            rut.clear();
         });
         
         salir.setOnMouseClicked(lambda -> ventana.close());

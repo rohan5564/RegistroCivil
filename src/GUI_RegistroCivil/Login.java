@@ -59,8 +59,7 @@ public class Login extends Main{
     }
     
     public void ventanaLogueo(Stage logueo){
-        CertificadoNacimiento wea = new CertificadoNacimiento();
-        wea.crear();
+        
         prop.crear();
         if(Integer.parseInt(horaActual)>20 || Integer.parseInt(horaActual)<8)
             prop.modificarTema(Tema.OSCURO);
