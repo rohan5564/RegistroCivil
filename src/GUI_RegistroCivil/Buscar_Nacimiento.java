@@ -130,12 +130,12 @@ public class Buscar_Nacimiento {
         });
         
         //creacion del campo que captura el nombre
-        TextField nombre = Elementos.textfield("nombre", 240, 40);
+        TextField nombre = Elementos.textfield("nombre", 200, 40);
         nombre.setDisable(true);
         nombre.setMouseTransparent(true);
         
         //creacion del campo que captura el apellido
-        TextField apellido = Elementos.textfield("apellido", 240, 40);
+        TextField apellido = Elementos.textfield("apellido", 200, 40);
         apellido.setDisable(true);
         apellido.setMouseTransparent(true);
         
@@ -163,12 +163,12 @@ public class Buscar_Nacimiento {
         
         //creacion del campo que captura el identificador de la madre
         StackPane parienteMadre = new StackPane();
-        TextField madre = Elementos.textfield("identificador madre", 240, 40);
+        TextField madre = Elementos.textfield("identificador madre", 200, 40);
         madre.setEditable(false);
         
         //creacion del campo que captura el identificador del padre
         StackPane parientePadre = new StackPane();
-        TextField padre = Elementos.textfield("identificador padre", 240, 40);
+        TextField padre = Elementos.textfield("identificador padre", 200, 40);
         padre.setEditable(false);        
         
         //creacion del campo que captura la region de residencia actual
@@ -193,6 +193,8 @@ public class Buscar_Nacimiento {
         comuna.setPromptText(" Comuna");
         comuna.setMaxSize(120, 40);
         comuna.setMinSize(120, 40);
+        
+        //campo de region permite visualizar y rellenar el campo de comunas
         region.valueProperty().addListener((obs, o, n)-> {            
             if(n == null){
                 comuna.getItems().clear();
@@ -220,6 +222,8 @@ public class Buscar_Nacimiento {
         Button guardar = new Button("guardar");
         guardar.disableProperty().bind(editar.selectedProperty().not());
         Button salir = new Button("salir");                      
+        HBox barra = new HBox(20, guardar, salir);
+        barra.setAlignment(Pos.CENTER);
         
         //se evalua el estado del rut ingresado (valido y registrado)
         check.visibleProperty().addListener((obs, o, n) -> {
@@ -356,9 +360,13 @@ public class Buscar_Nacimiento {
             }
         });
         
-        //si se clickea el boton guardar se sobreescriben los datos del usuario
+        //si se clickea el boton salir, la ventana se cierra
+        salir.setOnMouseClicked(lambda -> ventana.close());
+        
+        //si se clickea el boton guardar, se sobreescriben los datos del usuario
         guardar.setOnMouseClicked(lambda -> {
             Chileno aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
+            
             //requisitos minimos
             aux.setNombre(nombre.getText());
             aux.setApellido(apellido.getText());
@@ -372,9 +380,12 @@ public class Buscar_Nacimiento {
             aux.setNacionalidades(Nacionalidad.CHILE);
             
             //requisitos opcionales
-            if(!comentario.getText().isEmpty())
-                aqui error de captura datos
-                aux.setComentarioNacimiento(comentario.getText());
+            if(comentario.getText() != null){
+                if(comentario.getText().length()>1)
+                    aux.setComentarioNacimiento(comentario.getText());
+                else
+                    aux.setComentarioNacimiento(null);
+            }
             
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
             if(!madre.getText().isEmpty() && poblacion.getPoblacion().containsKey(madre.getText())){
@@ -394,18 +405,17 @@ public class Buscar_Nacimiento {
                 }*/
             }
             
+            //se registra informacion en el historial, terminando la operacion de forma exitosa
             logReporte.appendText(
                     "["+horaActual+"] "+"datos del ciudadano con rut: "+aux.getRut()+" modificados\n"
             );
             Elementos.popMensaje("Operacion Exitosa!", 300, 100);
             
+            //resetea la ventana
             rut.clear();
         });
         
-        salir.setOnMouseClicked(lambda -> ventana.close());
-        HBox barra = new HBox(20, guardar, salir);
-        barra.setAlignment(Pos.CENTER);
-        
+        //se agregan objetos visuales a la cuadricula
         grid.add(checkRut,0,0);
         grid.add(nombre,0,1);
         grid.add(apellido,0,2);
@@ -419,6 +429,7 @@ public class Buscar_Nacimiento {
         grid.add(comentario, 1, 2);
         grid.add(barra,1,6);
         
+        //se añade la escena final a la ventana y se muestra por pantalla
         Scene scene = new Scene(grid);
         scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
         ventana.setScene(scene);

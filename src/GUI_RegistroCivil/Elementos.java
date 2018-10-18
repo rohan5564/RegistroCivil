@@ -35,7 +35,6 @@ import javafx.stage.StageStyle;
 import javafx.util.converter.LocalTimeStringConverter;
 import utilidades.ArchivoProperties;
 import Interfaces.Chile;
-import Interfaces.Chile.REGIONES;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import colecciones.Poblacion;
@@ -49,6 +48,12 @@ import java.util.HashMap;
 public class Elementos {
     private static ArchivoProperties prop = new ArchivoProperties();
     
+    /**
+     * crea un campo de texto para lectura de hora con formato en horas:minutos:segundos
+     * @param str mensaje para mostrar en el campo de texto
+     * @return Spinner<LocalTime> de JavaFx
+     * @since Entrega A
+     */
     public static Spinner<LocalTime> hora(String str){
         Spinner<LocalTime> hora = new Spinner(new SpinnerValueFactory() {
             {setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));}
@@ -78,6 +83,13 @@ public class Elementos {
         return hora;
     }
     
+    /**
+     * crea una ventana emergente para mostrar un mensaje
+     * @param str mensaje a mostrar en la ventana
+     * @param largo largo de la ventana
+     * @param ancho ancho de la ventana
+     * @since Entrega A
+     */
     public static void popMensaje(String str, double largo, double ancho){
         prop.crear();
         Stage popup = new Stage();
@@ -112,7 +124,13 @@ public class Elementos {
         popup.show();
     }
     
-    public static ImageView icono(String str){
+    /**
+     * crea un icono diminuto de tamaño 20x20 
+     * @param str carpeta donde se encuentra la imagen
+     * @return ImageView de JavaFx
+     * @since Entrega A
+     */
+    private static ImageView icono(String str){
         ImageView icono = new ImageView(new Image(str, true));        
         icono.setFitWidth(20);
         icono.setFitHeight(20);
@@ -123,6 +141,26 @@ public class Elementos {
         return icono;
     }
     
+    /**
+     * crea un campo de texto para ingresar un rut sin puntos ni guion.
+     * <p>
+     * contiene 2 iconos para usar de forma opcional y de acuerdo a las 
+     * necesidades, y corresponden a una señal verde y una señal amarilla.
+     * <p>
+     * los elementos se se obtienen en de la siguiente forma:
+     * <pre><code>
+     *      //campo de ingreso
+     *      TextField rut = (TextField)checkRut.getChildrenUnmodifiable().<b>get(0);</b>
+     * 
+     *      //señal verde
+     *      ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(1);</b>
+     * 
+     *      //señal amarilla
+     *      ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(2);</b>
+     * </code></pre>
+     * @return StackPane de JavaFx
+     * @since Entrega A
+     */
     public static StackPane checkRut(){
         StackPane checkRut = new StackPane();
         ImageView check = Elementos.icono("Resources/check.png");
@@ -149,83 +187,97 @@ public class Elementos {
         return fecha;
     }
     
-    public static TextField textfield(String str, double maxwidth, double maxheight){
+    /**
+     * crea un campo de texto
+     * @param str mensaje que muestra el campo de textp
+     * @param largo largo del campo
+     * @param ancho ancho del campo
+     * @return TextField de JavaFx
+     * @since Entrega A
+     */
+    public static TextField textfield(String str, double largo, double ancho){
         TextField txt = new TextField();
-        txt.setMinSize(200, 40);
+        txt.setMinSize(largo, ancho);
         txt.setPromptText(str);
         return txt;
     }
     
-    public static ArrayList<String> comunas(String str){
-        ArrayList<String> arr = new ArrayList<>();
-        switch(str.toUpperCase().replace(" ", "_")){
+    /**
+     * encuentra las comunas que contiene una region
+     * @param region region buscada
+     * @return ArrayList de comunas en la region
+     * @since Entrega A
+     */
+    public static ArrayList<String> comunas(String region){
+        ArrayList<String> arreglo = new ArrayList<>();
+        switch(region.toUpperCase().replace(" ", "_")){
             case "TARAPACA": 
                 for(Chile i: Chile.TARAPACA.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "ANTOFAGASTA": 
                 for(Chile i: Chile.ANTOFAGASTA.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "ATACAMA": 
                 for(Chile i: Chile.ATACAMA.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "COQUIMBO": 
                 for(Chile i: Chile.COQUIMBO.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "VALPARAISO": 
                 for(Chile i: Chile.VALPARAISO.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "LIBERTADOR_GENERAL_BERNARDO_OHIGGINS": 
                 for(Chile i: Chile.LIBERTADOR_GENERAL_BERNARDO_OHIGGINS.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "MAULE": 
                 for(Chile i: Chile.MAULE.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "BIO_BIO": 
                 for(Chile i: Chile.BIO_BIO.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "LA_ARAUCANIA": 
                 for(Chile i: Chile.LA_ARAUCANIA.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "LOS_LAGOS": 
                 for(Chile i: Chile.LOS_LAGOS.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO": 
                 for(Chile i: Chile.AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "MAGALLANES_Y_ANTARTICA": 
                 for(Chile i: Chile.MAGALLANES_Y_ANTARTICA.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "REGION_METROPOLITANA": 
                 for(Chile i: Chile.REGION_METROPOLITANA.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "LOS_RIOS":
                 for(Chile i: Chile.LOS_RIOS.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "ARICA_Y_PARINACOTA":
                 for(Chile i: Chile.ARICA_Y_PARINACOTA.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
             case "ÑUBLE":
                 for(Chile i: Chile.ÑUBLE.values())
-                    arr.add(i.toString().replace("_"," ").toLowerCase());
+                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
                 break;
         }
-        Collections.sort(arr);
-        return arr;
+        Collections.sort(arreglo);
+        return arreglo;
     }
     
     public static void crearDatosIniciales(Poblacion poblacion){
