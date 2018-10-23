@@ -5,8 +5,6 @@
  */
 package Interfaces;
 
-import colecciones.Ciudadano;
-import java.util.ArrayList;
 
 /**
  *
@@ -17,6 +15,4 @@ public interface Personas {
     boolean registrarDefuncion();
     boolean registrarMatrimonio();
     boolean modificarDatos();
-    int getEdad();
-    void agregarParientes(ArrayList<String> identificador, ArrayList<Ciudadano> pariente);
 }

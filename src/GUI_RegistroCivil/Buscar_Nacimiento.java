@@ -6,17 +6,13 @@
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
-import Enums.Nacionalidad;
 import Enums.Sexo;
-import static GUI_RegistroCivil.Elementos.checkRut;
-import static GUI_RegistroCivil.Elementos.hora;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -42,18 +38,15 @@ import javafx.stage.StageStyle;
 import utilidades.ArchivoProperties;
 import Interfaces.Chile;
 import colecciones.Poblacion;
-import static com.sun.deploy.security.ruleset.DRSHelper.check;
 import java.time.LocalDate;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 /**
- *
- * @author Jean
+ * ventana que permite la modificacion de datos para los ruts registrados
+ * @since Entrega A
  */
 public class Buscar_Nacimiento {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -77,9 +70,10 @@ public class Buscar_Nacimiento {
         ventana.initStyle(StageStyle.UTILITY);
         ventana.initModality(Modality.APPLICATION_MODAL);
         ventana.setMinHeight(620);
-        ventana.setMinWidth(650);
+        ventana.setMinWidth(950);
         ventana.setMaxHeight(620);
-        ventana.setMaxWidth(650);
+        ventana.setMaxWidth(950);
+        
         //se restringe uso de tabulador para seguridad del software
         EventHandler filtroTab = new EventHandler<KeyEvent>() {
             public void handle(KeyEvent evento) {
@@ -106,28 +100,7 @@ public class Buscar_Nacimiento {
         editar.setTooltip(new Tooltip("Modificar datos"));
         editar.setTranslateX(120);
         checkRut.getChildren().add(editar);        
-        
-        //se comprueba que el rut este registrado
-        rut.textProperty().addListener((observable, o, n)->{
-            if(n.length()<8){
-                check.setVisible(false);
-                editar.setVisible(false);
-            }
-            else if(Chileno.comprobarRut(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    editar.setVisible(true);
-                    check.setVisible(true);
-                }
-                else{
-                    editar.setVisible(false);
-                    check.setVisible(false);
-                }
-            }
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
-                check.setVisible(false);
-                editar.setVisible(false);
-            }
-        });
+        verificarIdentificador(rut, editar, check);
         
         //creacion del campo que captura el nombre
         TextField nombre = Elementos.textfield("nombre", 200, 40);
@@ -137,17 +110,7 @@ public class Buscar_Nacimiento {
         //creacion del campo que captura el apellido
         TextField apellido = Elementos.textfield("apellido", 200, 40);
         apellido.setDisable(true);
-        apellido.setMouseTransparent(true);
-        
-        //creacion del campo que captura la fecha de nacimiento
-        DatePicker nacimiento = Elementos.fecha("fecha de nacimiento");
-        nacimiento.setDisable(true);
-        nacimiento.setMouseTransparent(true);
-        
-        //creacion del campo que captura la hora de nacimiento
-        Spinner<LocalTime> hora = Elementos.hora("hora del nacimiento");
-        hora.setDisable(true);
-        hora.setMouseTransparent(true);
+        apellido.setMouseTransparent(true);        
         
         //creacion del campo que captura el sexo del individuo
         ToggleGroup sexo = new ToggleGroup();
@@ -161,15 +124,66 @@ public class Buscar_Nacimiento {
         m.setMouseTransparent(true);
         HBox sexoBox = new HBox(f, m);
         
+        //creacion del campo que captura la fecha de nacimiento
+        DatePicker fechaNacimiento = Elementos.fecha("fecha de nacimiento");
+        fechaNacimiento.setDisable(true);
+        fechaNacimiento.setMouseTransparent(true);
+        
+        //creacion del campo que captura la fecha de defuncion
+        DatePicker fechaDefuncion = Elementos.fecha("fecha de muerte");
+        fechaDefuncion.setDisable(true);
+        fechaDefuncion.setMouseTransparent(true);
+        
+        //creacion del campo que captura la hora de nacimiento
+        Spinner<LocalTime> horaNacimiento = Elementos.hora("hora del nacimiento");
+        horaNacimiento.setDisable(true);
+        horaNacimiento.setMouseTransparent(true);
+        
+        //creacion del campo que captura la hora de defuncion
+        Spinner<LocalTime> horaDefuncion = Elementos.hora("hora del muerte");
+        horaDefuncion.setDisable(true);
+        horaDefuncion.setMouseTransparent(true);
+        
         //creacion del campo que captura el identificador de la madre
-        StackPane parienteMadre = new StackPane();
-        TextField madre = Elementos.textfield("identificador madre", 200, 40);
-        madre.setEditable(false);
+        StackPane parienteMadre = Elementos.checkPariente("identificador de madre");
+        TextField madre = (TextField)parienteMadre.getChildren().get(0);
+        parienteMadre.setDisable(true);   
+        parienteMadre.setMouseTransparent(true);
+        CheckBox extMadre = (CheckBox)parienteMadre.getChildrenUnmodifiable().get(1);
+        ImageView checkMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(2);
+        ImageView markMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(3);
+        verificarIdentificadorPariente(madre, rut, extMadre, checkMadre, markMadre);
         
         //creacion del campo que captura el identificador del padre
-        StackPane parientePadre = new StackPane();
-        TextField padre = Elementos.textfield("identificador padre", 200, 40);
-        padre.setEditable(false);        
+        StackPane parientePadre = Elementos.checkPariente("identificador de padre");
+        TextField padre = (TextField)parientePadre.getChildren().get(0);
+        parientePadre.setDisable(true);   
+        parientePadre.setMouseTransparent(true);
+        CheckBox extPadre = (CheckBox)parienteMadre.getChildrenUnmodifiable().get(1);
+        ImageView checkPadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(2);
+        ImageView markPadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(3);
+        verificarIdentificadorPariente(padre, rut, extPadre, checkPadre, markPadre);
+        
+        //creacion del campo que captura los comentarios de nacimiento
+        TextArea comentarioNacimiento = new TextArea();
+        comentarioNacimiento.setDisable(true);
+        comentarioNacimiento.setMouseTransparent(true);
+        comentarioNacimiento.setWrapText(true);
+        comentarioNacimiento.setPromptText("comentarios de nacimiento");
+        comentarioNacimiento.setMinSize(300, 200);
+        
+        //creacion del campo que captura los comentarios de defuncion
+        TextArea comentarioDefuncion = new TextArea();
+        comentarioDefuncion.setDisable(true);
+        comentarioDefuncion.setMouseTransparent(true);
+        comentarioDefuncion.setWrapText(true);
+        comentarioDefuncion.setPromptText("comentarios de defuncion");
+        comentarioDefuncion.setMinSize(300, 200);
+        
+        //creacion del campo que captura la profesion
+        TextField profesion = Elementos.textfield("profesion", 200, 40);
+        profesion.setDisable(true);
+        profesion.setMouseTransparent(true);
         
         //creacion del campo que captura la region de residencia actual
         ComboBox region = new ComboBox();
@@ -210,14 +224,6 @@ public class Buscar_Nacimiento {
         });
         HBox ciudadOrigen = new HBox(20, region, comuna);
         
-        //creacion del campo que captura los comentarios de nacimiento
-        TextArea comentario = new TextArea();
-        comentario.setDisable(true);
-        comentario.setMouseTransparent(true);
-        comentario.setWrapText(true);
-        comentario.setPromptText("comentarios de nacimiento");
-        comentario.setMaxSize(400, 200);
-        
         //creacion del botones principales
         Button guardar = new Button("guardar");
         guardar.disableProperty().bind(editar.selectedProperty().not());
@@ -239,11 +245,23 @@ public class Buscar_Nacimiento {
                 apellido.setDisable(false);
                 apellido.setText(aux.getApellido());
                 
-                nacimiento.setDisable(false);
-                nacimiento.setValue(aux.getNacimiento());
+                profesion.setDisable(false);
+                if(aux.getProfesion()!=null)
+                    profesion.setText(aux.getProfesion());
                 
-                hora.setDisable(false);
-                hora.getValueFactory().setValue(LocalTime.parse(aux.getHoraNacimiento()));
+                fechaNacimiento.setDisable(false);
+                fechaNacimiento.setValue(aux.getNacimiento());
+                
+                fechaDefuncion.setDisable(false);
+                if(aux.getDefuncion()!=null)
+                    fechaDefuncion.setValue(aux.getDefuncion());
+                
+                horaNacimiento.setDisable(false);
+                horaNacimiento.getValueFactory().setValue(LocalTime.parse(aux.getHoraNacimiento()));
+                
+                horaDefuncion.setDisable(false);
+                if(aux.getHoraDefuncion()!=null)
+                    horaDefuncion.getValueFactory().setValue(LocalTime.parse(aux.getHoraDefuncion()));
                 
                 f.setDisable(false);
                 m.setDisable(false);
@@ -275,14 +293,23 @@ public class Buscar_Nacimiento {
                     casilla++;
                 }
                 
-                comentario.setDisable(false);
-                comentario.setText(aux.getComentarioNacimiento());
-
+                comentarioNacimiento.setDisable(false);
+                comentarioNacimiento.setText(aux.getComentarioNacimiento());
                 
-                if(aux.getParientes().size()== 1)
-                    madre.setText(aux.getParientes().keySet().stream().findFirst().get());
-                else if(aux.getParientes().size()> 1)
-                    padre.setText(aux.getParientes().keySet().stream().skip(1).findFirst().get());
+                comentarioDefuncion.setDisable(false);
+                comentarioDefuncion.setText(aux.getComentarioDefuncion());
+
+                parienteMadre.setDisable(false);
+                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.MADRE)){
+                    Ciudadano mama = aux.getParientes().getPersonas().get(EstadoCivil.MADRE);
+                    madre.setText(mama.mostrarIdentificador());
+                }
+                
+                parientePadre.setDisable(false);
+                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.PADRE)){
+                    Ciudadano papa = aux.getParientes().getPersonas().get(EstadoCivil.PADRE);
+                    padre.setText(papa.mostrarIdentificador());
+                }
             }
             //si es invalido o no esta registrado, no se muestra nada por pantalla
             else{                
@@ -294,11 +321,20 @@ public class Buscar_Nacimiento {
                 apellido.setDisable(true);
                 apellido.clear();
                 
-                nacimiento.setDisable(true);
-                nacimiento.setValue(LocalDate.MIN);
+                profesion.setDisable(true);
+                profesion.clear();
                 
-                hora.setDisable(true);
-                hora.getValueFactory().setValue(LocalTime.MIDNIGHT);
+                fechaNacimiento.setDisable(true);
+                fechaNacimiento.setValue(LocalDate.MIN);
+                
+                fechaDefuncion.setDisable(true);
+                fechaDefuncion.setValue(LocalDate.MIN);
+                
+                horaNacimiento.setDisable(true);
+                horaNacimiento.getValueFactory().setValue(LocalTime.MIDNIGHT);
+                
+                horaDefuncion.setDisable(true);
+                horaDefuncion.getValueFactory().setValue(LocalTime.MIDNIGHT);
                 
                 f.setDisable(true);
                 f.setSelected(false);
@@ -312,11 +348,17 @@ public class Buscar_Nacimiento {
                 comuna.setDisable(true);
                 comuna.getSelectionModel().clearSelection();
                 
+                parienteMadre.setDisable(true);
                 madre.clear();
+                
+                parientePadre.setDisable(true);
                 padre.clear();
                 
-                comentario.setDisable(true);
-                comentario.clear();
+                comentarioNacimiento.setDisable(true);
+                comentarioNacimiento.clear();
+                
+                comentarioDefuncion.setDisable(true);
+                comentarioDefuncion.clear();
                 
                 aux = null;
             }
@@ -331,15 +373,19 @@ public class Buscar_Nacimiento {
                 
                 nombre.setMouseTransparent(false);
                 apellido.setMouseTransparent(false);
-                nacimiento.setMouseTransparent(false);
-                hora.setMouseTransparent(false);
-                madre.setMouseTransparent(false);
-                padre.setMouseTransparent(false);
+                profesion.setMouseTransparent(false);
+                fechaNacimiento.setMouseTransparent(false);
+                fechaDefuncion.setMouseTransparent(false);
+                horaNacimiento.setMouseTransparent(false);
+                horaDefuncion.setMouseTransparent(false);
+                parienteMadre.setMouseTransparent(false);
+                parientePadre.setMouseTransparent(false);
                 region.setMouseTransparent(false);
                 comuna.setMouseTransparent(false);
                 f.setMouseTransparent(false);
                 m.setMouseTransparent(false);
-                comentario.setMouseTransparent(false);
+                comentarioNacimiento.setMouseTransparent(false);
+                comentarioDefuncion.setMouseTransparent(false);
             }
             //si la casilla no esta tickeada, no se permite la modificacion de datos
             else{
@@ -348,15 +394,19 @@ public class Buscar_Nacimiento {
                 
                 nombre.setMouseTransparent(true);
                 apellido.setMouseTransparent(true);
-                nacimiento.setMouseTransparent(true);
-                hora.setMouseTransparent(true);
-                madre.setMouseTransparent(true);
-                padre.setMouseTransparent(true);
+                profesion.setMouseTransparent(true);
+                fechaNacimiento.setMouseTransparent(true);
+                fechaDefuncion.setMouseTransparent(true);                
+                horaNacimiento.setMouseTransparent(true);
+                horaDefuncion.setMouseTransparent(true);
+                parienteMadre.setMouseTransparent(true);
+                parientePadre.setMouseTransparent(true);
                 region.setMouseTransparent(true);
                 comuna.setMouseTransparent(true);
                 f.setMouseTransparent(true);
                 m.setMouseTransparent(true);
-                comentario.setMouseTransparent(true);
+                comentarioNacimiento.setMouseTransparent(true);
+                comentarioDefuncion.setMouseTransparent(true);
             }
         });
         
@@ -373,36 +423,39 @@ public class Buscar_Nacimiento {
             aux.setRegion(region.getSelectionModel().getSelectedItem().toString());
             aux.setComuna(comuna.getSelectionModel().getSelectedItem().toString());
             aux.setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO);
-            aux.setNacimiento(nacimiento.getValue());
-            aux.setHoraNacimiento(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+            aux.setNacimiento(fechaNacimiento.getValue());
+            aux.setHoraNacimiento(horaNacimiento.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             aux.setRut(rut.getText());
-            aux.setEstadoCivil(EstadoCivil.HIJO);
-            aux.setNacionalidades(Nacionalidad.CHILE);
             
             //requisitos opcionales
-            if(comentario.getText() != null){
-                if(comentario.getText().length()>1)
-                    aux.setComentarioNacimiento(comentario.getText());
+            aux.setProfesion(profesion.getText());
+            aux.setDefuncion(fechaDefuncion.getValue());
+            aux.setHoraDefuncion(horaDefuncion.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
+            
+            if(comentarioNacimiento.getText() != null){
+                if(comentarioNacimiento.getText().length()>1)
+                    aux.setComentarioNacimiento(comentarioNacimiento.getText());
                 else
                     aux.setComentarioNacimiento(null);
             }
             
+            if(comentarioDefuncion.getText() != null){
+                if(comentarioDefuncion.getText().length()>1)
+                    aux.setComentarioDefuncion(comentarioDefuncion.getText());
+                else
+                    aux.setComentarioDefuncion(null);
+            }
+            
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
-            if(!madre.getText().isEmpty() && poblacion.getPoblacion().containsKey(madre.getText())){
+            if(mama != null){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
-                aux.agregarParientes(madre.getText(), mama);
-                /*if(extMadre.isSelected()){
-                    aux.setNacionalidades(mama.getNacionalidades());
-                }*/
+                aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
-            if(!padre.getText().isEmpty() && poblacion.getPoblacion().containsKey(padre.getText())){
+            if(papa != null){
                 papa.setEstadoCivil(EstadoCivil.PADRE);
-                aux.agregarParientes(padre.getText(), papa);
-                /*if(extPadre.isSelected()){
-                    aux.setNacionalidades(papa.getNacionalidades());
-                }*/
+                aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
             }
             
             //se registra informacion en el historial, terminando la operacion de forma exitosa
@@ -421,18 +474,98 @@ public class Buscar_Nacimiento {
         grid.add(apellido,0,2);
         grid.add(ciudadOrigen,0,3);
         grid.add(sexoBox, 0,4);
-        grid.add(nacimiento,0,5);
-        grid.add(hora, 0,6);
+        grid.add(fechaNacimiento,0,5);
+        grid.add(horaNacimiento, 0,6);
+        parienteMadre.setTranslateX(-33);
         grid.add(parienteMadre, 0,8);
+        parientePadre.setTranslateX(-33);
         grid.add(parientePadre, 0,9);
-        GridPane.setRowSpan(comentario, 3);
-        grid.add(comentario, 1, 2);
-        grid.add(barra,1,6);
+        
+        
+        grid.add(profesion, 1, 1);
+        grid.add(fechaDefuncion,1,2);
+        grid.add(horaDefuncion, 1,3);
+        
+        GridPane.setRowSpan(comentarioNacimiento, 3);
+        grid.add(comentarioNacimiento, 2, 1);
+        GridPane.setRowSpan(comentarioDefuncion, 3);
+        grid.add(comentarioDefuncion, 2, 5);
+        grid.add(barra,2,9);
         
         //se añade la escena final a la ventana y se muestra por pantalla
         Scene scene = new Scene(grid);
         scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
         ventana.setScene(scene);
         ventana.show();
+    }
+    
+    private void verificarIdentificador(TextField id,
+            CheckBox chkbox, ImageView check){
+        //se comprueba que el rut este registrado
+        id.textProperty().addListener((observable, o, n)->{
+            //entrada invalida
+            if(n.length()<8){
+                check.setVisible(false);
+                chkbox.setVisible(false);
+            }
+            //se comprueba que sea un rut valido y registrado
+            else if(Chileno.comprobarRut(n)){
+                if(poblacion.getPoblacion().containsKey(n)){
+                    chkbox.setVisible(true);
+                    check.setVisible(true);
+                }
+                else{
+                    chkbox.setVisible(false);
+                    check.setVisible(false);
+                }
+            }
+            //entrada invalida
+            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                check.setVisible(false);
+                chkbox.setVisible(false);
+            }
+        });
+    }
+    
+    private void verificarIdentificadorPariente(TextField idPariente, TextField id,
+            CheckBox chkbox, ImageView check, ImageView mark){
+        idPariente.textProperty().addListener((observable, o, n)->{
+            //si pariente es chileno
+            if(!chkbox.isSelected()){
+                //entrada invalida
+                if(n.length()<8){
+                    check.setVisible(false);
+                    mark.setVisible(false);
+                }
+                //se comprueba que sea un rut valido y registrado
+                else if(Chileno.comprobarRut(n)){
+                    if(!n.equals(id.getText()) && poblacion.getPoblacion().containsKey(n)){
+                        mark.setVisible(false);
+                        check.setVisible(true);
+                    }
+                    else{
+                        check.setVisible(false);
+                        mark.setVisible(true);
+                    }
+                }
+                //entrada invalida
+                else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                    check.setVisible(false);
+                    mark.setVisible(false);
+                }
+            }
+            //si pariente no es chileno, se acepta una cadena > 7
+            else{
+                //entrada invalida
+                if(n.length()<8){
+                    check.setVisible(false);
+                    mark.setVisible(false);
+                }
+                //acepta todo
+                else{
+                    check.setVisible(true);
+                }
+            }
+        });
     }
 }

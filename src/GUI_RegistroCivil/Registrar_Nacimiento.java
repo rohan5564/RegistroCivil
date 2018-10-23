@@ -210,18 +210,18 @@ public class Registrar_Nacimiento {
                 aux.setComentarioNacimiento(comentario.getText());
             
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
-            if(!madre.getText().isEmpty() && poblacion.getPoblacion().containsKey(madre.getText())){
+            if(mama != null){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
-                aux.agregarParientes(madre.getText(), mama);
+                aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
                 if(extMadre.isSelected()){
                     aux.setNacionalidades(mama.getNacionalidades());
                 }
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
-            if(!padre.getText().isEmpty() && poblacion.getPoblacion().containsKey(padre.getText())){
+            if(papa != null){
                 papa.setEstadoCivil(EstadoCivil.PADRE);
-                aux.agregarParientes(padre.getText(), papa);
+                aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
                 if(extPadre.isSelected()){
                     aux.setNacionalidades(papa.getNacionalidades());
                 }

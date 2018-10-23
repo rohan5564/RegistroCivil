@@ -40,6 +40,7 @@ import colecciones.Ciudadano;
 import colecciones.Poblacion;
 import java.time.LocalDate;
 import java.util.HashMap;
+import javafx.scene.control.CheckBox;
 
 /**
  *
@@ -56,7 +57,9 @@ public class Elementos {
      */
     public static Spinner<LocalTime> hora(String str){
         Spinner<LocalTime> hora = new Spinner(new SpinnerValueFactory() {
-            {setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));}
+            {
+                setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
+            }
             @Override
             public void decrement(int steps) {
                 if (getValue() == null)
@@ -77,6 +80,7 @@ public class Elementos {
                 }
             }
         });
+        
         hora.getValueFactory().setValue(LocalTime.MIDNIGHT);
         hora.setEditable(true);
         hora.setTooltip(new Tooltip(str));
@@ -149,14 +153,14 @@ public class Elementos {
      * <p>
      * los elementos se se obtienen en de la siguiente forma:
      * <pre><code>
-     *      //campo de ingreso
-     *      TextField rut = (TextField)checkRut.getChildrenUnmodifiable().<b>get(0);</b>
+     *   //campo de ingreso
+     *   TextField rut = (TextField)checkRut.getChildrenUnmodifiable().<b>get(0);</b>
      * 
-     *      //señal verde
-     *      ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(1);</b>
+     *   //señal verde
+     *   ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(1);</b>
      * 
-     *      //señal amarilla
-     *      ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(2);</b>
+     *   //señal amarilla
+     *   ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(2);</b>
      * </code></pre>
      * @return StackPane de JavaFx
      * @since Entrega A
@@ -179,6 +183,46 @@ public class Elementos {
         checkRut.getChildren().addAll(rut, check, mark);
         return checkRut;
     }
+    
+    /**
+     * crea un campo de texto para ingresar un rut sin puntos ni guion.
+     * <p>
+     * contiene 2 iconos para usar de forma opcional y de acuerdo a las 
+     * necesidades, y corresponden a una señal verde y una señal amarilla.
+     * <p>
+     * los elementos se se obtienen en de la siguiente forma:
+     * <pre><code>
+     *   //campo de ingreso
+     *   TextField rut = (TextField)checkRut.getChildrenUnmodifiable().<b>get(0);</b>
+     * 
+     *   //señal verde
+     *   ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(1);</b>
+     * 
+     *   //señal amarilla
+     *   ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(2);</b>
+     * </code></pre>
+     * @param parentesco texto a mostrar en la casilla de entrada
+     * @return StackPane de JavaFx
+     * @since Entrega A
+     */
+    public static StackPane checkPariente(String parentesco){
+        StackPane pariente = new StackPane();
+        TextField id = new TextField();
+        ImageView check = Elementos.icono("Resources/check.png");
+        ImageView mark = Elementos.icono("Resources/yellow_mark.png");
+        id.setTextFormatter(new TextFormatter<>((formato) -> {
+                formato.setText(formato.getText().toUpperCase());
+                return formato;
+        }));
+        id.setMaxSize(200, 40);
+        id.setPromptText(parentesco);
+        CheckBox extPariente = new CheckBox();
+        extPariente.setTranslateX(118);
+        extPariente.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
+        pariente.getChildren().addAll(id, extPariente, check, mark);
+        return pariente;
+    }
+    
     
     public static DatePicker fecha(String str){
         DatePicker fecha = new DatePicker();

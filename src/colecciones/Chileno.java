@@ -6,19 +6,12 @@
 package colecciones;
 
 import Enums.EstadoCivil;
-import Interfaces.Chile;
-import Interfaces.Chile.REGIONES;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Jean
  */
 
-@XmlRootElement
 public class Chileno extends Ciudadano{
     private String rut; //verificador 0-9 / 'K'
     private int numeroDeDocumento; //PERMITE 0
@@ -32,7 +25,6 @@ public class Chileno extends Ciudadano{
         numeroDeDocumento = 0;
     }    
     
-    @XmlElement
     public String getRut(){
         return rut;
     }
@@ -41,7 +33,6 @@ public class Chileno extends Ciudadano{
         this.rut = rut.toUpperCase();
     }
 
-    @XmlElement
     public int getNumeroDeDocumento() {
         return numeroDeDocumento;
     }
@@ -50,7 +41,6 @@ public class Chileno extends Ciudadano{
         this.numeroDeDocumento = numeroDeDocumento;
     }
        
-    @XmlElement
     public String getDireccion() {
         return direccion;
     }
@@ -59,7 +49,6 @@ public class Chileno extends Ciudadano{
         this.direccion = direccion.toUpperCase();
     }
     
-    @XmlElement
     public String getRegion() {
         return region;
     }
@@ -68,7 +57,6 @@ public class Chileno extends Ciudadano{
         this.region = region;
     }
 
-    @XmlElement
     public String getComuna() {
         return comuna;
     }
@@ -102,7 +90,7 @@ public class Chileno extends Ciudadano{
     
     @Override
     public boolean getRequisitosMinimos(){
-        if(super.getNombre() != null
+        return super.getNombre() != null
                 && super.getApellido() != null
                 && super.getSexo() != null
                 && region != null
@@ -110,10 +98,7 @@ public class Chileno extends Ciudadano{
                 && super.getNacimiento() != null
                 && super.getHoraNacimiento() != null
                 && super.getEstadoCivil() != null
-                && rut != null
-                )
-            return true;
-        return false;
+                && rut != null;
     }
     
     @Override
@@ -141,11 +126,8 @@ public class Chileno extends Ciudadano{
     }
     
     @Override
-    public void agregarParientes(ArrayList<String> identificador, ArrayList<Ciudadano> pariente){
-        HashMap<String, Ciudadano> parientes = super.getParientes();
-        for(int i = 0; i < pariente.size(); i++){
-            parientes.put(identificador.get(i), pariente.get(i));
-        }
+    public String mostrarIdentificador(){
+        return getRut();
     }
     
 }

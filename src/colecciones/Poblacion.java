@@ -10,13 +10,13 @@ import java.util.Map;
 
 /**
  *
- * @author Atenas01
+ * @author Jean
  */
 public class Poblacion {
     private Map<String, Ciudadano> poblacion;
 
     public Poblacion() {
-        this.poblacion = new HashMap<String, Ciudadano>();
+        this.poblacion = new HashMap<>();
     }
 
     public Poblacion(HashMap<String, Ciudadano> poblacion) {

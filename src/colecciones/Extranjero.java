@@ -17,16 +17,16 @@ import java.util.HashMap;
 public class Extranjero extends Ciudadano {
     /**
      * @see http://www.extranjeria.gob.cl/nacionalizacion/
-     */
-    
-    
+     */    
     private Visa tipoDeVisa;
     private LocalDate primeraVisa; //yo.setPrimeraVisa(LocalDate.of(YYYY,DD,MM))
+    private String pasaporte;
     
     public Extranjero(){
         super();
         tipoDeVisa = null;
         primeraVisa = null;
+        pasaporte = null;
     }
 
     public Visa getTipoDeVisa() {
@@ -43,6 +43,14 @@ public class Extranjero extends Ciudadano {
 
     public void setPrimeraVisa(LocalDate primeraVisa) {
         this.primeraVisa = primeraVisa;
+    }
+
+    public String getPasaporte() {
+        return pasaporte;
+    }
+
+    public void setPasaporte(String pasaporte) {
+        this.pasaporte = pasaporte;
     }
     
     /*funciones a implementar en el programa
@@ -67,10 +75,9 @@ public class Extranjero extends Ciudadano {
         return true;
     }
     
-    public void agregarParientes(ArrayList<String> identificador, ArrayList<Ciudadano> pariente){
-        HashMap<String, Ciudadano> parientes = super.getParientes();
-        for(int i = 0; i < pariente.size(); i++){
-            parientes.put(identificador.get(i), pariente.get(i));
-        }
+    @Override
+    public String mostrarIdentificador(){
+        return getPasaporte();
     }
+    
 }

@@ -12,11 +12,6 @@ import Interfaces.Personas;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import utilidades.LocalDateAdapter;
 
 //import utilidades.XMLAdaptarClases;
 
@@ -25,7 +20,6 @@ import utilidades.LocalDateAdapter;
  * @author Jean
  */
 
-@XmlTransient
 public abstract class Ciudadano implements Personas {
     
     private String nombre;
@@ -41,7 +35,7 @@ public abstract class Ciudadano implements Personas {
     private String profesion; //PERMITE NULL
     private ArrayList<EstadoCivil> estadoCivil;
     private ArrayList<Nacionalidad> nacionalidades;
-    private HashMap<String, Ciudadano> parientes;
+    private Parientes parientes;
     private Ciudadano pareja;
     
     /*
@@ -64,7 +58,7 @@ public abstract class Ciudadano implements Personas {
         profesion = null;
         estadoCivil = new ArrayList<>();
         nacionalidades = new ArrayList<>();
-        parientes = new HashMap<>();
+        parientes = new Parientes();
         pareja = null;
     }
     
@@ -92,7 +86,6 @@ public abstract class Ciudadano implements Personas {
         this.sexo = sexo;
     }
     
-    @XmlJavaTypeAdapter(value = LocalDateAdapter.class)
     public LocalDate getNacimiento() {
         return nacimiento;
     }
@@ -117,7 +110,6 @@ public abstract class Ciudadano implements Personas {
         this.comentarioNacimiento = comentarioNacimiento;
     }
     
-    @XmlJavaTypeAdapter(value = LocalDateAdapter.class)
     public LocalDate getDefuncion() {
         return defuncion;
     }
@@ -175,12 +167,11 @@ public abstract class Ciudadano implements Personas {
         this.nacionalidades.addAll(nacionalidades);
     }
     
-    //@XmlJavaTypeAdapter(value = HashMapAdapter.class)
-    public HashMap<String, Ciudadano> getParientes() {
+    public Parientes getParientes() {
         return parientes;
     }
 
-    public void setParientes(HashMap<String, Ciudadano> parientes) {
+    public void setParientes(Parientes parientes) {
         this.parientes = parientes;
     }
     
@@ -192,9 +183,6 @@ public abstract class Ciudadano implements Personas {
         this.pareja = pareja;
     }
     
-    /*public void setParientes(HashMap<String, ArrayList<Ciudadano>> agregarParientes) {
-        this.agregarParientes = agregarParientes;
-    }*///BORRAR
     ////////////////////////////////////////////////////////////////////////////
     //sobrecarga setter
     public void setEstadoCivil(EstadoCivil estadoCivil){
@@ -219,31 +207,20 @@ public abstract class Ciudadano implements Personas {
     @Override
     abstract public boolean modificarDatos();
     
-    @Override
+    abstract public String mostrarIdentificador();
+            
     public int getEdad(){
         if (defuncion == null)
             return Period.between(nacimiento, LocalDate.now()).getYears();
         return Period.between(nacimiento, defuncion).getYears();
     }
     
-    public void agregarParientes(ArrayList<String> identificador, ArrayList<Ciudadano> pariente){
-        for(int i = 0; i < identificador.size(); i++){
-            this.parientes.put(identificador.get(i), pariente.get(i));
-        }
-    }
-    
-    public void agregarParientes(String identificador, Ciudadano pariente){
-        this.parientes.put(identificador, pariente);
-    }
-    
     public boolean getRequisitosMinimos(){
-        if(nombre != null
+        return nombre != null
                 && apellido != null
                 && sexo != null
                 && nacimiento != null
                 && horaNacimiento != null
-                && estadoCivil != null)
-            return true;
-        return false;
+                && estadoCivil != null;
     }
 }
