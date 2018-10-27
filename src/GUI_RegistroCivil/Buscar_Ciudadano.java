@@ -39,6 +39,8 @@ import utilidades.ArchivoProperties;
 import Interfaces.Chile;
 import colecciones.Poblacion;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import javafx.event.EventHandler;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
@@ -48,14 +50,14 @@ import javafx.scene.input.KeyEvent;
  * ventana que permite la modificacion de datos para los ruts registrados
  * @since Entrega A
  */
-public class Buscar_Nacimiento {
+public class Buscar_Ciudadano {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
     private Poblacion poblacion;
     private Chileno aux;
 
-    public Buscar_Nacimiento(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public Buscar_Ciudadano(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
         this.prop = prop;
@@ -145,24 +147,26 @@ public class Buscar_Nacimiento {
         horaDefuncion.setMouseTransparent(true);
         
         //creacion del campo que captura el identificador de la madre
-        StackPane parienteMadre = Elementos.checkPariente("identificador de madre");
+        StackPane parienteMadre = Elementos.checkPariente("rut de la madre");
         TextField madre = (TextField)parienteMadre.getChildren().get(0);
         parienteMadre.setDisable(true);   
         parienteMadre.setMouseTransparent(true);
         CheckBox extMadre = (CheckBox)parienteMadre.getChildrenUnmodifiable().get(1);
         ImageView checkMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(2);
         ImageView markMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(3);
-        verificarIdentificadorPariente(madre, rut, extMadre, checkMadre, markMadre);
+        List<String> promptTextMadre = new ArrayList(Arrays.asList("Rut de la madre", "Pasaporte de la madre"));
+        verificarIdentificadorPariente(madre, rut, extMadre, checkMadre, markMadre, promptTextMadre);
         
         //creacion del campo que captura el identificador del padre
-        StackPane parientePadre = Elementos.checkPariente("identificador de padre");
+        StackPane parientePadre = Elementos.checkPariente("rut del padre");
         TextField padre = (TextField)parientePadre.getChildren().get(0);
         parientePadre.setDisable(true);   
         parientePadre.setMouseTransparent(true);
-        CheckBox extPadre = (CheckBox)parienteMadre.getChildrenUnmodifiable().get(1);
-        ImageView checkPadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(2);
-        ImageView markPadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(3);
-        verificarIdentificadorPariente(padre, rut, extPadre, checkPadre, markPadre);
+        CheckBox extPadre = (CheckBox)parientePadre.getChildrenUnmodifiable().get(1);
+        ImageView checkPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(2);
+        ImageView markPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(3);
+        List<String> promptTextPadre = new ArrayList(Arrays.asList("Rut del padre", "Pasaporte del padre"));
+        verificarIdentificadorPariente(padre, rut, extPadre, checkPadre, markPadre, promptTextPadre);
         
         //creacion del campo que captura los comentarios de nacimiento
         TextArea comentarioNacimiento = new TextArea();
@@ -301,13 +305,13 @@ public class Buscar_Nacimiento {
 
                 parienteMadre.setDisable(false);
                 if(aux.getParientes().getPersonas().containsKey(EstadoCivil.MADRE)){
-                    Ciudadano mama = aux.getParientes().getPersonas().get(EstadoCivil.MADRE);
+                    Ciudadano mama = aux.getParientes().getPersonas().get(EstadoCivil.MADRE).get(0);
                     madre.setText(mama.mostrarIdentificador());
                 }
                 
                 parientePadre.setDisable(false);
                 if(aux.getParientes().getPersonas().containsKey(EstadoCivil.PADRE)){
-                    Ciudadano papa = aux.getParientes().getPersonas().get(EstadoCivil.PADRE);
+                    Ciudadano papa = aux.getParientes().getPersonas().get(EstadoCivil.PADRE).get(0);
                     padre.setText(papa.mostrarIdentificador());
                 }
             }
@@ -528,7 +532,7 @@ public class Buscar_Nacimiento {
     }
     
     private void verificarIdentificadorPariente(TextField idPariente, TextField id,
-            CheckBox chkbox, ImageView check, ImageView mark){
+            CheckBox chkbox, ImageView check, ImageView mark, List<String> promptText){
         idPariente.textProperty().addListener((observable, o, n)->{
             //si pariente es chileno
             if(!chkbox.isSelected()){
@@ -566,6 +570,15 @@ public class Buscar_Nacimiento {
                     check.setVisible(true);
                 }
             }
+        });
+        
+        chkbox.selectedProperty().addListener((obs, o , n) -> {
+            if(n || o)
+                idPariente.clear();
+            if(n)
+                idPariente.setPromptText(promptText.get(1));
+            else
+                idPariente.setPromptText(promptText.get(0));
         });
     }
 }

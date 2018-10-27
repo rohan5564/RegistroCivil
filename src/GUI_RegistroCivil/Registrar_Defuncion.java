@@ -164,8 +164,8 @@ public class Registrar_Defuncion {
             aux.setDefuncion(dia.getValue());
             aux.setHoraDefuncion(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             aux.setComentarioDefuncion(comentario.getText());
-            if(aux.getPareja()!=null)
-                aux.getPareja().getEstadoCivil().add(EstadoCivil.VIUDO);
+            if(aux.getParientes().buscarPariente(EstadoCivil.CASADO)!=null)
+                aux.getParientes().buscarPariente(EstadoCivil.CASADO).get(0).setEstadoCivil(EstadoCivil.VIUDO);
             logReporte.appendText(
                     "["+horaActual+"]"+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
                     ", rut: "+aux.getRut()+" QDEP \n");

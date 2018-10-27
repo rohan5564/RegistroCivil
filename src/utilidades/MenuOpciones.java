@@ -5,7 +5,7 @@
  */
 package utilidades;
 
-import GUI_RegistroCivil.Buscar_Nacimiento;
+import GUI_RegistroCivil.Buscar_Ciudadano;
 import GUI_RegistroCivil.Cantidad_Nacidos;
 import GUI_RegistroCivil.Elementos;
 import GUI_RegistroCivil.Registrar_Defuncion;
@@ -33,14 +33,14 @@ public class MenuOpciones {
         this.prop = prop;
     }
     
+    public void datosPersona(MouseEvent click){
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
+        accesoDirecto.buscarNacimiento(click);
+    }
+    
     public void registrarNacimiento(MouseEvent click){
         Registrar_Nacimiento accesoDirecto = new Registrar_Nacimiento(logReporte, poblacion, prop);
         accesoDirecto.registrarNacimiento(click);
-    }
-    
-    public void buscarNacimiento(MouseEvent click){
-        Buscar_Nacimiento accesoDirecto = new Buscar_Nacimiento(logReporte, poblacion, prop);
-        accesoDirecto.buscarNacimiento(click);
     }
     
     public void cantidadNacidos(MouseEvent click){
@@ -67,14 +67,14 @@ public class MenuOpciones {
     public void buscarDefuncion(MouseEvent click){
         /*Buscar_Defuncion accesoDirecto = new Buscar_Defuncion(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
-        Buscar_Nacimiento accesoDirecto = new Buscar_Nacimiento(logReporte, poblacion, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
         accesoDirecto.buscarNacimiento(click);
     }
     
     public void buscarMatrimonio(MouseEvent click){
         /*Buscar_Matrimonio accesoDirecto = new Buscar_Matrimonio(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
-        Buscar_Nacimiento accesoDirecto = new Buscar_Nacimiento(logReporte, poblacion, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
         accesoDirecto.buscarNacimiento(click);
     }
 }

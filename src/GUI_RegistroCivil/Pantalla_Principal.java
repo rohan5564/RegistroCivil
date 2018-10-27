@@ -147,16 +147,30 @@ public class Pantalla_Principal{
             cerrar(menu);
         }); //abre la ultima ventana de logueo cargada
     }
-    public VBox vboxMain(){
+    
+    private VBox vboxMain(){
         VBox vbox1 = new VBox(80);
         String str = new String();
-        for(int i=1; i<=3; i++){
+        for(int i=0; i<=3; i++){
             switch(i){
-                case 1: str = "Nacimiento";break;
-                case 2: str = "Defuncion";break;
-                case 3: str = "Matrimonio";break;
-                case 4: str = "Antecedentes";break;
-                case 5: str = "Vehiculos";break;
+                case 0: 
+                    str = "General";
+                    break;
+                case 1: 
+                    str = "Nacimiento";
+                    break;
+                case 2: 
+                    str = "Defuncion";
+                    break;
+                case 3: 
+                    str = "Matrimonio";
+                    break;
+                case 4: 
+                    str = "Antecedentes";
+                    break;
+                case 5: 
+                    str = "Vehiculos";
+                    break;
             }
             Label texto = new Label(str);
             texto.setAlignment(Pos.CENTER);
@@ -170,65 +184,36 @@ public class Pantalla_Principal{
         return vbox1;
     }
     
-    public StackPane stackPaneMain(List<Node> opciones, ArrayList<Polygon> triangulo){
+    private StackPane stackPaneMain(List<Node> opciones, List<Polygon> triangulo){
         StackPane stack = new StackPane();
-        ArrayList<VBox> boxes = new ArrayList<>(Arrays.asList(
+        List<VBox> boxes = new ArrayList<>(Arrays.asList(
                 new VBox(50),new VBox(50),new VBox(50),new VBox(50),new VBox(50)));
+        
+        Button buscarNacimiento = new Button("modificar datos");
+        buscarNacimiento.setPrefSize(200, 50);
+        boxes.get(0).getChildren().addAll(buscarNacimiento);
+        boxes.get(0).setVisible(false);
+        seleccionarOpcion(opciones.get(0), boxes, 0, triangulo);
+        buscarNacimiento.setOnMouseClicked(menuOpcion::datosPersona);
         
         Button regNacimiento = new Button("Registrar nacimiento");
         regNacimiento.setPrefSize(200, 50);
-        Button buscarNacimiento = new Button("modificar datos");
-        buscarNacimiento.setPrefSize(200, 50);
         Button cantNacimiento = new Button("Mostrar total registrados");
         cantNacimiento.setPrefSize(200, 50);
-        boxes.get(0).getChildren().addAll(regNacimiento, buscarNacimiento,cantNacimiento);
-        boxes.get(0).setVisible(false);
-        opciones.get(0).setOnMouseEntered(lambda -> {
-            for(VBox x:boxes){
-                if(x.isVisible())
-                    x.setVisible(false);
-            }
-            for(int i = 0 ; i<5 ; i++){
-                if(i==0){
-                    triangulo.get(i).setVisible(true);
-                    continue;
-                }
-                triangulo.get(i).setVisible(false);
-            }
-            boxes.get(0).setVisible(true);
-            opciones.get(0).setEffect(new DropShadow(40,Color.AQUA));
-            
-        });
-        opciones.get(0).setOnMouseExited(lambda -> {
-            opciones.get(0).setEffect(null);
-        });
+        boxes.get(1).getChildren().addAll(regNacimiento,cantNacimiento);
+        boxes.get(1).setVisible(false);
+        seleccionarOpcion(opciones.get(1), boxes, 1, triangulo);
+        
         regNacimiento.setOnMouseClicked(menuOpcion::registrarNacimiento);
-        buscarNacimiento.setOnMouseClicked(menuOpcion::buscarNacimiento);
         cantNacimiento.setOnMouseClicked(menuOpcion::cantidadNacidos);
         Button regDefuncion = new Button("Registrar defuncion");
         regDefuncion.setPrefSize(200, 50);
         //Button buscarDefuncion = new Button("Buscar difunto");
         //buscarDefuncion.setPrefSize(200, 50);
-        boxes.get(1).getChildren().addAll(regDefuncion/*, buscarDefuncion*/);
-        boxes.get(1).setVisible(false);
-        opciones.get(1).setOnMouseEntered(lambda -> {
-            for(VBox x:boxes){
-                if(x.isVisible())
-                    x.setVisible(false);
-            }
-            for(int i = 0 ; i<5 ; i++){
-                if(i==1){
-                    triangulo.get(i).setVisible(true);
-                    continue;
-                }
-                triangulo.get(i).setVisible(false);
-            }
-            boxes.get(1).setVisible(true);
-            opciones.get(1).setEffect(new DropShadow(70,Color.AQUA));
-        });
-        opciones.get(1).setOnMouseExited(lambda -> {
-            opciones.get(1).setEffect(null);
-        });
+        boxes.get(2).getChildren().addAll(regDefuncion/*, buscarDefuncion*/);
+        boxes.get(2).setVisible(false);
+        seleccionarOpcion(opciones.get(2), boxes, 2, triangulo);
+        
         regDefuncion.setOnMouseClicked(menuOpcion::registrarDefuncion);
         //buscarDefuncion.setOnMouseClicked(menuOpcion::buscarDefuncion);
         
@@ -236,26 +221,10 @@ public class Pantalla_Principal{
         regMatrimonio.setPrefSize(200, 50);
         //Button buscarMatrimonio = new Button("Buscar matrimonio");
         //buscarMatrimonio.setPrefSize(200, 50);
-        boxes.get(2).getChildren().addAll(regMatrimonio/*, buscarMatrimonio*/);
-        boxes.get(2).setVisible(false);
-        opciones.get(2).setOnMouseEntered(lambda -> {
-            for(VBox x:boxes){
-                if(x.isVisible())
-                    x.setVisible(false);
-            }
-            for(int i = 0 ; i<5 ; i++){
-                if(i==2){
-                    triangulo.get(i).setVisible(true);
-                    continue;
-                }
-                triangulo.get(i).setVisible(false);
-            }
-            boxes.get(2).setVisible(true);
-            opciones.get(2).setEffect(new DropShadow(70,Color.AQUA));
-        });
-        opciones.get(2).setOnMouseExited(lambda -> {
-            opciones.get(2).setEffect(null);
-        });
+        boxes.get(3).getChildren().addAll(regMatrimonio/*, buscarMatrimonio*/);
+        boxes.get(3).setVisible(false);
+        seleccionarOpcion(opciones.get(3), boxes, 3, triangulo);
+        
         regMatrimonio.setOnMouseClicked(menuOpcion::registrarMatrimonio);
         //buscarMatrimonio.setOnMouseClicked(menuOpcion::buscarMatrimonio);
         
@@ -309,13 +278,13 @@ public class Pantalla_Principal{
             opciones.get(4).setEffect(null);
         });*/
         
-        stack.getChildren().addAll(boxes.get(0),boxes.get(1),boxes.get(2)/*,boxes.get(3),boxes.get(4)*/);
+        stack.getChildren().addAll(boxes);
         stack.setTranslateX(10);
         stack.setTranslateY(200);
         return stack;
     }
     
-    public HBox hboxMain(Stage ventana){
+    private HBox hboxMain(Stage ventana){
         HBox hbox1 = new HBox(300);
         Button guardar = new Button("guardar reporte");
         guardar.setOnMouseClicked(lambda -> {
@@ -355,7 +324,7 @@ public class Pantalla_Principal{
         return hbox1;
     }
     
-    public ArrayList<Polygon> separadorTriangulos(StackPane tema){
+    private ArrayList<Polygon> separadorTriangulos(StackPane tema){
         ArrayList<Polygon> tri = new ArrayList<Polygon>();
         ToggleSwitch sw = (ToggleSwitch)tema.getChildren().get(2);
         for(int i=0 ; i<5 ; i++){
@@ -384,7 +353,7 @@ public class Pantalla_Principal{
         return tri;
     }   
     
-    public ArrayList<Rectangle> separadorRectangulos(StackPane tema){
+    private ArrayList<Rectangle> separadorRectangulos(StackPane tema){
         
         ToggleSwitch sw = (ToggleSwitch)tema.getChildren().get(2);
         
@@ -417,7 +386,29 @@ public class Pantalla_Principal{
         return new ArrayList<Rectangle>(Arrays.asList(rc1,rc2));
     }
     
-    public StackPane tema(Scene scene, Stage menu){
+    private void seleccionarOpcion(Node opcion, List<VBox> boxes, int pos, List<Polygon> triangulo){
+        opcion.setOnMouseEntered(lambda -> {
+            for(VBox x:boxes){
+                if(x.isVisible())
+                    x.setVisible(false);
+            }
+            for(int i = 0 ; i<5 ; i++){
+                if(i==pos){
+                    triangulo.get(i).setVisible(true);
+                    continue;
+                }
+                triangulo.get(i).setVisible(false);
+            }
+            boxes.get(pos).setVisible(true);
+            opcion.setEffect(new DropShadow(70,Color.AQUA));
+            
+        });
+        opcion.setOnMouseExited(lambda -> {
+            opcion.setEffect(null);
+        });
+    }
+    
+    private StackPane tema(Scene scene, Stage menu){
         StackPane switchTema = new StackPane();
         ImageView iconoTema = new ImageView(new Image("Resources/moon_icon.png", true));
         iconoTema.setFitWidth(25);
@@ -466,7 +457,7 @@ public class Pantalla_Principal{
         return switchTema;
     }
     
-    public void cerrar(Stage menu){
+    private void cerrar(Stage menu){
         Stage fin = new Stage();
         fin.setResizable(false);
         fin.setAlwaysOnTop(true);
@@ -528,4 +519,5 @@ public class Pantalla_Principal{
         cancelar.setOnAction(alpha -> fin.close());            
         fin.show();
     }
+    
 }

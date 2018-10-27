@@ -12,6 +12,7 @@ import Interfaces.Personas;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.List;
 
 //import utilidades.XMLAdaptarClases;
 
@@ -36,7 +37,6 @@ public abstract class Ciudadano implements Personas {
     private ArrayList<EstadoCivil> estadoCivil;
     private ArrayList<Nacionalidad> nacionalidades;
     private Parientes parientes;
-    private Ciudadano pareja;
     
     /*
         No-Nulos: nombre, apellido, sexo, region, nacimiento, defuncion, estadoCivil
@@ -59,7 +59,6 @@ public abstract class Ciudadano implements Personas {
         estadoCivil = new ArrayList<>();
         nacionalidades = new ArrayList<>();
         parientes = new Parientes();
-        pareja = null;
     }
     
     public String getNombre() {
@@ -175,14 +174,6 @@ public abstract class Ciudadano implements Personas {
         this.parientes = parientes;
     }
     
-    public Ciudadano getPareja(){
-        return pareja;
-    }
-    
-    public void setPareja(Ciudadano pareja) {
-        this.pareja = pareja;
-    }
-    
     ////////////////////////////////////////////////////////////////////////////
     //sobrecarga setter
     public void setEstadoCivil(EstadoCivil estadoCivil){
@@ -223,4 +214,5 @@ public abstract class Ciudadano implements Personas {
                 && horaNacimiento != null
                 && estadoCivil != null;
     }
+    
 }

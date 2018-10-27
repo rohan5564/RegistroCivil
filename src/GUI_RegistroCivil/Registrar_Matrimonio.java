@@ -69,7 +69,7 @@ public class Registrar_Matrimonio {
         Button cancelar = new Button("cancelar");
         HBox barra = new HBox(20, guardar, cancelar);
         
-        Label lblEsposo = new Label("conyuge");
+        Label lblEsposo = new Label("Esposo");
         lblEsposo.setFont(Font.font("times new roman", FontWeight.LIGHT, 20));
         Label estadoEsposo = new Label("");
         estadoEsposo.setFont(Font.font("times new roman", FontWeight.LIGHT, 24));
@@ -79,7 +79,7 @@ public class Registrar_Matrimonio {
         ImageView checkEsposo = (ImageView)esposo.getChildrenUnmodifiable().get(1);
         ImageView markEsposo = (ImageView)esposo.getChildrenUnmodifiable().get(2);
         
-        Label lblEsposa = new Label("conyuge");
+        Label lblEsposa = new Label("Esposa");
         lblEsposa.setFont(Font.font("times new roman", FontWeight.LIGHT, 20));
         Label estadoEsposa = new Label("");
         estadoEsposa.setFont(Font.font("times new roman", FontWeight.LIGHT, 24));
@@ -95,15 +95,16 @@ public class Registrar_Matrimonio {
                 checkEsposo.setVisible(false);
                 markEsposo.setVisible(false);
             }
-            else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)){
-                    if(poblacion.getPoblacion().get(n).getPareja()==null){
-                        markEsposo.setVisible(false);
-                        checkEsposo.setVisible(true);
-                    }
-                    else{
-                        checkEsposo.setVisible(false);
-                        markEsposo.setVisible(true);
-                    }
+            else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
+                    && poblacion.getPoblacion().get(n).getDefuncion()==null){
+                if(poblacion.getPoblacion().get(n).getParientes().buscarPariente(EstadoCivil.CASADO)==null){
+                    markEsposo.setVisible(false);
+                    checkEsposo.setVisible(true);
+                }
+                else{
+                    checkEsposo.setVisible(false);
+                    markEsposo.setVisible(true);
+                }
             }            
             else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
                 checkEsposo.setVisible(false);
@@ -114,9 +115,9 @@ public class Registrar_Matrimonio {
             if(n.booleanValue()){
                 aux1 = (Chileno)poblacion.getPoblacion().get(rutEsposo.getText());
                 if(aux1 == null)
-                    lblEsposo.setText("conyuge");
+                    lblEsposo.setText("Esposo");
                 else{
-                    lblEsposo.setText("conyuge: "+ aux1.getNombre() +"");
+                    lblEsposo.setText("Esposo: "+ aux1.getNombre() +"");
                     if(!aux1.registrarMatrimonio()){
                         rutEsposa.setDisable(true);
                         estadoEsposo.setText("Estado: Casado");
@@ -129,7 +130,7 @@ public class Registrar_Matrimonio {
             }
             else{
                 rutEsposa.setDisable(true);
-                lblEsposo.setText("conyuge");
+                lblEsposo.setText("Esposo");
                 estadoEsposo.setText("");
                 aux1 = null;
             }
@@ -138,9 +139,9 @@ public class Registrar_Matrimonio {
             if(n.booleanValue()){
                 aux1 = (Chileno)poblacion.getPoblacion().get(rutEsposo.getText());
                 if(aux1 == null)
-                    lblEsposo.setText("conyuge");
+                    lblEsposo.setText("Esposo");
                 else{
-                    lblEsposo.setText("conyuge: "+ aux1.getNombre() +"");
+                    lblEsposo.setText("Esposo: "+ aux1.getNombre() +"");
                     if(!aux1.registrarMatrimonio()){
                         rutEsposa.setDisable(true);
                         estadoEsposo.setText("Estado: Casado");
@@ -153,7 +154,7 @@ public class Registrar_Matrimonio {
             }
             else{
                 rutEsposa.setDisable(true);
-                lblEsposo.setText("conyuge");
+                lblEsposo.setText("Esposo");
                 estadoEsposo.setText("");
                 aux1 = null;
             }
@@ -164,15 +165,16 @@ public class Registrar_Matrimonio {
                 checkEsposa.setVisible(false);
                 markEsposa.setVisible(false);
             }
-            else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)){
-                    if(poblacion.getPoblacion().get(n).getPareja()==null){
-                        markEsposa.setVisible(false);
-                        checkEsposa.setVisible(true);
-                    }
-                    else{
-                        checkEsposa.setVisible(false);
-                        markEsposa.setVisible(true);
-                    }
+            else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
+                    && poblacion.getPoblacion().get(n).getDefuncion()==null){
+                if(poblacion.getPoblacion().get(n).getParientes().buscarPariente(EstadoCivil.CASADO)==null){
+                    markEsposa.setVisible(false);
+                    checkEsposa.setVisible(true);
+                }
+                else{
+                    checkEsposa.setVisible(false);
+                    markEsposa.setVisible(true);
+                }
             }            
             else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
                 checkEsposa.setVisible(false);
@@ -183,9 +185,9 @@ public class Registrar_Matrimonio {
             if(n.booleanValue()){
                 aux2 = (Chileno)poblacion.getPoblacion().get(rutEsposa.getText());
                 if(aux2 == null)
-                    lblEsposa.setText("conyuge");
+                    lblEsposa.setText("Esposa");
                 else{
-                    lblEsposa.setText("conyuge: "+ aux2.getNombre() +"");
+                    lblEsposa.setText("Esposa: "+ aux2.getNombre() +"");
                     if(!aux2.registrarMatrimonio()){
                         guardar.setDisable(true);
                         estadoEsposa.setText("Estado: Casada");
@@ -198,7 +200,7 @@ public class Registrar_Matrimonio {
             }
             else{
                 guardar.setDisable(false);
-                lblEsposa.setText("conyuge");
+                lblEsposa.setText("Esposa");
                 estadoEsposa.setText("");
                 aux2 = null;
             }
@@ -207,9 +209,9 @@ public class Registrar_Matrimonio {
             if(n.booleanValue()){
                 aux2 = (Chileno)poblacion.getPoblacion().get(rutEsposa.getText());
                 if(aux2 == null)
-                    lblEsposa.setText("conyuge");
+                    lblEsposa.setText("Esposa");
                 else{
-                    lblEsposa.setText("conyuge: "+ aux2.getNombre() +"");
+                    lblEsposa.setText("Esposa: "+ aux2.getNombre() +"");
                     if(!aux2.registrarMatrimonio()){
                         guardar.setDisable(true);
                         estadoEsposa.setText("Estado: Casada");
@@ -222,7 +224,7 @@ public class Registrar_Matrimonio {
             }
             else{
                 guardar.setDisable(false);
-                lblEsposa.setText("conyuge");
+                lblEsposa.setText("Esposa");
                 estadoEsposa.setText("");
                 aux2 = null;
             }
@@ -234,9 +236,9 @@ public class Registrar_Matrimonio {
             logReporte.appendText(
                     "["+horaActual+"] "+aux1.getNombre().toLowerCase()+" "+aux1.getApellido().toLowerCase()+" y "+
                     aux2.getNombre().toLowerCase()+" "+aux2.getApellido().toLowerCase()+"se unieron en matrimonio\n");            
-            aux1.setPareja(aux2);
+            aux1.getParientes().agregarPariente(aux2, EstadoCivil.CASADO);
             aux1.getEstadoCivil().add(EstadoCivil.CASADO);
-            aux2.setPareja(aux1);
+            aux2.getParientes().agregarPariente(aux1, EstadoCivil.CASADO);
             aux2.getEstadoCivil().add(EstadoCivil.CASADO);
             rutEsposo.clear();
             rutEsposa.clear();
