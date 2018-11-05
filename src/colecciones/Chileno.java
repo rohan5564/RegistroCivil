@@ -6,13 +6,14 @@
 package colecciones;
 
 import Enums.EstadoCivil;
+import Interfaces.Registro_Civil;
 
 /**
  *
  * @author Jean
  */
 
-public class Chileno extends Ciudadano{
+public class Chileno extends Ciudadano implements Registro_Civil{
     private String rut; //verificador 0-9 / 'K'
     private int numeroDeDocumento; //PERMITE 0
     private String direccion; //PERMITE NULL
@@ -84,9 +85,6 @@ public class Chileno extends Ciudadano{
             return true;
         return false;
     }
-   
-    /*funciones a implementar en el programa
-    */
     
     @Override
     public boolean getRequisitosMinimos(){
@@ -108,21 +106,13 @@ public class Chileno extends Ciudadano{
 
     @Override
     public boolean registrarDefuncion(){
-        return super.getDefuncion()!=null || super.getHoraDefuncion()!=null;
+        return super.getDefuncion()!=null;
     }
 
     @Override
     public boolean registrarMatrimonio(){
-        for(EstadoCivil estado:super.getEstadoCivil()){
-            if(estado.equals(EstadoCivil.CASADO))
-                return false;
-        }
-        return true;
-    }
-    
-    @Override
-    public boolean modificarDatos(){
-        return false;
+        return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null
+                || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).isEmpty();
     }
     
     @Override

@@ -10,9 +10,8 @@ package Interfaces;
  *
  * @author Jean
  */
-public interface Personas {
+public interface Registro_Civil {
     boolean registrarNacimiento();
     boolean registrarDefuncion();
     boolean registrarMatrimonio();
-    boolean modificarDatos();
 }

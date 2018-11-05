@@ -41,10 +41,14 @@ import colecciones.Poblacion;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
  * ventana que permite la modificacion de datos para los ruts registrados
@@ -63,7 +67,7 @@ public class Buscar_Ciudadano {
         this.prop = prop;
     }
     
-    public void buscarNacimiento(MouseEvent click){
+    public void buscarCiudadano(MouseEvent click){
         //creacion de ventana
         Stage ventana = new Stage();
         ventana.setX(370);
@@ -168,6 +172,11 @@ public class Buscar_Ciudadano {
         List<String> promptTextPadre = new ArrayList(Arrays.asList("Rut del padre", "Pasaporte del padre"));
         verificarIdentificadorPariente(padre, rut, extPadre, checkPadre, markPadre, promptTextPadre);
         
+        //creacion del boton que abre la lista de parientes
+        Button parientes = new Button("Parientes");
+        parientes.setDisable(true);
+        parientes.setMouseTransparent(true);
+        
         //creacion del campo que captura los comentarios de nacimiento
         TextArea comentarioNacimiento = new TextArea();
         comentarioNacimiento.setDisable(true);
@@ -197,8 +206,8 @@ public class Buscar_Ciudadano {
         region.setMaxSize(120, 40);
         region.setMinSize(120, 40);
         ArrayList<String> regiones = new ArrayList<>();
-        for(Chile i: Chile.REGIONES.values()){
-            regiones.add(i.toString().replace("_"," ").toLowerCase());
+        for(Chile.REGIONES i: Chile.REGIONES.values()){
+            regiones.add(i.getNombre());
         }
         ObservableList<String> listaRegiones = FXCollections.observableArrayList();
         listaRegiones.addAll(regiones);
@@ -230,9 +239,11 @@ public class Buscar_Ciudadano {
         
         //creacion del botones principales
         Button guardar = new Button("guardar");
-        guardar.disableProperty().bind(editar.selectedProperty().not());
-        Button salir = new Button("salir");                      
-        HBox barra = new HBox(20, guardar, salir);
+        guardar.disableProperty().bind(editar.selectedProperty().not());           
+        Button borrar = new Button("borrar");
+        borrar.disableProperty().bind(check.visibleProperty().not());
+        Button salir = new Button("salir");  
+        HBox barra = new HBox(20, guardar, borrar, salir);
         barra.setAlignment(Pos.CENTER);
         
         //se evalua el estado del rut ingresado (valido y registrado)
@@ -314,6 +325,12 @@ public class Buscar_Ciudadano {
                     Ciudadano papa = aux.getParientes().getPersonas().get(EstadoCivil.PADRE).get(0);
                     padre.setText(papa.mostrarIdentificador());
                 }
+                
+                Map<?,?> listaPersonas = aux.getParientes().getPersonas();
+                if(listaPersonas == null || listaPersonas.isEmpty())
+                    parientes.setDisable(true);
+                else
+                    parientes.setDisable(false);
             }
             //si es invalido o no esta registrado, no se muestra nada por pantalla
             else{                
@@ -358,6 +375,8 @@ public class Buscar_Ciudadano {
                 parientePadre.setDisable(true);
                 padre.clear();
                 
+                parientes.setDisable(true);
+                
                 comentarioNacimiento.setDisable(true);
                 comentarioNacimiento.clear();
                 
@@ -384,6 +403,7 @@ public class Buscar_Ciudadano {
                 horaDefuncion.setMouseTransparent(false);
                 parienteMadre.setMouseTransparent(false);
                 parientePadre.setMouseTransparent(false);
+                parientes.setMouseTransparent(false);
                 region.setMouseTransparent(false);
                 comuna.setMouseTransparent(false);
                 f.setMouseTransparent(false);
@@ -405,6 +425,7 @@ public class Buscar_Ciudadano {
                 horaDefuncion.setMouseTransparent(true);
                 parienteMadre.setMouseTransparent(true);
                 parientePadre.setMouseTransparent(true);
+                parientes.setMouseTransparent(true);
                 region.setMouseTransparent(true);
                 comuna.setMouseTransparent(true);
                 f.setMouseTransparent(true);
@@ -414,8 +435,17 @@ public class Buscar_Ciudadano {
             }
         });
         
+        //si se clickea el boton hijos, mostrara una nuevaa ventana con el listado
+        parientes.setOnMouseClicked(lambda -> verParientes(aux));
+        
         //si se clickea el boton salir, la ventana se cierra
         salir.setOnMouseClicked(lambda -> ventana.close());
+        
+        //si se clickea el boton borrar, se eliminan el rut y los datos del ciudadano
+        borrar.setOnMouseClicked(lambda -> {
+            Chileno aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
+            ventanaBorrar(rut, aux, 300, 100);
+        });
         
         //si se clickea el boton guardar, se sobreescriben los datos del usuario
         guardar.setOnMouseClicked(lambda -> {
@@ -454,12 +484,14 @@ public class Buscar_Ciudadano {
             if(mama != null){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
                 aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
+                mama.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
             if(papa != null){
                 papa.setEstadoCivil(EstadoCivil.PADRE);
                 aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
+                papa.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
             }
             
             //se registra informacion en el historial, terminando la operacion de forma exitosa
@@ -489,6 +521,7 @@ public class Buscar_Ciudadano {
         grid.add(profesion, 1, 1);
         grid.add(fechaDefuncion,1,2);
         grid.add(horaDefuncion, 1,3);
+        grid.add(parientes, 1, 4);
         
         GridPane.setRowSpan(comentarioNacimiento, 3);
         grid.add(comentarioNacimiento, 2, 1);
@@ -580,5 +613,63 @@ public class Buscar_Ciudadano {
             else
                 idPariente.setPromptText(promptText.get(0));
         });
+    }
+    
+    private void ventanaBorrar(TextField rut, Ciudadano ciudadano, double largo, double ancho){
+        Stage popup = new Stage();
+        popup.setResizable(false);
+        popup.initStyle(StageStyle.UTILITY);
+        popup.setAlwaysOnTop(true);
+        popup.initModality(Modality.APPLICATION_MODAL);
+        GridPane pop = new GridPane();
+        pop.setHgap(5);
+        pop.setVgap(5);
+        pop.setAlignment(Pos.CENTER);
+        pop.setPrefHeight(100);
+        pop.setPrefWidth(100);        
+        Label txt = new Label("¿realmente desea eliminar rut\n\ty datos de usuario?");
+        txt.setFont(Font.font("bold", FontWeight.LIGHT, 12));
+        pop.add(txt,0,0);
+        StackPane botones = new StackPane();
+        Button ok = new Button("confirmar");
+        ok.setTranslateX(-50);
+        Button cancelar = new Button("cancelar");
+        cancelar.setTranslateX(50);
+        botones.getChildren().addAll(ok, cancelar);
+        pop.add(botones, 0, 1);
+        
+        ok.setOnMouseClicked(lambda -> {
+            if(!poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).desvincularDeParientes()){
+                Elementos.popMensaje("error de operacion", 300, 100);
+                rut.clear();
+            }
+            else{
+                logReporte.appendText(
+                        "["+horaActual+"] "+"rut "+rut.getText()+" eliminado\n"
+                );
+                rut.clear();
+                Stage exito = Elementos.popMensajeStage("Operacion Exitosa!", largo, ancho);
+                popup.setScene(exito.getScene());
+                ((Button)exito.getUserData()).setOnMouseClicked(alpha -> popup.close());
+            }
+        });
+        
+        cancelar.addEventHandler(MouseEvent.MOUSE_CLICKED, alpha -> popup.close());
+        
+        cancelar.addEventHandler(KeyEvent.KEY_PRESSED, alpha -> {
+            if(alpha.getCode() == KeyCode.ENTER ){
+                popup.close();
+            }
+        });
+        
+        Scene scene = new Scene(pop, largo, ancho);
+        scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
+        popup.setScene(scene);
+        popup.show();
+    }
+    
+    private void verParientes(Ciudadano ciudadano){
+        Buscar_Ciudadano_Parientes ventana = new Buscar_Ciudadano_Parientes(ciudadano, prop);
+        ventana.abrirVentana();
     }
 }

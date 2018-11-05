@@ -8,11 +8,13 @@ package colecciones;
 import Enums.EstadoCivil;
 import Enums.Nacionalidad;
 import Enums.Sexo;
-import Interfaces.Personas;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import Interfaces.Registro_Civil;
 
 //import utilidades.XMLAdaptarClases;
 
@@ -21,7 +23,7 @@ import java.util.List;
  * @author Jean
  */
 
-public abstract class Ciudadano implements Personas {
+public abstract class Ciudadano{
     
     private String nombre;
     private String apellido; 
@@ -40,9 +42,9 @@ public abstract class Ciudadano implements Personas {
     
     /*
         No-Nulos: nombre, apellido, sexo, region, nacimiento, defuncion, estadoCivil
-        nulos: direccion, defuncion, pasaporte, profesion
-        */
     
+        nulos: direccion, defuncion, pasaporte, profesion
+    */
     ////////////////////////////////////////////////////////////////////////////
     public Ciudadano() {
         nombre = null;
@@ -177,7 +179,8 @@ public abstract class Ciudadano implements Personas {
     ////////////////////////////////////////////////////////////////////////////
     //sobrecarga setter
     public void setEstadoCivil(EstadoCivil estadoCivil){
-        this.estadoCivil.add(estadoCivil);
+        if(!this.estadoCivil.contains(estadoCivil))
+            this.estadoCivil.add(estadoCivil);
     }
     
     public void setNacionalidades(Nacionalidad nacionalidad) {
@@ -185,18 +188,6 @@ public abstract class Ciudadano implements Personas {
     }
     
     ////////////////////////////////////////////////////////////////////////////
-    
-    @Override
-    abstract public boolean registrarNacimiento();
-
-    @Override
-    abstract public boolean registrarDefuncion();
-    
-    @Override
-    abstract public boolean registrarMatrimonio();
-
-    @Override
-    abstract public boolean modificarDatos();
     
     abstract public String mostrarIdentificador();
             
@@ -213,6 +204,16 @@ public abstract class Ciudadano implements Personas {
                 && nacimiento != null
                 && horaNacimiento != null
                 && estadoCivil != null;
+    }
+    
+    public boolean desvincularDeParientes(){
+        for(Map.Entry<EstadoCivil, List<Ciudadano>> listaParientes : parientes.getPersonas().entrySet()){
+            for(Ciudadano cadaPariente : listaParientes.getValue()){
+                if(cadaPariente.getParientes().removerPariente(this))
+                    return true;
+            }
+        }
+        return false;
     }
     
 }

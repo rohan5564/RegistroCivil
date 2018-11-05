@@ -194,7 +194,7 @@ public class Pantalla_Principal{
         boxes.get(0).getChildren().addAll(buscarNacimiento);
         boxes.get(0).setVisible(false);
         seleccionarOpcion(opciones.get(0), boxes, 0, triangulo);
-        buscarNacimiento.setOnMouseClicked(menuOpcion::datosPersona);
+        buscarNacimiento.setOnMouseClicked(menuOpcion::buscarCiudadano);
         
         Button regNacimiento = new Button("Registrar nacimiento");
         regNacimiento.setPrefSize(200, 50);

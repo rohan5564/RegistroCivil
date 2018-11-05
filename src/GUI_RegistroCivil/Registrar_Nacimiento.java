@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -81,11 +80,15 @@ public class Registrar_Nacimiento {
         TextField nombre = new TextField();
         nombre.setMinSize(200, 40);
         nombre.setPromptText("ingrese nombres");
+        
         TextField apellido = new TextField();
         apellido.setMinSize(200, 40);
         apellido.setPromptText("ingrese apellidos");
+        
         DatePicker nacimiento = Elementos.fecha("fecha de nacimiento");
+        
         Spinner<LocalTime> hora = Elementos.hora("hora del nacimiento");
+        
         StackPane checkRut = Elementos.checkRut();
         ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().get(1);
         ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().get(2);
@@ -119,15 +122,53 @@ public class Registrar_Nacimiento {
         m.setToggleGroup(sexo);
         HBox sexoBox = new HBox(f, m);        
         
-        StackPane parienteMadre = new StackPane();
-        TextField madre = new TextField();
-        madre.setMaxSize(200, 40);
+        StackPane parienteMadre = Elementos.checkIdentificador();
+        TextField madre = (TextField)parienteMadre.getChildrenUnmodifiable().get(0);
         madre.setTranslateX(-30);
         madre.setPromptText("identificador de madre");
-        CheckBox extMadre = new CheckBox();
-        extMadre.setTranslateX(65);
+        CheckBox extMadre = (CheckBox)parienteMadre.getChildrenUnmodifiable().get(3);
+        extMadre.setTranslateX(60);
         extMadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
-        parienteMadre.getChildren().addAll(madre, extMadre);
+        ImageView checkRutMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(1);
+        ImageView markRutMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(2);
+        madre.textProperty().addListener((observable, o, n)->{
+            if(n.equals(rut.getText())){
+                checkRutMadre.setVisible(false);
+                markRutMadre.setVisible(false);
+            }
+            else if(n.length()==0){
+                checkRutMadre.setVisible(false);
+                markRutMadre.setVisible(true);
+            }
+            else if(n.length()>0 && n.length()<8){
+                checkRutMadre.setVisible(false);
+                markRutMadre.setVisible(false);
+            }
+            else if(!extMadre.isSelected() && Chileno.comprobarRut(n)){
+                if(poblacion.getPoblacion().containsKey(n)){
+                    checkRutMadre.setVisible(true);
+                    markRutMadre.setVisible(false);
+                }
+                else{
+                    markRutMadre.setVisible(true);
+                    checkRutMadre.setVisible(false);
+                }
+            }
+            else if(extMadre.isSelected()){
+                if(poblacion.getPoblacion().containsKey(n)){
+                    checkRutMadre.setVisible(true);
+                    markRutMadre.setVisible(false);
+                }
+                else{
+                    markRutMadre.setVisible(true);
+                    checkRutMadre.setVisible(false);
+                }
+            }
+            else if(!extMadre.isSelected() && (!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)) ){
+                checkRutMadre.setVisible(false);
+                markRutMadre.setVisible(false);
+            }
+        });
         
         ComboBox region = new ComboBox();
         region.setPromptText(" Region");
@@ -159,15 +200,50 @@ public class Registrar_Nacimiento {
         });
         HBox ciudadOrigen = new HBox(20, region, comuna);
                 
-        StackPane parientePadre = new StackPane();
-        TextField padre = new TextField();
-        padre.setMaxSize(200, 40);
+        StackPane parientePadre = Elementos.checkIdentificador();
+        TextField padre = (TextField)parientePadre.getChildrenUnmodifiable().get(0);
         padre.setTranslateX(-30);
         padre.setPromptText("identificador de padre");
-        CheckBox extPadre = new CheckBox();
-        extPadre.setTranslateX(65);
+        CheckBox extPadre = (CheckBox)parientePadre.getChildrenUnmodifiable().get(3);
+        extPadre.setTranslateX(60);
         extPadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
-        parientePadre.getChildren().addAll(padre, extPadre);
+        ImageView checkRutPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(1);
+        ImageView markRutPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(2);
+        padre.textProperty().addListener((observable, o, n)->{
+            if(n.length()==0){
+                checkRutPadre.setVisible(false);
+                markRutPadre.setVisible(true);
+            }
+            else if(n.length()>0 && n.length()<8){
+                checkRutPadre.setVisible(false);
+                markRutPadre.setVisible(false);
+            }
+            else if(!extPadre.isSelected() && Chileno.comprobarRut(n)){
+                if(poblacion.getPoblacion().containsKey(n)){
+                    checkRutPadre.setVisible(true);
+                    markRutPadre.setVisible(false);
+                }
+                else{
+                    markRutPadre.setVisible(true);
+                    checkRutPadre.setVisible(false);
+                }
+            }
+            else if(extPadre.isSelected()){
+                if(poblacion.getPoblacion().containsKey(n)){
+                    checkRutPadre.setVisible(true);
+                    markRutPadre.setVisible(false);
+                }
+                else{
+                    markRutPadre.setVisible(true);
+                    checkRutPadre.setVisible(false);
+                }
+            }
+            else if(!extPadre.isSelected() && (!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)) ){
+                checkRutPadre.setVisible(false);
+                markRutPadre.setVisible(false);
+            }
+        });
+        
         TextArea comentario = new TextArea();
         comentario.setWrapText(true);
         comentario.setPromptText("comentarios");
@@ -186,8 +262,10 @@ public class Registrar_Nacimiento {
                 m.selectedProperty()).not()).or(
                 region.valueProperty().isNull().or(
                 comuna.valueProperty().isNull().or(
-                hora.valueProperty().isNull()
-                ))))));
+                hora.valueProperty().isNull().or(
+                markRutMadre.visibleProperty().not().and(
+                checkRutMadre.visibleProperty().not()
+                ))))))));
         
         guardar.disableProperty().bind(validacion);
         
@@ -213,18 +291,18 @@ public class Registrar_Nacimiento {
             if(mama != null){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
                 aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
-                if(extMadre.isSelected()){
+                mama.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
+                if(extMadre.isSelected())
                     aux.setNacionalidades(mama.getNacionalidades());
-                }
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
             if(papa != null){
                 papa.setEstadoCivil(EstadoCivil.PADRE);
                 aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
-                if(extPadre.isSelected()){
+                papa.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
+                if(extPadre.isSelected())
                     aux.setNacionalidades(papa.getNacionalidades());
-                }
             }
             
             rut.clear();

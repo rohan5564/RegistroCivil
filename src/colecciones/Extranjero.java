@@ -5,28 +5,26 @@
  */
 package colecciones;
 
+import Enums.EstadoCivil;
 import Enums.Visa;
+import Interfaces.Registro_Civil;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
  * @author Jean
  */
-public class Extranjero extends Ciudadano {
+public class Extranjero extends Ciudadano implements Registro_Civil{
     /**
      * @see http://www.extranjeria.gob.cl/nacionalizacion/
      */    
     private Visa tipoDeVisa;
     private LocalDate primeraVisa; //yo.setPrimeraVisa(LocalDate.of(YYYY,DD,MM))
-    private String pasaporte;
     
     public Extranjero(){
         super();
         tipoDeVisa = null;
         primeraVisa = null;
-        pasaporte = null;
     }
 
     public Visa getTipoDeVisa() {
@@ -44,35 +42,23 @@ public class Extranjero extends Ciudadano {
     public void setPrimeraVisa(LocalDate primeraVisa) {
         this.primeraVisa = primeraVisa;
     }
-
-    public String getPasaporte() {
-        return pasaporte;
-    }
-
-    public void setPasaporte(String pasaporte) {
-        this.pasaporte = pasaporte;
-    }
     
     /*funciones a implementar en el programa
     */
     @Override
     public boolean registrarNacimiento(){
-        return true;
+        return super.getRequisitosMinimos();
     }
 
     @Override
     public boolean registrarDefuncion(){
-        return true;
+        return super.getDefuncion()!=null;
     }
 
     @Override
     public boolean registrarMatrimonio(){
-        return true;
-    }
-    
-    @Override
-    public boolean modificarDatos(){
-        return true;
+        return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).isEmpty()
+                || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null;
     }
     
     @Override

@@ -33,9 +33,9 @@ public class MenuOpciones {
         this.prop = prop;
     }
     
-    public void datosPersona(MouseEvent click){
+    public void buscarCiudadano(MouseEvent click){
         Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
-        accesoDirecto.buscarNacimiento(click);
+        accesoDirecto.buscarCiudadano(click);
     }
     
     public void registrarNacimiento(MouseEvent click){
@@ -68,13 +68,13 @@ public class MenuOpciones {
         /*Buscar_Defuncion accesoDirecto = new Buscar_Defuncion(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
         Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
-        accesoDirecto.buscarNacimiento(click);
+        accesoDirecto.buscarCiudadano(click);
     }
     
     public void buscarMatrimonio(MouseEvent click){
         /*Buscar_Matrimonio accesoDirecto = new Buscar_Matrimonio(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
         Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
-        accesoDirecto.buscarNacimiento(click);
+        accesoDirecto.buscarCiudadano(click);
     }
 }

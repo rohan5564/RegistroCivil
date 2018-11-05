@@ -11,7 +11,7 @@ import colecciones.Ciudadano;
 import colecciones.Poblacion;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -97,7 +97,9 @@ public class Registrar_Matrimonio {
             }
             else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
                     && poblacion.getPoblacion().get(n).getDefuncion()==null){
-                if(poblacion.getPoblacion().get(n).getParientes().buscarPariente(EstadoCivil.CASADO)==null){
+                List<Ciudadano> listEsposa = 
+                        poblacion.getPoblacion().get(n).getParientes().buscarListaParentesco(EstadoCivil.CASADO);
+                if(listEsposa==null || listEsposa.isEmpty()){
                     markEsposo.setVisible(false);
                     checkEsposo.setVisible(true);
                 }
@@ -167,7 +169,9 @@ public class Registrar_Matrimonio {
             }
             else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
                     && poblacion.getPoblacion().get(n).getDefuncion()==null){
-                if(poblacion.getPoblacion().get(n).getParientes().buscarPariente(EstadoCivil.CASADO)==null){
+                List<Ciudadano> listEsposo = 
+                        poblacion.getPoblacion().get(n).getParientes().buscarListaParentesco(EstadoCivil.CASADO);
+                if(listEsposo==null || listEsposo.isEmpty()){
                     markEsposa.setVisible(false);
                     checkEsposa.setVisible(true);
                 }
@@ -235,7 +239,7 @@ public class Registrar_Matrimonio {
         guardar.setOnMouseClicked(lambda -> {
             logReporte.appendText(
                     "["+horaActual+"] "+aux1.getNombre().toLowerCase()+" "+aux1.getApellido().toLowerCase()+" y "+
-                    aux2.getNombre().toLowerCase()+" "+aux2.getApellido().toLowerCase()+"se unieron en matrimonio\n");            
+                    aux2.getNombre().toLowerCase()+" "+aux2.getApellido().toLowerCase()+" se unieron en matrimonio\n");            
             aux1.getParientes().agregarPariente(aux2, EstadoCivil.CASADO);
             aux1.getEstadoCivil().add(EstadoCivil.CASADO);
             aux2.getParientes().agregarPariente(aux1, EstadoCivil.CASADO);

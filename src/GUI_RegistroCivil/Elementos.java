@@ -102,8 +102,8 @@ public class Elementos {
         popup.setAlwaysOnTop(true);
         popup.initModality(Modality.APPLICATION_MODAL);
         GridPane pop = new GridPane();
-        pop.setHgap(30);
-        pop.setVgap(20);
+        pop.setHgap(5);
+        pop.setVgap(5);
         pop.setAlignment(Pos.CENTER);
         pop.setPrefHeight(100);
         pop.setPrefWidth(100);        
@@ -111,7 +111,7 @@ public class Elementos {
         txt.setFont(Font.font("bold", FontWeight.LIGHT, 22));
         pop.add(txt,0,0);
         Button ok = new Button("aceptar");
-        ok.setTranslateX(largo/2);
+        ok.setTranslateX(largo/5);
         pop.add(ok, 0, 1);
         
         ok.addEventHandler(MouseEvent.MOUSE_CLICKED, alpha -> popup.close());
@@ -125,7 +125,43 @@ public class Elementos {
         Scene scene = new Scene(pop, largo, ancho);
         scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
         popup.setScene(scene);
+        popup.setUserData((Button)ok);
         popup.show();
+    }
+    
+    public static Stage popMensajeStage(String str, double largo, double ancho){
+        prop.crear();
+        Stage popup = new Stage();
+        popup.setResizable(false);
+        popup.initStyle(StageStyle.UTILITY);
+        popup.setAlwaysOnTop(true);
+        popup.initModality(Modality.APPLICATION_MODAL);
+        GridPane pop = new GridPane();
+        pop.setHgap(30);
+        pop.setVgap(20);
+        pop.setAlignment(Pos.CENTER);
+        pop.setPrefHeight(100);
+        pop.setPrefWidth(100);        
+        Label txt = new Label(str);
+        txt.setFont(Font.font("bold", FontWeight.LIGHT, 22));
+        pop.add(txt,0,0);
+        Button ok = new Button("aceptar");
+        ok.setTranslateX(largo/5);
+        pop.add(ok, 0, 1);
+        
+        ok.addEventHandler(MouseEvent.MOUSE_CLICKED, alpha -> popup.close());
+        
+        ok.addEventHandler(KeyEvent.KEY_PRESSED, alpha -> {
+            if(alpha.getCode() == KeyCode.ENTER ){
+                popup.close();
+            }
+        });
+        
+        Scene scene = new Scene(pop, largo, ancho);
+        scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
+        popup.setScene(scene);
+        popup.setUserData((Button)ok);
+        return popup;
     }
     
     /**
@@ -181,6 +217,54 @@ public class Elementos {
                 rut.setText(rut.getText().substring(0, 9));
         });
         checkRut.getChildren().addAll(rut, check, mark);
+        return checkRut;
+    }
+    
+    /**
+     * crea un campo de texto para ingresar un rut sin puntos ni guion o un pasaporte.
+     * <p>
+     * contiene 2 iconos para usar de forma opcional y de acuerdo a las 
+     * necesidades, y corresponden a una señal verde y una señal amarilla.
+     * <p>
+     * los elementos se se obtienen en de la siguiente forma:
+     * <pre><code>
+     *   //campo de ingreso
+     *   TextField rut = (TextField)checkRut.getChildrenUnmodifiable().<b>get(0);</b>
+     * 
+     *   //señal verde
+     *   ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(1);</b>
+     * 
+     *   //señal amarilla
+     *   ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(2);</b>
+     * 
+     *   //checkbox
+     *   CheckBox mark = (CheckBox)checkRut.getChildrenUnmodifiable().<b>get(3);</b>
+     * </code></pre>
+     * @return StackPane de JavaFx
+     * @since Entrega B
+     */
+    public static StackPane checkIdentificador(){
+        StackPane checkRut = new StackPane();
+        CheckBox pasaporte = new CheckBox();
+        pasaporte.setSelected(false);
+        ImageView check = Elementos.icono("Resources/check.png");
+        ImageView mark = Elementos.icono("Resources/yellow_mark.png");
+        mark.setVisible(true);
+        TextField rut = new TextField();
+        rut.setTextFormatter(new TextFormatter<>((formato) -> {
+                formato.setText(formato.getText().toUpperCase());
+                return formato;
+        }));
+        rut.setMaxSize(200, 40);
+        pasaporte.selectedProperty().addListener((obs, old, seleccionado)->{
+            if(!seleccionado.booleanValue()){
+                rut.lengthProperty().addListener((observable, o, n)->{
+                    if(n.intValue()>9)
+                    rut.setText(rut.getText().substring(0, 9));
+                });
+            }
+        });
+        checkRut.getChildren().addAll(rut, check, mark, pasaporte);
         return checkRut;
     }
     
@@ -256,68 +340,68 @@ public class Elementos {
         ArrayList<String> arreglo = new ArrayList<>();
         switch(region.toUpperCase().replace(" ", "_")){
             case "TARAPACA": 
-                for(Chile i: Chile.TARAPACA.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.TARAPACA i: Chile.TARAPACA.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "ANTOFAGASTA": 
-                for(Chile i: Chile.ANTOFAGASTA.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.ANTOFAGASTA i: Chile.ANTOFAGASTA.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "ATACAMA": 
-                for(Chile i: Chile.ATACAMA.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.ATACAMA i: Chile.ATACAMA.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "COQUIMBO": 
-                for(Chile i: Chile.COQUIMBO.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.COQUIMBO i: Chile.COQUIMBO.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "VALPARAISO": 
-                for(Chile i: Chile.VALPARAISO.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.VALPARAISO i: Chile.VALPARAISO.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "LIBERTADOR_GENERAL_BERNARDO_OHIGGINS": 
-                for(Chile i: Chile.LIBERTADOR_GENERAL_BERNARDO_OHIGGINS.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.LIBERTADOR_GENERAL_BERNARDO_OHIGGINS i: Chile.LIBERTADOR_GENERAL_BERNARDO_OHIGGINS.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "MAULE": 
-                for(Chile i: Chile.MAULE.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.MAULE i: Chile.MAULE.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "BIO_BIO": 
-                for(Chile i: Chile.BIO_BIO.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.BIO_BIO i: Chile.BIO_BIO.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "LA_ARAUCANIA": 
-                for(Chile i: Chile.LA_ARAUCANIA.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.LA_ARAUCANIA i: Chile.LA_ARAUCANIA.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "LOS_LAGOS": 
-                for(Chile i: Chile.LOS_LAGOS.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.LOS_LAGOS i: Chile.LOS_LAGOS.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO": 
-                for(Chile i: Chile.AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO i: Chile.AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "MAGALLANES_Y_ANTARTICA": 
-                for(Chile i: Chile.MAGALLANES_Y_ANTARTICA.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.MAGALLANES_Y_ANTARTICA i: Chile.MAGALLANES_Y_ANTARTICA.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "REGION_METROPOLITANA": 
-                for(Chile i: Chile.REGION_METROPOLITANA.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.REGION_METROPOLITANA i: Chile.REGION_METROPOLITANA.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "LOS_RIOS":
-                for(Chile i: Chile.LOS_RIOS.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.LOS_RIOS i: Chile.LOS_RIOS.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "ARICA_Y_PARINACOTA":
-                for(Chile i: Chile.ARICA_Y_PARINACOTA.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.ARICA_Y_PARINACOTA i: Chile.ARICA_Y_PARINACOTA.values())
+                    arreglo.add(i.getNombre());
                 break;
             case "ÑUBLE":
-                for(Chile i: Chile.ÑUBLE.values())
-                    arreglo.add(i.toString().replace("_"," ").toLowerCase());
+                for(Chile.ÑUBLE i: Chile.ÑUBLE.values())
+                    arreglo.add(i.getNombre());
                 break;
         }
         Collections.sort(arreglo);

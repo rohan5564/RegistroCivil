@@ -164,11 +164,14 @@ public class Registrar_Defuncion {
             aux.setDefuncion(dia.getValue());
             aux.setHoraDefuncion(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             aux.setComentarioDefuncion(comentario.getText());
-            if(aux.getParientes().buscarPariente(EstadoCivil.CASADO)!=null)
-                aux.getParientes().buscarPariente(EstadoCivil.CASADO).get(0).setEstadoCivil(EstadoCivil.VIUDO);
+            if(aux.getParientes().buscarListaParentesco(EstadoCivil.CASADO)!=null){
+                Ciudadano conyuge = aux.getParientes().buscarListaParentesco(EstadoCivil.CASADO).get(0);
+                conyuge.setEstadoCivil(EstadoCivil.VIUDO);
+                conyuge.getParientes().agregarPariente(aux, EstadoCivil.VIUDO);
+            }
             logReporte.appendText(
                     "["+horaActual+"]"+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
-                    ", rut: "+aux.getRut()+" QDEP \n");
+                    ", rut: "+aux.getRut()+" QDEP\n");
             Elementos.popMensaje("Operacion Exitosa!", 300, 100);
             rut.clear();
             datos.setVisible(false);
