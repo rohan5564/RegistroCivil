@@ -1,17 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package colecciones;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author Jean
- */
+
 public class Poblacion {
     private Map<String, Ciudadano> poblacion;
 
@@ -31,6 +24,11 @@ public class Poblacion {
         this.poblacion = poblacion;
     }
     
+    /**
+     * 
+     * @param ciudadano
+     * @return 
+     */
     public boolean removerCiudadano(Ciudadano ciudadano){
         if(!poblacion.containsValue(ciudadano))
             return false;
@@ -48,10 +46,14 @@ public class Poblacion {
     }
     
     private boolean removerChileno(Chileno chileno){
-        return chileno.getParientes().getPersonas().isEmpty() && poblacion.remove(chileno.getRut(), chileno);
+        return (chileno.getParientes().getPersonas() == null
+                || chileno.getParientes().getPersonas().isEmpty())
+                && poblacion.remove(chileno.getRut())!=null;
     }
     
     private boolean removerExtranjero(Extranjero extranjero){
-        return extranjero.getParientes().getPersonas().isEmpty() && poblacion.remove(extranjero.getPasaporte(), extranjero);
+        return (extranjero.getParientes().getPersonas() == null
+                || extranjero.getParientes().getPersonas().isEmpty())
+                && poblacion.remove(extranjero.getPasaporte())!=null;
     }
 }

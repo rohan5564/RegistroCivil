@@ -288,7 +288,7 @@ public class Registrar_Nacimiento {
                 aux.setComentarioNacimiento(comentario.getText());
             
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
-            if(mama != null){
+            if(mama != null && aux.getParientes().buscarPariente(mama) == null){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
                 aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
                 mama.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
@@ -297,7 +297,7 @@ public class Registrar_Nacimiento {
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
-            if(papa != null){
+            if(papa != null && aux.getParientes().buscarPariente(papa) == null){
                 papa.setEstadoCivil(EstadoCivil.PADRE);
                 aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
                 papa.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
@@ -307,7 +307,7 @@ public class Registrar_Nacimiento {
             
             rut.clear();
             
-            if(aux.registrarNacimiento()){
+            if(aux.registrar()){
                 if(poblacion.getPoblacion().containsKey(aux.getRut()))
                     Elementos.popMensaje("Rut ya registrado", 300, 100);
                 else{

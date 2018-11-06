@@ -75,10 +75,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/colecciones/Chileno.java</file>
-            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/Interfaces/Chile.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/colecciones/Ciudadano.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/colecciones/Documentos.java</file>
             <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/colecciones/Parientes.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/colecciones/Extranjero.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/colecciones/Poblacion.java</file>
             <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/GUI_RegistroCivil/Buscar_Ciudadano.java</file>
-            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/GUI_RegistroCivil/Buscar_Ciudadano_Parientes.java</file>
+            <file>file:/C:/Users/Jean/Documents/NetBeansProjects/RegistroCivil/src/colecciones/Oficinas.java</file>
         </group>
     </open-files>
 </project-private>

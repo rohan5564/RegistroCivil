@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
@@ -315,13 +311,15 @@ public class Buscar_Ciudadano {
                 comentarioDefuncion.setText(aux.getComentarioDefuncion());
 
                 parienteMadre.setDisable(false);
-                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.MADRE)){
+                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.MADRE)
+                        && !aux.getParientes().getPersonas().get(EstadoCivil.MADRE).isEmpty()){
                     Ciudadano mama = aux.getParientes().getPersonas().get(EstadoCivil.MADRE).get(0);
                     madre.setText(mama.mostrarIdentificador());
                 }
                 
                 parientePadre.setDisable(false);
-                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.PADRE)){
+                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.PADRE)
+                        && !aux.getParientes().getPersonas().get(EstadoCivil.PADRE).isEmpty()){
                     Ciudadano papa = aux.getParientes().getPersonas().get(EstadoCivil.PADRE).get(0);
                     padre.setText(papa.mostrarIdentificador());
                 }
@@ -481,14 +479,14 @@ public class Buscar_Ciudadano {
             }
             
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
-            if(mama != null){
+            if(mama != null && aux.getParientes().buscarPariente(mama) == null){
                 mama.setEstadoCivil(EstadoCivil.MADRE);
                 aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
                 mama.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
-            if(papa != null){
+            if(papa != null && aux.getParientes().buscarPariente(papa) == null){
                 papa.setEstadoCivil(EstadoCivil.PADRE);
                 aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
                 papa.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
@@ -644,6 +642,7 @@ public class Buscar_Ciudadano {
                 rut.clear();
             }
             else{
+                poblacion.getPoblacion().remove(ciudadano.mostrarIdentificador());
                 logReporte.appendText(
                         "["+horaActual+"] "+"rut "+rut.getText()+" eliminado\n"
                 );

@@ -1,17 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package colecciones;
 
 import Enums.EstadoCivil;
 import Interfaces.Registro_Civil;
 
-/**
- *
- * @author Jean
- */
 
 public class Chileno extends Ciudadano implements Registro_Civil{
     private String rut; //verificador 0-9 / 'K'
@@ -66,6 +58,12 @@ public class Chileno extends Ciudadano implements Registro_Civil{
         this.comuna = comuna;
     }
     
+    /**
+     * permite comprobar si un rut ingresado es valido, para ello solo puede poseer 
+     * numeros y el caracter 'K' y tambien debe cumplir con el algoritmo ingresado
+     * @param rut rut a comprobar
+     * @return true si es un rut valido, false en caso contrario
+     */
     public static boolean comprobarRut(String rut){
         rut = rut.toUpperCase();
         rut.replace(".","");
@@ -86,6 +84,12 @@ public class Chileno extends Ciudadano implements Registro_Civil{
         return false;
     }
     
+    /**
+     * comprueba que el Chileno cumpla los requisitos minimos de cuanto a su 
+     * informacion para ingresarlo al sistema
+     * @return true si cumple con los requisitos de ingreso minimos, false en 
+     * caso contrario
+     */
     @Override
     public boolean getRequisitosMinimos(){
         return super.getNombre() != null
@@ -99,22 +103,37 @@ public class Chileno extends Ciudadano implements Registro_Civil{
                 && rut != null;
     }
     
+    /**
+     * @return true si el Chileno puede registrarse, false en caso contrario
+     */
     @Override
-    public boolean registrarNacimiento(){
+    public boolean registrar(){
         return getRequisitosMinimos() && comprobarRut(rut);
     }
 
+    /**
+     * @return true si puede registrarse la defuncion, false en caso contrario
+     */
     @Override
     public boolean registrarDefuncion(){
         return super.getDefuncion()!=null;
     }
 
+    /**
+     * se rige bajo el principio de monogamia
+     * @return true si puede registrarse un nuevo matrimonio con otra persona,
+     * false en caso contrario
+     */
     @Override
     public boolean registrarMatrimonio(){
         return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null
                 || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).isEmpty();
     }
     
+    /**
+     * identificador por defecto para un chileno es el rut
+     * @return identificador unico del chileno
+     */
     @Override
     public String mostrarIdentificador(){
         return getRut();

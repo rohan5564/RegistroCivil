@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package colecciones;
 
 import Enums.EstadoCivil;
@@ -12,10 +8,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author Jean
- */
+
 public class Parientes {
     private Map<EstadoCivil, List<Ciudadano>> personas;
     
@@ -103,17 +96,23 @@ public class Parientes {
     /**
      * permite quitar un pariente de una persona y su respectivo parentesco
      * @param pariente pariente a remover 
-     * @return true si encuentra al pariente y lo remueve con exito, false en caso contrario
+     * @param estado estado a remover para el ciudadano que invoco el metodo, debe
+     * crear la variable previamente con un valor null
+     * @return 1 si encuentra al pariente y lo remueve con exito, 0 si la lista
+     * que contiene al estado civil de parentesco queda vacia, -1 si no elimina nada
      */
-    public boolean removerPariente(Ciudadano pariente){
+    public int removerPariente(Ciudadano pariente, EstadoCivil estado){
         for(Map.Entry<EstadoCivil, List<Ciudadano>> lista : personas.entrySet()){
             if(lista.getValue().remove(pariente)){
-                if(lista.getValue().isEmpty())
+                if(lista.getValue().isEmpty()){
                     pariente.getEstadoCivil().remove(lista.getKey());
-                return true;
+                    estado = lista.getKey().getRelacion();
+                    return 0;
+                }
+                return 1;
             }
         }
-        return false;
+        return -1;
     }
     
     /**

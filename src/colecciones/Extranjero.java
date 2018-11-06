@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package colecciones;
 
 import Enums.EstadoCivil;
@@ -10,10 +6,7 @@ import Enums.Visa;
 import Interfaces.Registro_Civil;
 import java.time.LocalDate;
 
-/**
- *
- * @author Jean
- */
+
 public class Extranjero extends Ciudadano implements Registro_Civil{
     /**
      * @see http://www.extranjeria.gob.cl/nacionalizacion/
@@ -43,24 +36,37 @@ public class Extranjero extends Ciudadano implements Registro_Civil{
         this.primeraVisa = primeraVisa;
     }
     
-    /*funciones a implementar en el programa
-    */
+    /**
+     * @return true si el extranjero puede registrarse, false en caso contrario
+     */
     @Override
-    public boolean registrarNacimiento(){
+    public boolean registrar(){
         return super.getRequisitosMinimos();
     }
 
+    /**
+     * @return true si puede registrarse la defuncion, false en caso contrario
+     */
     @Override
     public boolean registrarDefuncion(){
-        return super.getDefuncion()!=null;
+        return super.getDefuncion()!=null && primeraVisa != null;
     }
 
+    /**
+     * se rige bajo el principio de monogamia, del mismo modo que un chileno
+     * @return true si puede registrarse un nuevo matrimonio con otra persona,
+     * false en caso contrario
+     */
     @Override
     public boolean registrarMatrimonio(){
         return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).isEmpty()
                 || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null;
     }
     
+    /**
+     * identificador por defecto para un extranjero es el pasapoprte
+     * @return identificador unico del extranjero en chile
+     */
     @Override
     public String mostrarIdentificador(){
         return getPasaporte();

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package colecciones;
 
 import Enums.EstadoCivil;
@@ -11,17 +7,9 @@ import Enums.Sexo;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import Interfaces.Registro_Civil;
 
-//import utilidades.XMLAdaptarClases;
-
-/**
- *
- * @author Jean
- */
 
 public abstract class Ciudadano{
     
@@ -40,12 +28,12 @@ public abstract class Ciudadano{
     private ArrayList<Nacionalidad> nacionalidades;
     private Parientes parientes;
     
-    /*
-        No-Nulos: nombre, apellido, sexo, region, nacimiento, defuncion, estadoCivil
+    /************************************************************************************
+    *   No-Nulos: nombre, apellido, sexo, region, nacimiento, defuncion, estadoCivil    *
+    *                                                                                   *
+    *   nulos: direccion, defuncion, pasaporte, profesion                               *
+    ************************************************************************************/
     
-        nulos: direccion, defuncion, pasaporte, profesion
-    */
-    ////////////////////////////////////////////////////////////////////////////
     public Ciudadano() {
         nombre = null;
         apellido = null;
@@ -160,12 +148,21 @@ public abstract class Ciudadano{
         this.estadoCivil.addAll(estadoCivil);
     }
     
+    public void setEstadoCivil(EstadoCivil estadoCivil){
+        if(!this.estadoCivil.contains(estadoCivil))
+            this.estadoCivil.add(estadoCivil);
+    }
+    
     public ArrayList<Nacionalidad> getNacionalidades() {
         return nacionalidades;
     }
 
     public void setNacionalidades(ArrayList<Nacionalidad> nacionalidades) {
         this.nacionalidades.addAll(nacionalidades);
+    }
+    
+    public void setNacionalidades(Nacionalidad nacionalidad) {
+        this.nacionalidades.add(nacionalidad);
     }
     
     public Parientes getParientes() {
@@ -176,27 +173,29 @@ public abstract class Ciudadano{
         this.parientes = parientes;
     }
     
-    ////////////////////////////////////////////////////////////////////////////
-    //sobrecarga setter
-    public void setEstadoCivil(EstadoCivil estadoCivil){
-        if(!this.estadoCivil.contains(estadoCivil))
-            this.estadoCivil.add(estadoCivil);
-    }
-    
-    public void setNacionalidades(Nacionalidad nacionalidad) {
-        this.nacionalidades.add(nacionalidad);
-    }
-    
-    ////////////////////////////////////////////////////////////////////////////
-    
+    /**
+     * permite mostrar el identificador unico de un ciudadano. En caso de ser
+     * chileno corresponde al Rut, si es extranjero corresponde al pasaporte
+     * @return identificador del ciudadano
+     */
     abstract public String mostrarIdentificador();
             
+    /**
+     * permite calcular la edad del ciudadano, partiendo desde su nacimiento hasta hoy
+     * o el dia de su muerte
+     * @return edad del ciudadano
+     */
     public int getEdad(){
         if (defuncion == null)
             return Period.between(nacimiento, LocalDate.now()).getYears();
         return Period.between(nacimiento, defuncion).getYears();
     }
     
+    /**
+     * permite definir los requisitos minimos en los registro que debe poseer un ciudadano,
+     * sin importar si es chileno o extranjero
+     * @return true si cumple con los requisitos, false en caso contrario
+     */
     public boolean getRequisitosMinimos(){
         return nombre != null
                 && apellido != null
@@ -206,14 +205,37 @@ public abstract class Ciudadano{
                 && estadoCivil != null;
     }
     
+    /**
+     * permite desvincular al ciudadano de sus parientes
+     * @return true si puede completar la accion de forma exitosa, false en caso 
+     * contrario
+     */
     public boolean desvincularDeParientes(){
+        boolean resultado = false;
         for(Map.Entry<EstadoCivil, List<Ciudadano>> listaParientes : parientes.getPersonas().entrySet()){
             for(Ciudadano cadaPariente : listaParientes.getValue()){
-                if(cadaPariente.getParientes().removerPariente(this))
-                    return true;
+                EstadoCivil estadoABorrar = null;
+                int estados = cadaPariente.getParientes().removerPariente(this, estadoABorrar);
+                if(estados == 0){
+                    if(estadoABorrar==EstadoCivil.HIJO){
+                        if(cadaPariente.getEstadoCivil().contains(EstadoCivil.MADRE))
+                            cadaPariente.getEstadoCivil().remove(EstadoCivil.MADRE);
+                        else
+                            cadaPariente.getEstadoCivil().remove(EstadoCivil.PADRE);
+                    }
+                    else
+                        cadaPariente.getEstadoCivil().remove(estadoABorrar);
+                    resultado = true;
+                    break;
+                }
+                else if(estados == 1){
+                    resultado = true;
+                    break;
+                }
             }
         }
-        return false;
+        
+        return resultado;
     }
     
 }

@@ -11,7 +11,7 @@ package Interfaces;
  * @author Jean
  */
 public interface Registro_Civil {
-    boolean registrarNacimiento();
+    boolean registrar();
     boolean registrarDefuncion();
     boolean registrarMatrimonio();
 }

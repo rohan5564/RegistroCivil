@@ -1,17 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package colecciones;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- *
- * @author Jean
- */
 
 interface Documentos { //generar PDF's para imprimir
     void nacimiento();
