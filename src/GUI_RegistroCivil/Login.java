@@ -8,6 +8,7 @@ package GUI_RegistroCivil;
 
 import utilidades.ConexionBD;
 import Enums.Tema;
+import colecciones.Operador;
 import utilidades.ArchivoProperties;
 import java.beans.PropertyVetoException;
 import java.io.FileWriter;
@@ -36,6 +37,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.controlsfx.control.ToggleSwitch;
+import org.hibernate.ObjectNotFoundException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import utilidades.ConexionMySql;
 import utilidades.pdfs.CertificadoNacimiento;
 
 /**
@@ -46,7 +51,7 @@ public class Login extends Main{
 
     
     private String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH"));
-    private ConexionBD con  = new ConexionBD();
+    private Session conexion  = null;
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
     
@@ -188,13 +193,41 @@ public class Login extends Main{
             errorUsuario.setText("");
             password.setText("");
             logueo.close();
-            super.menu(logueo, con);
+            super.menu(logueo, conexion);
         });       
     }
     
     public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password, Label errorUsuario){
         ingreso.setOnAction(lambda -> {
-            desarrollo();
+            Session sesion = null;
+            Transaction transaccion = null;
+            Operador op = null;
+            try{
+                sesion = ConexionMySql.getSessionFactory().openSession();
+                transaccion = sesion.beginTransaction();
+                
+                op = (Operador)sesion.load(Operador.class, leerTexto.getText());
+                
+                if(op != null && op.getContraseña().equalsIgnoreCase(password.getText())){
+                    errorUsuario.setText("");
+                    password.setText("");
+                    super.menu(logueo, conexion);
+                    logueo.hide();
+                }
+                
+                transaccion.commit();
+                
+            }catch(ObjectNotFoundException e){
+                errorUsuario.setText("error de usuario y/o contraseña");
+                errorUsuario.setTextFill(Color.rgb(210, 39, 30));
+            }catch(Exception e){
+                e.printStackTrace();
+                if(transaccion != null)
+                    transaccion.rollback();
+            }finally{
+                if(sesion != null)
+                    sesion.close();
+            }
             /*try{
                 con.getConexion(); //celu J7, url ksweb
                 if (con.checkConexion() == false){ //<- conexion establecida?

@@ -52,6 +52,8 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import org.controlsfx.control.ToggleSwitch;
+import org.hibernate.ObjectNotFoundException;
+import org.hibernate.Session;
 import utilidades.MenuOpciones;
 
 /**
@@ -66,14 +68,14 @@ public class Pantalla_Principal{
     private TextArea logReporte = new TextArea("[" + horaActual +"]: Inicio de sesion.\n");    //reportes por pantalla
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
-    private ConexionBD con;
+    private Session conexion;
     private Poblacion poblacion = new Poblacion();
     private MenuOpciones menuOpcion = new MenuOpciones(logReporte, poblacion, prop);
    
     
-    public Pantalla_Principal(Stage logueo, ConexionBD con) {
+    public Pantalla_Principal(Stage logueo, Session conexion) {
         this.logueo = logueo;
-        this.con = con;
+        this.conexion = conexion;
     }        
 
     public void menu(){
@@ -302,18 +304,19 @@ public class Pantalla_Principal{
         Button subir = new Button("subir datos a la red");
         subir.setOnMouseClicked(lambda -> {
             try{
-                if(!con.getStatus())
+                if(conexion == null)
                     logReporte.appendText("[modo offline]\n");
                 else{
-                    con.getConexion();
-                    if(con.checkConexion())
+                    if(conexion.isConnected()){
+                        conexion.save(poblacion);
                         logReporte.appendText("[base de datos actualizada]\n");
+                    }
                     else
                         logReporte.appendText("[conexion fallida]\n");
                 }
-            }catch(PropertyVetoException e){
+            }catch(ObjectNotFoundException e){
                 e.printStackTrace();
-            }catch(SQLException e){
+            }catch(Exception e){
                 e.printStackTrace();
             }
         });
