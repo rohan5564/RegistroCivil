@@ -6,6 +6,7 @@ import java.util.List;
 
 
 public class ListadoParientes {
+    
     private List<Ciudadano> listadoParientes;
 
     public ListadoParientes(List<Ciudadano> listadoParientes) {

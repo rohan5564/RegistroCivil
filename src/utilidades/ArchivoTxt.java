@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package utilidades;
 
 import java.io.File;
@@ -11,10 +7,7 @@ import java.io.IOException;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Jean
- */
+
 public class ArchivoTxt {
     
     private Stage ventana;

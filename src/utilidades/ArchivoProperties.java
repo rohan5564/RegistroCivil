@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package utilidades;
 
 import Enums.Tema;
@@ -16,10 +12,7 @@ import java.util.Properties;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
-/**
- *
- * @author Jean
- */
+
 public class ArchivoProperties {
     final private String actual = new String("");
     final private String claro = new String("Resources/tema.css");

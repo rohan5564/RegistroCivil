@@ -3,33 +3,15 @@ package colecciones;
  
 import java.sql.Date;
 import java.time.LocalDate;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 
-@Entity
-@Table(name = "usuarios")
 public class Operador {
-    
-    @Id
-    @Column(name = "usuario")
+
     private String usuario;
-    
-    @Column(name = "contraseña")
     private String contraseña;
-    
-    @Column(name = "nombre")
     private String nombre;
-    
-    @Column(name = "apellido")
     private String apellido;
-    
-    @Column(name = "rut")
     private String rut;
-    
-    @Column(name = "fechaNacimiento")
     private Date nacimiento;
             
             
@@ -93,6 +75,4 @@ public class Operador {
         this.nacimiento = nacimiento;
     }
 
-    
-    
 }

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package utilidades;
 
 import GUI_RegistroCivil.Buscar_Ciudadano;
@@ -17,10 +13,7 @@ import java.time.format.DateTimeFormatter;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 
-/**
- *
- * @author Jean
- */
+
 public class MenuOpciones {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;

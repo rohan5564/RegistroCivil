@@ -1,18 +1,13 @@
 
 package colecciones;
 
-import Enums.EstadoCivil;
 import java.util.HashMap;
 import java.util.Map;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import utilidades.ConexionBD;
 
-@Table(name = "poblacion")
+
 public class Poblacion {
     
-    @OneToMany(mappedBy = "poblacion", cascade = CascadeType.ALL)
     private Map<String, Ciudadano> poblacion;
 
     public Poblacion() {
@@ -46,11 +41,25 @@ public class Poblacion {
             return ciudadano.getParientes().removerParientes() && removerExtranjero((Extranjero)ciudadano);
     }
     
+    /**
+     * 
+     * @param chileno
+     * @return 
+     */
     private boolean removerChileno(Chileno chileno){
         return chileno.getParientes().estaVacia() && poblacion.remove(chileno.getRut())!=null;
     }
     
+    /**
+     * 
+     * @param extranjero
+     * @return 
+     */
     private boolean removerExtranjero(Extranjero extranjero){
         return extranjero.getParientes().estaVacia() && poblacion.remove(extranjero.getPasaporte())!=null;
+    }
+    
+    public static void cargarBD(ConexionBD conexion){
+        cargarlos
     }
 }

@@ -3,26 +3,13 @@ package colecciones;
 
 import Enums.EstadoCivil;
 import Interfaces.Registro_Civil;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 
-@Entity(name = "chileno")
 public class Chileno extends Ciudadano implements Registro_Civil{
-    @Id
-    @Column(name = "rut")
+    
     private String rut; //verificador 0-9 / 'K'
-    
-    @Column(name = "numero de documento", nullable = true)
     private Integer numeroDeDocumento; //PERMITE NULL
-    
-    @Column(name = "direccion", nullable = true)
     private String direccion; //PERMITE NULL
-    
-    @Column(name = "region")
     private String region;
-    
-    @Column(name = "communa")
     private String comuna;
 
     public Chileno(){

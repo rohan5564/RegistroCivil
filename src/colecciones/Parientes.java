@@ -6,16 +6,10 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 
 
-@Embeddable
 public class Parientes {
     
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Map<EstadoCivil, ListadoParientes> personas;
     
     /**

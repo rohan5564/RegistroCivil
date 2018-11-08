@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package GUI_RegistroCivil;
 
 import utilidades.ConexionBD;
 import Enums.Tema;
-import colecciones.Operador;
 import utilidades.ArchivoProperties;
 import java.beans.PropertyVetoException;
 import java.io.FileWriter;
@@ -22,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -37,21 +30,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.controlsfx.control.ToggleSwitch;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import utilidades.ConexionMySql;
-import utilidades.pdfs.CertificadoNacimiento;
 
-/**
- *
- * @author Jean
- */
+
+
 public class Login extends Main{
 
     
     private String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH"));
-    private Session conexion  = null;
+    private ConexionBD conexion  = null;
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
     
@@ -199,46 +185,17 @@ public class Login extends Main{
     
     public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password, Label errorUsuario){
         ingreso.setOnAction(lambda -> {
-            Session sesion = null;
-            Transaction transaccion = null;
-            Operador op = null;
             try{
-                sesion = ConexionMySql.getSessionFactory().openSession();
-                transaccion = sesion.beginTransaction();
-                
-                op = (Operador)sesion.load(Operador.class, leerTexto.getText());
-                
-                if(op != null && op.getContraseña().equalsIgnoreCase(password.getText())){
-                    errorUsuario.setText("");
-                    password.setText("");
-                    super.menu(logueo, op);
-                    logueo.hide();
-                }
-                
-                transaccion.commit();
-                
-            }catch(ObjectNotFoundException e){
-                errorUsuario.setText("error de usuario y/o contraseña");
-                errorUsuario.setTextFill(Color.rgb(210, 39, 30));
-            }catch(Exception e){
-                e.printStackTrace();
-                if(transaccion != null)
-                    transaccion.rollback();
-            }finally{
-                if(sesion != null)
-                    sesion.close();
-            }
-            /*try{
-                con.getConexion(); //celu J7, url ksweb
-                if (con.checkConexion() == false){ //<- conexion establecida?
+                conexion.getConexion("localhost/datos", "root", "");
+                if (conexion.checkConexion() == false){ //conexion establecida?
                     errorUsuario.setText("error de conexion");
                     errorUsuario.setTextFill(Color.rgb(210, 39, 30));
                 }
                 else {
-                    if (con.login(leerTexto.getText(),password.getText())){
+                    if (conexion.login(leerTexto.getText(),password.getText())){
                         errorUsuario.setText("");
                         password.setText("");
-                        super.menu(logueo, con);
+                        super.menu(logueo, conexion);
                         logueo.hide();
                     }
                     else {
@@ -251,7 +208,7 @@ public class Login extends Main{
             }
             catch(SQLException e){
                 e.printStackTrace();
-            }*/
+            }
             //limpiar casillas con la entrada de texto 
             leerTexto.clear();
             password.clear(); 

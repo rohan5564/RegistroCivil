@@ -9,66 +9,22 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
 
-@MappedSuperclass
+
 public abstract class Ciudadano{
     
-    @Column(name = "nombre")
     private String nombre;
-    
-    @Column(name = "apellido")
     private String apellido; 
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "sexo")
     private Sexo sexo;
-    
-    @Column(name = "fecha de nacimiento")
     private LocalDate nacimiento; //yo.setNacimiento(LocalDate.of(1996,8,7))
-    
-    @Column(name = "hora de nacimiento")
     private String horaNacimiento;
-    
-    @Column(name = "comentario de nacimiento", nullable = true)
     private String comentarioNacimiento; //PERMITE NULL
-    
-    @Column(name = "fecha de defuncion", nullable = true)
-    private LocalDate defuncion; //PERMITE NULL
-    
-    @Column(name = "hora de defuncion", nullable = true)
+    private LocalDate defuncion; //PERMITE NULL)
     private String horaDefuncion; //PERMITE NULL
-    
-    @Column(name = "comentario de defuncion", nullable = true)
     private String comentarioDefuncion; //PERMITE NULL
-    
-    @Column(name = "profesion", nullable = true)
     private String profesion; //PERMITE NULL
-    
-    @ElementCollection(targetClass = EstadoCivil.class)
-    /*@OneToMany(
-        mappedBy = "estados civiles",
-        cascade = CascadeType.ALL
-    )*/
-    @Column(name = "estados civiles")
     private List<EstadoCivil> estadoCivil;
-    
-    @ElementCollection(targetClass = Nacionalidad.class)
-    /*@OneToMany(
-        mappedBy = "nacionalidades",
-        cascade = CascadeType.ALL
-    )*/
-    @Column(name = "nacionalidades")
     private List<Nacionalidad> nacionalidades;
-    
-    @Embedded
     private Parientes parientes;
     
     /************************************************************************************

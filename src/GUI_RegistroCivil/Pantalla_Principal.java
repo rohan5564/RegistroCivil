@@ -3,7 +3,6 @@ package GUI_RegistroCivil;
 
 import utilidades.ArchivoTxt;
 import Enums.Tema;
-import colecciones.Operador;
 import utilidades.ArchivoProperties;
 import colecciones.Poblacion;
 import java.io.File;
@@ -46,10 +45,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import org.controlsfx.control.ToggleSwitch;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import utilidades.ConexionMySql;
+import utilidades.ConexionBD;
 import utilidades.MenuOpciones;
 
 
@@ -60,19 +56,20 @@ public class Pantalla_Principal{
     private TextArea logReporte = new TextArea("[" + horaActual +"]: Inicio de sesion.\n");    //reportes por pantalla
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
-    private Operador operador;
+    private ConexionBD conexion;
     private Poblacion poblacion = new Poblacion();
     private MenuOpciones menuOpcion = new MenuOpciones(logReporte, poblacion, prop);
    
     
-    public Pantalla_Principal(Stage logueo, Operador operador) {
+    public Pantalla_Principal(Stage logueo, ConexionBD conexion) {
         this.logueo = logueo;
-        this.operador = operador;
+        this.conexion = conexion;
     }        
 
     public void menu(){
         prop.crear();
         Elementos.crearDatosIniciales(poblacion);
+        Poblacion.cargarBD(conexion);
         Stage menu = new Stage();
         menu.initOwner(null);
         if(prop.getProp().getProperty("tamanho_por_defecto").equals("verdad")){
@@ -309,25 +306,7 @@ public class Pantalla_Principal{
             }catch(Exception e){
                 e.printStackTrace();
             }*/
-            Session sesion = null;
-            Transaction transaccion = null;
-            try{
-                sesion = ConexionMySql.getSessionFactory().openSession();
-                transaccion = sesion.beginTransaction();
-                
-                if(sesion.get(Operador.class, operador.getUsuario()) != null){
-                    sesion.save(poblacion);
-                }
-                
-                transaccion.commit();
-            }catch(Exception e){
-                e.printStackTrace();
-                if(transaccion != null)
-                    transaccion.rollback();
-            }finally{
-                if(sesion != null)
-                    sesion.close();
-            }
+            
         });
         
         hbox1.getChildren().addAll(guardar, subir);

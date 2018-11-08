@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-//package AppUtilidades;
+
 package utilidades;
 
 import java.sql.Connection;
@@ -14,11 +9,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.sql.PreparedStatement;
 
 
-/**
- *
- * @author Jean
- */
-
 public class ConexionBD{
     private static ComboPooledDataSource conexion;
     private boolean status;
@@ -27,13 +17,13 @@ public class ConexionBD{
         conexion = null;
         status = false;
     }
+        
+    public boolean getStatus(){
+        return status;
+    }
     
     public ComboPooledDataSource getConexion()throws PropertyVetoException{
         return getConexion("192.168.0.104:3306/registro civil POO", "proyectoPOO", "admin");
-    }
-    
-    public boolean getStatus(){
-        return status;
     }
     
     public static ComboPooledDataSource getConexion(String urlBD, String userBD, String passBD) throws PropertyVetoException{
@@ -105,4 +95,5 @@ public class ConexionBD{
         }
         return status;
     }
+    
 }

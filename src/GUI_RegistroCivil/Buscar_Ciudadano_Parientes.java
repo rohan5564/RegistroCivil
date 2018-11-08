@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
@@ -24,10 +20,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import utilidades.ArchivoProperties;
 
-/**
- *
- * @author Jean
- */
+
 public class Buscar_Ciudadano_Parientes {
     private Ciudadano ciudadano;
     private ArchivoProperties prop;
