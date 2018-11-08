@@ -1,20 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package GUI_RegistroCivil;
 
-import utilidades.ConexionBD;
 import utilidades.ArchivoTxt;
 import Enums.Tema;
+import colecciones.Operador;
 import utilidades.ArchivoProperties;
 import colecciones.Poblacion;
-import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -54,12 +48,10 @@ import javafx.util.Duration;
 import org.controlsfx.control.ToggleSwitch;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
+import utilidades.ConexionMySql;
 import utilidades.MenuOpciones;
 
-/**
- *
- * @author Jean
- */
 
 public class Pantalla_Principal{
     
@@ -68,14 +60,14 @@ public class Pantalla_Principal{
     private TextArea logReporte = new TextArea("[" + horaActual +"]: Inicio de sesion.\n");    //reportes por pantalla
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
-    private Session conexion;
+    private Operador operador;
     private Poblacion poblacion = new Poblacion();
     private MenuOpciones menuOpcion = new MenuOpciones(logReporte, poblacion, prop);
    
     
-    public Pantalla_Principal(Stage logueo, Session conexion) {
+    public Pantalla_Principal(Stage logueo, Operador operador) {
         this.logueo = logueo;
-        this.conexion = conexion;
+        this.operador = operador;
     }        
 
     public void menu(){
@@ -99,8 +91,6 @@ public class Pantalla_Principal{
         menuPpal.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
         grid.setHgap(100);
         grid.setVgap(100);       
-        
-        //grid.setGridLinesVisible(true);
         
         Label logTitulo = new Label("Historial");
         logTitulo.setFont(Font.font("monospaced", FontWeight.SEMI_BOLD, 28));
@@ -303,7 +293,7 @@ public class Pantalla_Principal{
         
         Button subir = new Button("subir datos a la red");
         subir.setOnMouseClicked(lambda -> {
-            try{
+            /*try{
                 if(conexion == null)
                     logReporte.appendText("[modo offline]\n");
                 else{
@@ -318,6 +308,25 @@ public class Pantalla_Principal{
                 e.printStackTrace();
             }catch(Exception e){
                 e.printStackTrace();
+            }*/
+            Session sesion = null;
+            Transaction transaccion = null;
+            try{
+                sesion = ConexionMySql.getSessionFactory().openSession();
+                transaccion = sesion.beginTransaction();
+                
+                if(sesion.get(Operador.class, operador.getUsuario()) != null){
+                    sesion.save(poblacion);
+                }
+                
+                transaccion.commit();
+            }catch(Exception e){
+                e.printStackTrace();
+                if(transaccion != null)
+                    transaccion.rollback();
+            }finally{
+                if(sesion != null)
+                    sesion.close();
             }
         });
         

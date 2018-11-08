@@ -1,6 +1,7 @@
 
 package GUI_RegistroCivil;
 
+import colecciones.Operador;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.stage.Stage;
@@ -24,8 +25,8 @@ public class Main extends Application {
         launch(args);
     }
     
-    public void menu(Stage logueo, Session conexion){
-        Pantalla_Principal app = new Pantalla_Principal(logueo, conexion);
+    public void menu(Stage logueo, Operador operador){
+        Pantalla_Principal app = new Pantalla_Principal(logueo, operador);
         app.menu();
     }
     

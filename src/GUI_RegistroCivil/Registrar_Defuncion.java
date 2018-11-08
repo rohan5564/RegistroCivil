@@ -12,7 +12,6 @@ import colecciones.Poblacion;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 import javafx.beans.binding.BooleanBinding;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -165,7 +164,7 @@ public class Registrar_Defuncion {
             aux.setHoraDefuncion(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             aux.setComentarioDefuncion(comentario.getText());
             if(aux.getParientes().buscarListaParentesco(EstadoCivil.CASADO)!=null){
-                Ciudadano conyuge = aux.getParientes().buscarListaParentesco(EstadoCivil.CASADO).get(0);
+                Ciudadano conyuge = aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.CASADO, 0);
                 conyuge.setEstadoCivil(EstadoCivil.VIUDO);
                 conyuge.getParientes().agregarPariente(aux, EstadoCivil.VIUDO);
             }

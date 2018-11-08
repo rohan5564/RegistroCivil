@@ -311,21 +311,20 @@ public class Buscar_Ciudadano {
                 comentarioDefuncion.setText(aux.getComentarioDefuncion());
 
                 parienteMadre.setDisable(false);
-                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.MADRE)
-                        && !aux.getParientes().getPersonas().get(EstadoCivil.MADRE).isEmpty()){
-                    Ciudadano mama = aux.getParientes().getPersonas().get(EstadoCivil.MADRE).get(0);
+                if(aux.getParientes().existeEstado(EstadoCivil.MADRE)
+                        && !aux.getParientes().estadoEstaVacio(EstadoCivil.MADRE)){
+                    Ciudadano mama = aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.MADRE, 0);
                     madre.setText(mama.mostrarIdentificador());
                 }
                 
                 parientePadre.setDisable(false);
-                if(aux.getParientes().getPersonas().containsKey(EstadoCivil.PADRE)
-                        && !aux.getParientes().getPersonas().get(EstadoCivil.PADRE).isEmpty()){
-                    Ciudadano papa = aux.getParientes().getPersonas().get(EstadoCivil.PADRE).get(0);
+                if(aux.getParientes().existeEstado(EstadoCivil.PADRE)
+                        && !aux.getParientes().estadoEstaVacio(EstadoCivil.PADRE)){
+                    Ciudadano papa = aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.PADRE, 0);
                     padre.setText(papa.mostrarIdentificador());
                 }
                 
-                Map<?,?> listaPersonas = aux.getParientes().getPersonas();
-                if(listaPersonas == null || listaPersonas.isEmpty())
+                if(aux.getParientes().estaVacia())
                     parientes.setDisable(true);
                 else
                     parientes.setDisable(false);

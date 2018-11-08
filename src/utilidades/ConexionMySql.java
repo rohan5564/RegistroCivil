@@ -1,14 +1,21 @@
 
 package utilidades;
 
+import colecciones.Chileno;
+import colecciones.Ciudadano;
+import colecciones.Extranjero;
 import colecciones.Operador;
+import colecciones.Poblacion;
 import java.util.HashMap;
 import java.util.Map;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 
 
@@ -42,7 +49,14 @@ public class ConexionMySql {
                 registryBuilder.applySettings(settings);
             
                 registry = registryBuilder.build();
-                MetadataSources sources = new MetadataSources(registry).addAnnotatedClass(Operador.class);
+                MetadataSources sources = new MetadataSources(registry);
+                sources.addAnnotatedClass(Operador.class);
+                sources.addAnnotatedClass(Poblacion.class);
+                sources.addAnnotatedClass(Ciudadano.class);
+                sources.addAnnotatedClass(Chileno.class);
+                sources.addAnnotatedClass(Extranjero.class);
+                
+                
                 Metadata metadata = sources.getMetadataBuilder().build();
                 sessionFactory = metadata.getSessionFactoryBuilder().build();
             } catch (Exception e) {
@@ -55,9 +69,18 @@ public class ConexionMySql {
           return sessionFactory;
     }
 
-    public static void shutdown() {
+    public static void desconectar() {
         if (registry != null) {
             StandardServiceRegistryBuilder.destroy(registry);
+        }
+    }
+    
+    public static void actualizar(Poblacion p){
+        if(sessionFactory.isOpen()){
+            Session s = sessionFactory.getSessionFactory().openSession();
+            Transaction f = s.beginTransaction();
+            s.save(p);
+            f.commit();
         }
     }
 }

@@ -9,23 +9,66 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 
-
+@MappedSuperclass
 public abstract class Ciudadano{
     
+    @Column(name = "nombre")
     private String nombre;
+    
+    @Column(name = "apellido")
     private String apellido; 
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sexo")
     private Sexo sexo;
+    
+    @Column(name = "fecha de nacimiento")
     private LocalDate nacimiento; //yo.setNacimiento(LocalDate.of(1996,8,7))
+    
+    @Column(name = "hora de nacimiento")
     private String horaNacimiento;
+    
+    @Column(name = "comentario de nacimiento", nullable = true)
     private String comentarioNacimiento; //PERMITE NULL
+    
+    @Column(name = "fecha de defuncion", nullable = true)
     private LocalDate defuncion; //PERMITE NULL
+    
+    @Column(name = "hora de defuncion", nullable = true)
     private String horaDefuncion; //PERMITE NULL
+    
+    @Column(name = "comentario de defuncion", nullable = true)
     private String comentarioDefuncion; //PERMITE NULL
-    private String pasaporte; //PERMITE NULL
+    
+    @Column(name = "profesion", nullable = true)
     private String profesion; //PERMITE NULL
-    private ArrayList<EstadoCivil> estadoCivil;
-    private ArrayList<Nacionalidad> nacionalidades;
+    
+    @ElementCollection(targetClass = EstadoCivil.class)
+    /*@OneToMany(
+        mappedBy = "estados civiles",
+        cascade = CascadeType.ALL
+    )*/
+    @Column(name = "estados civiles")
+    private List<EstadoCivil> estadoCivil;
+    
+    @ElementCollection(targetClass = Nacionalidad.class)
+    /*@OneToMany(
+        mappedBy = "nacionalidades",
+        cascade = CascadeType.ALL
+    )*/
+    @Column(name = "nacionalidades")
+    private List<Nacionalidad> nacionalidades;
+    
+    @Embedded
     private Parientes parientes;
     
     /************************************************************************************
@@ -44,7 +87,6 @@ public abstract class Ciudadano{
         defuncion = null;
         horaDefuncion = null;
         comentarioDefuncion = null;
-        pasaporte = null;
         profesion = null;
         estadoCivil = new ArrayList<>();
         nacionalidades = new ArrayList<>();
@@ -123,14 +165,6 @@ public abstract class Ciudadano{
         this.comentarioDefuncion = comentarioDefuncion;
     }
     
-    public String getPasaporte(){
-        return pasaporte;
-    }
-    
-    public void setPasaporte(String pasaporte){
-        this.pasaporte = pasaporte.toUpperCase();
-    }
-    
     public String getProfesion() {
         return profesion;
     }
@@ -140,11 +174,11 @@ public abstract class Ciudadano{
     }
     
     
-    public ArrayList<EstadoCivil> getEstadoCivil(){
+    public List<EstadoCivil> getEstadoCivil(){
         return estadoCivil;
     }
     
-    public void setEstadoCivil(ArrayList<EstadoCivil> estadoCivil){
+    public void setEstadoCivil(List<EstadoCivil> estadoCivil){
         this.estadoCivil.addAll(estadoCivil);
     }
     
@@ -153,11 +187,11 @@ public abstract class Ciudadano{
             this.estadoCivil.add(estadoCivil);
     }
     
-    public ArrayList<Nacionalidad> getNacionalidades() {
+    public List<Nacionalidad> getNacionalidades() {
         return nacionalidades;
     }
 
-    public void setNacionalidades(ArrayList<Nacionalidad> nacionalidades) {
+    public void setNacionalidades(List<Nacionalidad> nacionalidades) {
         this.nacionalidades.addAll(nacionalidades);
     }
     
@@ -212,8 +246,8 @@ public abstract class Ciudadano{
      */
     public boolean desvincularDeParientes(){
         boolean resultado = false;
-        for(Map.Entry<EstadoCivil, List<Ciudadano>> listaParientes : parientes.getPersonas().entrySet()){
-            for(Ciudadano cadaPariente : listaParientes.getValue()){
+        for(Map.Entry<EstadoCivil, ListadoParientes> listaParientes : parientes.getPersonas().entrySet()){
+            for(Ciudadano cadaPariente : listaParientes.getValue().getListadoParientes()){
                 EstadoCivil estadoABorrar = null;
                 int estados = cadaPariente.getParientes().removerPariente(this, estadoABorrar);
                 if(estados == 0){

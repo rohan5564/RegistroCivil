@@ -3,19 +3,32 @@ package colecciones;
 
 import Enums.EstadoCivil;
 import Interfaces.Registro_Civil;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-
+@Entity(name = "chileno")
 public class Chileno extends Ciudadano implements Registro_Civil{
+    @Id
+    @Column(name = "rut")
     private String rut; //verificador 0-9 / 'K'
-    private int numeroDeDocumento; //PERMITE 0
+    
+    @Column(name = "numero de documento", nullable = true)
+    private Integer numeroDeDocumento; //PERMITE NULL
+    
+    @Column(name = "direccion", nullable = true)
     private String direccion; //PERMITE NULL
+    
+    @Column(name = "region")
     private String region;
+    
+    @Column(name = "communa")
     private String comuna;
 
     public Chileno(){
         super();
         rut = null;
-        numeroDeDocumento = 0;
+        numeroDeDocumento = null;
     }    
     
     public String getRut(){
@@ -127,7 +140,7 @@ public class Chileno extends Ciudadano implements Registro_Civil{
     @Override
     public boolean registrarMatrimonio(){
         return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null
-                || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).isEmpty();
+                || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).estaVacia();
     }
     
     /**

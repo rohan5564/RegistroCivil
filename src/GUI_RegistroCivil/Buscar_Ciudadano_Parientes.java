@@ -106,7 +106,7 @@ public class Buscar_Ciudadano_Parientes {
         List<Listado> mapaDeParientes = new LinkedList<>();
         //Map<EstadoCivil, Ciudadano> mapaDeParientes = new EnumMap<>(EstadoCivil.class);
         ciudadano.getParientes().getPersonas().forEach((llave, valor) -> {
-            valor.forEach(persona -> mapaDeParientes.add(new Listado(llave, persona)));
+            valor.getListadoParientes().forEach(persona -> mapaDeParientes.add(new Listado(llave, persona)));
         });
         
         ObservableList<Listado> listadoParientes = 

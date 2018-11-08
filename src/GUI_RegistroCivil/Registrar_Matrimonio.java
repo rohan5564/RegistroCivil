@@ -8,6 +8,7 @@ package GUI_RegistroCivil;
 import Enums.EstadoCivil;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
+import colecciones.ListadoParientes;
 import colecciones.Poblacion;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -97,9 +98,9 @@ public class Registrar_Matrimonio {
             }
             else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
                     && poblacion.getPoblacion().get(n).getDefuncion()==null){
-                List<Ciudadano> listEsposa = 
+                ListadoParientes listEsposa = 
                         poblacion.getPoblacion().get(n).getParientes().buscarListaParentesco(EstadoCivil.CASADO);
-                if(listEsposa==null || listEsposa.isEmpty()){
+                if(!listEsposa.existe() || listEsposa.estaVacia()){
                     markEsposo.setVisible(false);
                     checkEsposo.setVisible(true);
                 }
@@ -169,9 +170,9 @@ public class Registrar_Matrimonio {
             }
             else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
                     && poblacion.getPoblacion().get(n).getDefuncion()==null){
-                List<Ciudadano> listEsposo = 
+                ListadoParientes listEsposo = 
                         poblacion.getPoblacion().get(n).getParientes().buscarListaParentesco(EstadoCivil.CASADO);
-                if(listEsposo==null || listEsposo.isEmpty()){
+                if(!listEsposo.existe() || listEsposo.estaVacia()){
                     markEsposa.setVisible(false);
                     checkEsposa.setVisible(true);
                 }

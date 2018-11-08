@@ -2,15 +2,21 @@
 package colecciones;
 
 import Enums.EstadoCivil;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
 
+@Embeddable
 public class Parientes {
-    private Map<EstadoCivil, List<Ciudadano>> personas;
+    
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Map<EstadoCivil, ListadoParientes> personas;
     
     /**
      * crea un nuevo mapa enumerado por estados civiles
@@ -19,22 +25,53 @@ public class Parientes {
         personas = new EnumMap<>(EstadoCivil.class);
     }
 
+    public Map<EstadoCivil, ListadoParientes> getPersonas() {
+        return personas;
+    }
+
+    public void setPersonas(Map<EstadoCivil, ListadoParientes> personas) {
+        this.personas = personas;
+    }
+
+    public Ciudadano ObtenerCiudadanoPorEstado(EstadoCivil estado, int index){
+        return personas.get(estado).obtenerCiudadano(index);
+    }
+    
+    /**
+     * permite mostrar si existe algun listado de parientes por un determinado estado
+     * civil
+     * @param estado estado civil a buscar
+     * @return true si el estado no registra un listado de parientes
+     */
+    public boolean estadoEstaVacio(EstadoCivil estado){
+        return personas.get(estado).estaVacia();
+    }
+            
+    /**
+     * permite mostrar si existe o no un estado civil dentro de la coleccion de
+     * parientes
+     * @param estado estado civil a buscar
+     * @return true si hay registro del estado civil, false en caso contrario
+     */
+    public boolean existeEstado(EstadoCivil estado){
+        return personas.containsKey(estado);
+    }
+    
     /**
      * inicializa el mapa enumerado por estados civiles
      * @param Parientes mapa de parientes
      */
-    public Parientes(Map<EstadoCivil, List<Ciudadano>> Parientes) {
+    public Parientes(Map<EstadoCivil, ListadoParientes> Parientes) {
         this.personas = Parientes;
     }
 
-    /**
-     * @return mapa enumerado por estados civiles, que por cada estado contiene
-     * una lista de ciudadanos con un mismo parentesco con el individuo
-     */
-    public Map<EstadoCivil, List<Ciudadano>> getPersonas() {
-        return personas;
-    }
     
+    /**
+     * @return true si no hay parientes, false en caso contrario
+     */
+    public boolean estaVacia(){
+        return personas == null || personas.isEmpty();
+    }
     /**
      * permite buscar un listado de personas que registren un parentesco especifico
      * con el ciudadano
@@ -42,10 +79,21 @@ public class Parientes {
      * @since Entrega B
      * @return lista de parientes
      */
-    public List<Ciudadano> buscarListaParentesco(EstadoCivil estado){
+    public ListadoParientes buscarListaParentesco(EstadoCivil estado){
         return personas.get(estado);
     }
     
+    /**
+     * recorre el listado de parientes para contar el total
+     * @return total de parientes
+     */
+    public int totalParientes(){
+        int total = 0;
+        for(Map.Entry<EstadoCivil, ListadoParientes> lista : personas.entrySet()){
+            total+= lista.getValue().totalPorParentesco();
+        }
+        return total;
+    }
     /**
      * permite encontrar el parentesco entre el ciudadano escojido y el ciudadano
      * ingresado por parametro. Por ejemplo, si "persona1" es padre y "persona2" es hijo,
@@ -62,11 +110,9 @@ public class Parientes {
      * @return estado civil del ciudadano respecto a la persona ingresada por parametro
      */
     public EstadoCivil buscarPariente(Ciudadano persona){
-        for(Map.Entry<EstadoCivil, List<Ciudadano>> lista : personas.entrySet()){
-            for(Ciudadano pariente : lista.getValue()){
-                if(pariente.equals(persona))
-                    return lista.getKey();
-            }
+        for(Map.Entry<EstadoCivil, ListadoParientes> lista : personas.entrySet()){
+            if(lista.getValue().contienePersona(persona))
+                return lista.getKey();
         }                
         return null;
     }
@@ -84,12 +130,12 @@ public class Parientes {
     public boolean agregarPariente(Ciudadano pariente, EstadoCivil estado){
         if(personas.containsKey(estado)){
             if((estado == EstadoCivil.CASADO || estado == EstadoCivil.MADRE || estado == EstadoCivil.PADRE)
-                    && personas.get(estado).size()>1)
+                    && personas.get(estado).totalPorParentesco()>1)
                 return false;
-            personas.get(estado).add(pariente);
+            personas.get(estado).agregar(pariente);
         }
         else
-            personas.put(estado, new ArrayList(Arrays.asList(pariente)));
+            personas.put(estado, new ListadoParientes(Arrays.asList(pariente)));
         return true;
     }
     
@@ -102,9 +148,9 @@ public class Parientes {
      * que contiene al estado civil de parentesco queda vacia, -1 si no elimina nada
      */
     public int removerPariente(Ciudadano pariente, EstadoCivil estado){
-        for(Map.Entry<EstadoCivil, List<Ciudadano>> lista : personas.entrySet()){
-            if(lista.getValue().remove(pariente)){
-                if(lista.getValue().isEmpty()){
+        for(Map.Entry<EstadoCivil, ListadoParientes> lista : personas.entrySet()){
+            if(lista.getValue().borrar(pariente)){
+                if(lista.getValue().estaVacia()){
                     pariente.getEstadoCivil().remove(lista.getKey());
                     estado = lista.getKey().getRelacion();
                     return 0;
@@ -121,9 +167,7 @@ public class Parientes {
      */
     public boolean removerParientes(){
         personas.forEach((estado, lista) -> {
-            lista.forEach(persona -> {
-                persona.getEstadoCivil().remove(estado);
-            });
+            lista.removerEstadoATodos(estado);
         });
         personas.clear();        
         return personas.isEmpty();
@@ -139,15 +183,15 @@ public class Parientes {
      */
     public boolean cambiarParentesco(Ciudadano persona, EstadoCivil antiguo, EstadoCivil nuevo){
         //la persona debe estar registrada en el mapa de parientes con el estado civil indicado
-        if(!personas.containsKey(antiguo) && !personas.get(antiguo).contains(persona))
+        if(!personas.containsKey(antiguo) && !personas.get(antiguo).contienePersona(persona))
             return false;
         
         if(personas.containsKey(nuevo)){
-            personas.get(antiguo).remove(persona);
-            personas.get(nuevo).add(persona);
+            personas.get(antiguo).borrar(persona);
+            personas.get(nuevo).agregar(persona);
         }
         else
-            personas.put(nuevo, new ArrayList<>(Arrays.asList(persona)));
+            personas.put(nuevo, new ListadoParientes(Arrays.asList(persona)));
         return true;
     }
     
@@ -161,15 +205,15 @@ public class Parientes {
      */
     public boolean cambiarParentesco(List<Ciudadano> listaPersonas, EstadoCivil antiguo, EstadoCivil nuevo){
         //las personas deben estar registradas en el mapa de parientes con el estado civil indicado
-        if(!personas.containsKey(antiguo) && !personas.get(antiguo).containsAll(listaPersonas))
+        if(!personas.containsKey(antiguo) && !personas.get(antiguo).contieneListadoPersonas(listaPersonas))
             return false;
         
         if(personas.containsKey(nuevo)){
-            personas.get(antiguo).removeAll(listaPersonas);
-            personas.get(nuevo).addAll(listaPersonas);
+            personas.get(antiguo).borrarListado(listaPersonas);
+            personas.get(nuevo).agregarListado(listaPersonas);
         }
         else
-            personas.put(nuevo, new ArrayList<>(listaPersonas));
+            personas.put(nuevo, new ListadoParientes(listaPersonas));
         return true;
     }
     

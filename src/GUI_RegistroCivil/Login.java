@@ -193,7 +193,7 @@ public class Login extends Main{
             errorUsuario.setText("");
             password.setText("");
             logueo.close();
-            super.menu(logueo, conexion);
+            super.menu(logueo, null);
         });       
     }
     
@@ -211,7 +211,7 @@ public class Login extends Main{
                 if(op != null && op.getContraseña().equalsIgnoreCase(password.getText())){
                     errorUsuario.setText("");
                     password.setText("");
-                    super.menu(logueo, conexion);
+                    super.menu(logueo, op);
                     logueo.hide();
                 }
                 

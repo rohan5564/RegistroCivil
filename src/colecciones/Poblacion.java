@@ -1,11 +1,18 @@
 
 package colecciones;
 
+import Enums.EstadoCivil;
 import java.util.HashMap;
 import java.util.Map;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-
+@Table(name = "poblacion")
 public class Poblacion {
+    
+    @OneToMany(mappedBy = "poblacion", cascade = CascadeType.ALL)
     private Map<String, Ciudadano> poblacion;
 
     public Poblacion() {
@@ -32,28 +39,18 @@ public class Poblacion {
     public boolean removerCiudadano(Ciudadano ciudadano){
         if(!poblacion.containsValue(ciudadano))
             return false;
-        ciudadano.getParientes().getPersonas().forEach((estado, lista) -> {
-            lista.forEach(persona -> {
-                persona.getEstadoCivil().remove(estado);
-            });
-        });
-        ciudadano.getParientes().getPersonas().clear();
         
         if(ciudadano instanceof Chileno)
-            return removerChileno((Chileno)ciudadano);
+            return ciudadano.getParientes().removerParientes() && removerChileno((Chileno)ciudadano);
         else 
-            return removerExtranjero((Extranjero)ciudadano);
+            return ciudadano.getParientes().removerParientes() && removerExtranjero((Extranjero)ciudadano);
     }
     
     private boolean removerChileno(Chileno chileno){
-        return (chileno.getParientes().getPersonas() == null
-                || chileno.getParientes().getPersonas().isEmpty())
-                && poblacion.remove(chileno.getRut())!=null;
+        return chileno.getParientes().estaVacia() && poblacion.remove(chileno.getRut())!=null;
     }
     
     private boolean removerExtranjero(Extranjero extranjero){
-        return (extranjero.getParientes().getPersonas() == null
-                || extranjero.getParientes().getPersonas().isEmpty())
-                && poblacion.remove(extranjero.getPasaporte())!=null;
+        return extranjero.getParientes().estaVacia() && poblacion.remove(extranjero.getPasaporte())!=null;
     }
 }

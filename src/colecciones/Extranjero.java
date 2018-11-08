@@ -5,19 +5,43 @@ import Enums.EstadoCivil;
 import Enums.Visa;
 import Interfaces.Registro_Civil;
 import java.time.LocalDate;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 
-
+@Entity(name = "extranjero")
 public class Extranjero extends Ciudadano implements Registro_Civil{
     /**
      * @see http://www.extranjeria.gob.cl/nacionalizacion/
      */    
+    
+    @Id
+    @Column(name = "pasaporte")
+    private String pasaporte;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo de visa")
     private Visa tipoDeVisa;
+    
+    @Column(name = "primera visa")
     private LocalDate primeraVisa; //yo.setPrimeraVisa(LocalDate.of(YYYY,DD,MM))
+    
     
     public Extranjero(){
         super();
+        pasaporte = null;
         tipoDeVisa = null;
         primeraVisa = null;
+    }
+
+    public String getPasaporte() {
+        return pasaporte;
+    }
+
+    public void setPasaporte(String pasaporte) {
+        this.pasaporte = pasaporte;
     }
 
     public Visa getTipoDeVisa() {
@@ -41,7 +65,7 @@ public class Extranjero extends Ciudadano implements Registro_Civil{
      */
     @Override
     public boolean registrar(){
-        return super.getRequisitosMinimos();
+        return super.getRequisitosMinimos() && pasaporte != null;
     }
 
     /**
@@ -59,7 +83,7 @@ public class Extranjero extends Ciudadano implements Registro_Civil{
      */
     @Override
     public boolean registrarMatrimonio(){
-        return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).isEmpty()
+        return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).estaVacia()
                 || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null;
     }
     
@@ -69,7 +93,7 @@ public class Extranjero extends Ciudadano implements Registro_Civil{
      */
     @Override
     public String mostrarIdentificador(){
-        return getPasaporte();
+        return pasaporte;
     }
     
 }
