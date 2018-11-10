@@ -3,7 +3,6 @@ package colecciones;
 
 import java.util.HashMap;
 import java.util.Map;
-import utilidades.ConexionBD;
 
 
 public class Poblacion {
@@ -59,7 +58,4 @@ public class Poblacion {
         return extranjero.getParientes().estaVacia() && poblacion.remove(extranjero.getPasaporte())!=null;
     }
     
-    public static void cargarBD(ConexionBD conexion){
-        cargarlos
-    }
 }

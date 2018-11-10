@@ -19,7 +19,7 @@ public abstract class Ciudadano{
     private LocalDate nacimiento; //yo.setNacimiento(LocalDate.of(1996,8,7))
     private String horaNacimiento;
     private String comentarioNacimiento; //PERMITE NULL
-    private LocalDate defuncion; //PERMITE NULL)
+    private LocalDate defuncion; //PERMITE NULL
     private String horaDefuncion; //PERMITE NULL
     private String comentarioDefuncion; //PERMITE NULL
     private String profesion; //PERMITE NULL

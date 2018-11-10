@@ -266,8 +266,8 @@ public class Registrar_Nacimiento {
             //requisitos minimos
             aux.setNombre(nombre.getText());
             aux.setApellido(apellido.getText());
-            aux.setRegion(region.getSelectionModel().getSelectedItem().toString());
-            aux.setComuna(comuna.getSelectionModel().getSelectedItem().toString());
+            aux.setRegionDeNacimiento(region.getSelectionModel().getSelectedItem().toString());
+            aux.setComunaDeNacimiento(comuna.getSelectionModel().getSelectedItem().toString());
             aux.setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO);
             aux.setNacimiento(nacimiento.getValue());
             aux.setHoraNacimiento(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));

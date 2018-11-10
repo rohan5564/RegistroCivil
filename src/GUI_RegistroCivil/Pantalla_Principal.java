@@ -69,7 +69,7 @@ public class Pantalla_Principal{
     public void menu(){
         prop.crear();
         Elementos.crearDatosIniciales(poblacion);
-        Poblacion.cargarBD(conexion);
+        conexion.crearTablas();
         Stage menu = new Stage();
         menu.initOwner(null);
         if(prop.getProp().getProperty("tamanho_por_defecto").equals("verdad")){

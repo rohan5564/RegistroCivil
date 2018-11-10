@@ -285,7 +285,7 @@ public class Buscar_Ciudadano {
                 region.setDisable(false);
                 ObservableList<String>itemsRegion = region.getItems();
                 for(String i : itemsRegion){
-                    if(i.equals(aux.getRegion())){
+                    if(i.equals(aux.getRegionDeNacimiento())){
                         region.getSelectionModel().select(casilla);
                         casilla = 0;
                         break;
@@ -296,7 +296,7 @@ public class Buscar_Ciudadano {
                 comuna.setDisable(false);
                 ObservableList<String>itemsComuna = comuna.getItems();
                 for(String i : itemsComuna){
-                    if(i.equals(aux.getComuna())){
+                    if(i.equals(aux.getComunaDeNacimiento())){
                         comuna.getSelectionModel().select(casilla);
                         casilla = 0;
                         break;
@@ -451,8 +451,8 @@ public class Buscar_Ciudadano {
             //requisitos minimos
             aux.setNombre(nombre.getText());
             aux.setApellido(apellido.getText());
-            aux.setRegion(region.getSelectionModel().getSelectedItem().toString());
-            aux.setComuna(comuna.getSelectionModel().getSelectedItem().toString());
+            aux.setRegionDeNacimiento(region.getSelectionModel().getSelectedItem().toString());
+            aux.setComunaDeNacimiento(comuna.getSelectionModel().getSelectedItem().toString());
             aux.setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO);
             aux.setNacimiento(fechaNacimiento.getValue());
             aux.setHoraNacimiento(horaNacimiento.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));

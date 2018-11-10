@@ -76,14 +76,14 @@ public class Cantidad_Nacidos {
             int flag = 0;
             while(it.hasNext()){
                 regiones region = it.next();
-                if(region.getReg().equals(ch.getRegion())){
+                if(region.getReg().equals(ch.getRegionDeNacimiento())){
                     region.sumar();
                     flag = 1;
                 }
             }
             if(flag == 0){
                 regiones aux = new regiones();
-                aux.setReg(ch.getRegion());
+                aux.setReg(ch.getRegionDeNacimiento());
                 aux.setNum(1);
                 arr.add(aux);
             }

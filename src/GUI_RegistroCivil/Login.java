@@ -37,7 +37,6 @@ public class Login extends Main{
 
     
     private String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH"));
-    private ConexionBD conexion  = null;
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
     
@@ -186,27 +185,24 @@ public class Login extends Main{
     public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password, Label errorUsuario){
         ingreso.setOnAction(lambda -> {
             try{
-                conexion.getConexion("localhost/datos", "root", "");
-                if (conexion.checkConexion() == false){ //conexion establecida?
+                ConexionBD.getInstancia().getConexion("168.232.165.245:3306/inf033", "inf033", "al1");
+                if (!ConexionBD.getInstancia().checkConexion()){ //conexion establecida?
                     errorUsuario.setText("error de conexion");
                     errorUsuario.setTextFill(Color.rgb(210, 39, 30));
                 }
                 else {
-                    if (conexion.login(leerTexto.getText(),password.getText())){
+                    if (ConexionBD.getInstancia().login(leerTexto.getText(),password.getText())){
                         errorUsuario.setText("");
                         password.setText("");
-                        super.menu(logueo, conexion);
+                        super.menu(logueo, ConexionBD.getInstancia());
                         logueo.hide();
                     }
                     else {
-                        errorUsuario.setText("error de usuario y/o contraseña");
+                        errorUsuario.setText("datos incorrectos");
                         errorUsuario.setTextFill(Color.rgb(210, 39, 30));
                     }
                 }
-            }catch(PropertyVetoException e){
-                e.printStackTrace();
-            }
-            catch(SQLException e){
+            }catch(PropertyVetoException | SQLException e){
                 e.printStackTrace();
             }
             //limpiar casillas con la entrada de texto 

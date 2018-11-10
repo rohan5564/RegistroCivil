@@ -456,8 +456,8 @@ public class Elementos {
         Chileno aux = new Chileno();
         aux.setNombre(nombre);
         aux.setApellido(apellido);
-        aux.setRegion(region.replace("_"," ").toLowerCase());
-        aux.setComuna(comuna.replace("_"," ").toLowerCase());
+        aux.setRegionDeNacimiento(region.replace("_"," ").toLowerCase());
+        aux.setComunaDeNacimiento(comuna.replace("_"," ").toLowerCase());
         aux.setSexo(sexo);
         aux.setNacimiento(LocalDate.parse(fecha));
         aux.setHoraNacimiento(hora);

@@ -7,10 +7,10 @@ import Interfaces.Registro_Civil;
 public class Chileno extends Ciudadano implements Registro_Civil{
     
     private String rut; //verificador 0-9 / 'K'
-    private Integer numeroDeDocumento; //PERMITE NULL
+    private String numeroDeDocumento; //PERMITE NULL
     private String direccion; //PERMITE NULL
-    private String region;
-    private String comuna;
+    private String regionDeNacimiento;
+    private String comunaDeNacimiento;
 
     public Chileno(){
         super();
@@ -26,11 +26,11 @@ public class Chileno extends Ciudadano implements Registro_Civil{
         this.rut = rut.toUpperCase();
     }
 
-    public int getNumeroDeDocumento() {
+    public String getNumeroDeDocumento() {
         return numeroDeDocumento;
     }
 
-    public void setNumeroDeDocumento(int numeroDeDocumento) {
+    public void setNumeroDeDocumento(String numeroDeDocumento) {
         this.numeroDeDocumento = numeroDeDocumento;
     }
        
@@ -42,20 +42,20 @@ public class Chileno extends Ciudadano implements Registro_Civil{
         this.direccion = direccion.toUpperCase();
     }
     
-    public String getRegion() {
-        return region;
+    public String getRegionDeNacimiento() {
+        return regionDeNacimiento;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setRegionDeNacimiento(String regionDeNacimiento) {
+        this.regionDeNacimiento = regionDeNacimiento;
     }
 
-    public String getComuna() {
-        return comuna;
+    public String getComunaDeNacimiento() {
+        return comunaDeNacimiento;
     }
 
-    public void setComuna(String comuna) {
-        this.comuna = comuna;
+    public void setComunaDeNacimiento(String comunaDeNacimiento) {
+        this.comunaDeNacimiento = comunaDeNacimiento;
     }
     
     /**
@@ -95,8 +95,8 @@ public class Chileno extends Ciudadano implements Registro_Civil{
         return super.getNombre() != null
                 && super.getApellido() != null
                 && super.getSexo() != null
-                && region != null
-                && comuna != null
+                && regionDeNacimiento != null
+                && comunaDeNacimiento != null
                 && super.getNacimiento() != null
                 && super.getHoraNacimiento() != null
                 && super.getEstadoCivil() != null
