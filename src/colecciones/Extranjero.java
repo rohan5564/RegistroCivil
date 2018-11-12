@@ -81,4 +81,11 @@ public class Extranjero extends Ciudadano implements Registro_Civil{
         return pasaporte;
     }
     
+    /**
+     * @param str pasaporte a comprobar
+     * @return true si es un pasaporte valido, false en caso contrario
+     */
+    public static boolean comprobarPasaporte(String str){
+        return str.length()>=8;
+    }
 }

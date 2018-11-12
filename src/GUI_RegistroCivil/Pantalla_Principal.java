@@ -56,20 +56,20 @@ public class Pantalla_Principal{
     private TextArea logReporte = new TextArea("[" + horaActual +"]: Inicio de sesion.\n");    //reportes por pantalla
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
-    private ConexionBD conexion;
     private Poblacion poblacion = new Poblacion();
     private MenuOpciones menuOpcion = new MenuOpciones(logReporte, poblacion, prop);
    
     
-    public Pantalla_Principal(Stage logueo, ConexionBD conexion) {
+    public Pantalla_Principal(Stage logueo) {
         this.logueo = logueo;
-        this.conexion = conexion;
     }        
 
     public void menu(){
+        //cargar datos de inicio
         prop.crear();
         Elementos.crearDatosIniciales(poblacion);
-        conexion.crearTablas();
+        ConexionBD.getInstancia().crearTablas();
+        
         Stage menu = new Stage();
         menu.initOwner(null);
         if(prop.getProp().getProperty("tamanho_por_defecto").equals("verdad")){
@@ -140,7 +140,7 @@ public class Pantalla_Principal{
     private VBox vboxMain(){
         VBox vbox1 = new VBox(80);
         String str = new String();
-        for(int i=0; i<=3; i++){
+        for(int i=0; i<=4; i++){
             switch(i){
                 case 0: 
                     str = "General";
@@ -155,10 +155,7 @@ public class Pantalla_Principal{
                     str = "Matrimonio";
                     break;
                 case 4: 
-                    str = "Antecedentes";
-                    break;
-                case 5: 
-                    str = "Vehiculos";
+                    str = "Extranjeros";
                     break;
             }
             Label texto = new Label(str);
@@ -176,7 +173,7 @@ public class Pantalla_Principal{
     private StackPane stackPaneMain(List<Node> opciones, List<Polygon> triangulo){
         StackPane stack = new StackPane();
         List<VBox> boxes = new ArrayList<>(Arrays.asList(
-                new VBox(50),new VBox(50),new VBox(50),new VBox(50),new VBox(50)));
+                new VBox(50),new VBox(50),new VBox(50),new VBox(50),new VBox(50) ));
         
         Button buscarNacimiento = new Button("modificar datos");
         buscarNacimiento.setPrefSize(200, 50);
@@ -217,32 +214,15 @@ public class Pantalla_Principal{
         regMatrimonio.setOnMouseClicked(menuOpcion::registrarMatrimonio);
         //buscarMatrimonio.setOnMouseClicked(menuOpcion::buscarMatrimonio);
         
-        /*Button regAntecedente = new Button("Registrar antecedente");
-        regAntecedente.setPrefSize(200, 50);
-        Button certAntecedente = new Button("Certificado de antecedente");
-        certAntecedente.setPrefSize(200, 50);
-        boxes.get(3).getChildren().addAll(regAntecedente, certAntecedente);
-        boxes.get(3).setVisible(false);
-        opciones.get(3).setOnMouseEntered(lambda -> {
-            for(VBox x:boxes){
-                if(x.isVisible())
-                    x.setVisible(false);
-            }
-            for(int i = 0 ; i<5 ; i++){
-                if(i==3){
-                    triangulo.get(i).setVisible(true);
-                    continue;
-                }
-                triangulo.get(i).setVisible(false);
-            }
-            boxes.get(3).setVisible(true);
-            opciones.get(3).setEffect(new DropShadow(70,Color.AQUA));
-        });
-        opciones.get(3).setOnMouseExited(lambda -> {
-            opciones.get(3).setEffect(null);
-        });
+        Button regExtranjeros = new Button("Registrar antecedente");
+        regExtranjeros.setPrefSize(200, 50);
+        boxes.get(4).getChildren().addAll(regExtranjeros);
+        boxes.get(4).setVisible(false);
+        seleccionarOpcion(opciones.get(4), boxes, 4, triangulo);
         
-        Button regVehiculo = new Button("Registrar vehiculo");
+        regExtranjeros.setOnMouseClicked(menuOpcion::registrarExtranjero);
+        
+        /*Button regVehiculo = new Button("Registrar vehiculo");
         regVehiculo.setPrefSize(200, 50);
         Button certVehiculo = new Button("Certificado de vehiculo");
         certVehiculo.setPrefSize(200, 50);

@@ -5,6 +5,7 @@ import GUI_RegistroCivil.Buscar_Ciudadano;
 import GUI_RegistroCivil.Cantidad_Nacidos;
 import GUI_RegistroCivil.Elementos;
 import GUI_RegistroCivil.Registrar_Defuncion;
+import GUI_RegistroCivil.Registrar_Extranjero;
 import GUI_RegistroCivil.Registrar_Matrimonio;
 import GUI_RegistroCivil.Registrar_Nacimiento;
 import colecciones.Poblacion;
@@ -55,7 +56,10 @@ public class MenuOpciones {
         accesoDirecto.registrarMatrimonio(click);
     }
     
-    
+    public void registrarExtranjero(MouseEvent click){
+        Registrar_Extranjero accesoDirecto = new Registrar_Extranjero(logReporte, poblacion, prop);
+        accesoDirecto.registrarExtranjero(click);
+    }
     
     public void buscarDefuncion(MouseEvent click){
         /*Buscar_Defuncion accesoDirecto = new Buscar_Defuncion(logReporte, poblacion, prop);

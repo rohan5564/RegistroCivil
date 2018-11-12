@@ -178,14 +178,14 @@ public class Login extends Main{
             errorUsuario.setText("");
             password.setText("");
             logueo.close();
-            super.menu(logueo, null);
+            super.menu(logueo);
         });       
     }
     
     public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password, Label errorUsuario){
         ingreso.setOnAction(lambda -> {
             try{
-                ConexionBD.getInstancia().getConexion("168.232.165.245:3306/inf033", "inf033", "al1");
+                ConexionBD.getInstancia().getConexion("localhost:3306/datos", "c3p0", "64fa4632");
                 if (!ConexionBD.getInstancia().checkConexion()){ //conexion establecida?
                     errorUsuario.setText("error de conexion");
                     errorUsuario.setTextFill(Color.rgb(210, 39, 30));
@@ -194,7 +194,7 @@ public class Login extends Main{
                     if (ConexionBD.getInstancia().login(leerTexto.getText(),password.getText())){
                         errorUsuario.setText("");
                         password.setText("");
-                        super.menu(logueo, ConexionBD.getInstancia());
+                        super.menu(logueo);
                         logueo.hide();
                     }
                     else {

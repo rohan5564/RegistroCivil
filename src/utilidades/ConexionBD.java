@@ -45,12 +45,12 @@ public class ConexionBD{
     
     public ComboPooledDataSource getConexion(String url, String user, String pass) throws PropertyVetoException{
         conexion = new ComboPooledDataSource();
-        conexion.setJdbcUrl("jdbc:mysql://"+url);
+        conexion.setJdbcUrl("jdbc:mysql://"+url+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
         conexion.setUser(user);
         conexion.setPassword(pass);    
         conexion.setCheckoutTimeout(2000); //milisegundos
-        conexion.setInitialPoolSize(5);
-        conexion.setMinPoolSize(5);
+        conexion.setInitialPoolSize(1);
+        conexion.setMinPoolSize(1);
         conexion.setAcquireIncrement(5);
         conexion.setMaxPoolSize(20);
         conexion.setMaxStatements(100);
@@ -73,26 +73,15 @@ public class ConexionBD{
     
     public boolean login(String user, String pass){
         try {
-            //rs = consulta por comandos de MySql
-            consulta = "SELECT * FROM usuarios WHERE usuario = \"" + user + "\"";
+            consulta = "SELECT * FROM operadores WHERE usuario = \"" + user + "\"";
             con = conexion.getConnection();
             
             st = con.prepareStatement(consulta);
             rs = st.executeQuery();
             rs.next(); //avanza a la siguiente tupla (actualmente al primero)
-            if(rs.getString("pass").equals(pass))
+            if(rs.getString("contraseña").equals(pass))
                 this.status = true;
-                //return status;
-            //itera sobre los resultados, invalido si la llave primaria es user
-            /*while (rs.next())
-            {
-                String password = rs.getString("pass");
-                if(password.equals(pass)){
-                    stat = true;
-                    System.out.println("ingreso aceptado");
-                    break;
-                }
-            }*/
+                
         }catch (Exception e) {
             System.err.println("excepcion: " + e.getMessage());
         }finally {
@@ -119,26 +108,26 @@ public class ConexionBD{
     private void crearTablaChilena(){
         try{
             consulta = 
-                    "CREATE TABLE IF NOT EXIST poblacion_chilena"
-                    +"(nombre                       VARCHAR(50) NOT NULL"
-                    +"apellido                      VARCHAR(50) NOT NULL"
-                    +"sexo                          VARCHAR(10) NOT NULL"
-                    +"fecha de nacimiento           DATE NOT NULL"
-                    +"hora de nacimiento            VARCHAR(10) NOT NULL"
-                    +"comentario de nacimiento      TEXT"
-                    +"fecha de defuncion            DATE"
-                    +"hora de defuncion             VARCHAR(10)"
-                    +"comentario de defuncion       TEXT"
-                    +"profesion                     VARCHAR(50)"
-                    +"rut                           VARCHAR(9) PRIMARY KEY"
-                    +"numero de documento           VARCHAR(20)"
-                    +"direccion                     VARCHAR(100)"
-                    +"region de nacimiento          VARCHAR(100) NOT NULL"
-                    +"comuna de nacimiento          VARCHAR(100) NOT NULL)";
+                    "CREATE TABLE IF NOT EXISTS poblacion_chilena"
+                    +"(nombre                       VARCHAR(50) NOT NULL,"
+                    +"apellido                      VARCHAR(50) NOT NULL,"
+                    +"sexo                          VARCHAR(10) NOT NULL,"
+                    +"fecha_de_nacimiento           DATE NOT NULL,"
+                    +"hora_de_nacimiento            VARCHAR(10) NOT NULL,"
+                    +"comentario_de_nacimiento      TEXT,"
+                    +"fecha_de_defuncion            DATE,"
+                    +"hora_de_defuncion             VARCHAR(10),"
+                    +"comentario_de_defuncion       TEXT,"
+                    +"profesion                     VARCHAR(50),"
+                    +"rut                           VARCHAR(9) PRIMARY KEY,"
+                    +"numero_de_documento           VARCHAR(20),"
+                    +"direccion                     VARCHAR(100),"
+                    +"region_de_nacimiento          VARCHAR(100) NOT NULL,"
+                    +"comuna_de_nacimiento          VARCHAR(100) NOT NULL)";
             
             con = conexion.getConnection();
             st = con.prepareStatement(consulta);
-            rs = st.executeQuery();
+            st.executeUpdate();
             
         }catch (Exception e) {
             System.err.println("excepcion: " + e.getMessage());
@@ -160,24 +149,24 @@ public class ConexionBD{
     private void crearTablaExtranjera(){
         try{
             consulta = 
-                    "CREATE TABLE IF NOT EXIST poblacion_extranjera"
-                    +"(nombre                       VARCHAR(50) NOT NULL"
-                    +"apellido                      VARCHAR(50) NOT NULL"
-                    +"sexo                          VARCHAR(10) NOT NULL"
-                    +"fecha de nacimiento           DATE NOT NULL"
-                    +"hora de nacimiento            VARCHAR(10) NOT NULL"
-                    +"comentario de nacimiento      TEXT"
-                    +"fecha de defuncion            DATE"
-                    +"hora de defuncion             VARCHAR(10)"
-                    +"comentario de defuncion       TEXT"
-                    +"profesion                     VARCHAR(50)"
-                    +"pasaporte                     VARCHAR(20) PRIMARY KEY"
-                    +"tipo de visa                  VARCHAR(10) NOT NULL"
-                    +"primera visa                  DATE NOT NULL)";
+                    "CREATE TABLE IF NOT EXISTS poblacion_extranjera"
+                    +"(nombre                       VARCHAR(50) NOT NULL,"
+                    +"apellido                      VARCHAR(50) NOT NULL,"
+                    +"sexo                          VARCHAR(10) NOT NULL,"
+                    +"fecha_de_nacimiento           DATE NOT NULL,"
+                    +"hora_de_nacimiento            VARCHAR(10) NOT NULL,"
+                    +"comentario_de_nacimiento      TEXT,"
+                    +"fecha_de_defuncion            DATE,"
+                    +"hora_de_defuncion             VARCHAR(10),"
+                    +"comentario_de_defuncion       TEXT,"
+                    +"profesion                     VARCHAR(50),"
+                    +"pasaporte                     VARCHAR(20) PRIMARY KEY,"
+                    +"tipo_de_visa                  VARCHAR(10) NOT NULL,"
+                    +"primera_visa                  DATE NOT NULL)";
             
             con = conexion.getConnection();
             st = con.prepareStatement(consulta);
-            rs = st.executeQuery();
+            st.executeUpdate();
             
         }catch (Exception e) {
             System.err.println("excepcion: " + e.getMessage());

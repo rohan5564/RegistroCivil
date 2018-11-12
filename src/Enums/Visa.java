@@ -3,7 +3,6 @@ package Enums;
 
 
 public enum Visa{
-    //http://www.extranjeria.gob.cl/visas/
     TEMPORAL("temporal"), CONTRATO("contrato"), 
     ESTUDIANTE("estudiante"), TRIPULANTE("tripulante");
     
@@ -13,7 +12,14 @@ public enum Visa{
         this.nombre = nombre;
     }
         
+    /**
+     * @see http://www.extranjeria.gob.cl/visas/
+     */
     public String getNombre(){
         return nombre;
+    }
+    
+    public static Visa valorDe(String str){
+        return Visa.valueOf(str.toUpperCase());
     }
 }

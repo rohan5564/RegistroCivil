@@ -222,43 +222,43 @@ public class Elementos {
      * los elementos se se obtienen en de la siguiente forma:
      * <pre><code>
      *   //campo de ingreso
-     *   TextField rut = (TextField)checkRut.getChildrenUnmodifiable().<b>get(0);</b>
+     *   TextField rut = (TextField)checkIdentificador.getChildrenUnmodifiable().<b>get(0);</b>
      * 
      *   //señal verde
-     *   ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(1);</b>
+     *   ImageView check = (ImageView)checkIdentificador.getChildrenUnmodifiable().<b>get(1);</b>
      * 
      *   //señal amarilla
-     *   ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(2);</b>
+     *   ImageView mark = (ImageView)checkIdentificador.getChildrenUnmodifiable().<b>get(2);</b>
      * 
      *   //checkbox
-     *   CheckBox mark = (CheckBox)checkRut.getChildrenUnmodifiable().<b>get(3);</b>
+     *   CheckBox pasaporte = (CheckBox)checkIdentificador.getChildrenUnmodifiable().<b>get(3);</b>
      * </code></pre>
      * @return StackPane de JavaFx
      * @since Entrega B
      */
     public static StackPane checkIdentificador(){
-        StackPane checkRut = new StackPane();
+        StackPane checkIdentificador = new StackPane();
         CheckBox pasaporte = new CheckBox();
         pasaporte.setSelected(false);
         ImageView check = Elementos.icono("Resources/check.png");
         ImageView mark = Elementos.icono("Resources/yellow_mark.png");
         mark.setVisible(true);
-        TextField rut = new TextField();
-        rut.setTextFormatter(new TextFormatter<>((formato) -> {
+        TextField identificador = new TextField();
+        identificador.setTextFormatter(new TextFormatter<>((formato) -> {
                 formato.setText(formato.getText().toUpperCase());
                 return formato;
         }));
-        rut.setMaxSize(200, 40);
+        identificador.setMaxSize(200, 40);
         pasaporte.selectedProperty().addListener((obs, old, seleccionado)->{
             if(!seleccionado.booleanValue()){
-                rut.lengthProperty().addListener((observable, o, n)->{
+                identificador.lengthProperty().addListener((observable, o, n)->{
                     if(n.intValue()>9)
-                    rut.setText(rut.getText().substring(0, 9));
+                    identificador.setText(identificador.getText().substring(0, 9));
                 });
             }
         });
-        checkRut.getChildren().addAll(rut, check, mark, pasaporte);
-        return checkRut;
+        checkIdentificador.getChildren().addAll(identificador, check, mark, pasaporte);
+        return checkIdentificador;
     }
     
     /**

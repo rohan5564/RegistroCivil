@@ -4,7 +4,6 @@ package GUI_RegistroCivil;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.stage.Stage;
-import utilidades.ConexionBD;
 
 
 public class Main extends Application {
@@ -17,8 +16,8 @@ public class Main extends Application {
         launch(args);
     }
     
-    public void menu(Stage logueo, ConexionBD conexion){
-        Pantalla_Principal app = new Pantalla_Principal(logueo, conexion);
+    public void menu(Stage logueo){
+        Pantalla_Principal app = new Pantalla_Principal(logueo);
         app.menu();
     }
     
