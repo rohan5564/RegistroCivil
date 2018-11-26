@@ -1,16 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
 import Enums.Nacionalidad;
 import Enums.Sexo;
 import Enums.Visa;
-import static GUI_RegistroCivil.Elementos.checkRut;
-import Interfaces.Chile;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import colecciones.Extranjero;
@@ -45,10 +39,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import utilidades.ArchivoProperties;
 
-/**
- *
- * @author Jean
- */
+
 public class Registrar_Extranjero {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;

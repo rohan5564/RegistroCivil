@@ -1,8 +1,10 @@
 
 package GUI_RegistroCivil;
 
+import Enums.EstadoCivil;
 import utilidades.ArchivoTxt;
 import Enums.Tema;
+import colecciones.Chileno;
 import utilidades.ArchivoProperties;
 import colecciones.Poblacion;
 import java.io.File;
@@ -64,14 +66,16 @@ public class Pantalla_Principal{
         this.logueo = logueo;
     }        
 
+    
     public void menu(){
         //cargar datos de inicio
         prop.crear();
         Elementos.crearDatosIniciales(poblacion);
-        ConexionBD.getInstancia().crearTablas();
         
         Stage menu = new Stage();
-        menu.initOwner(null);
+        
+        menu.getIcons().add(new Image("Resources/logo.jpg"));
+        menu.setTitle("Registro Civil");
         if(prop.getProp().getProperty("tamanho_por_defecto").equals("verdad")){
             menu.initStyle(StageStyle.TRANSPARENT);
             menu.setMaximized(true);
@@ -127,7 +131,6 @@ public class Pantalla_Principal{
         HBox hbox1 = hboxMain(menu);
         grid.add(hbox1, 3, 0);
         
-        menu.setIconified(true);
         menu.setScene(menuPpal);
         menu.show();
         
@@ -184,14 +187,15 @@ public class Pantalla_Principal{
         
         Button regNacimiento = new Button("Registrar nacimiento");
         regNacimiento.setPrefSize(200, 50);
-        Button cantNacimiento = new Button("Mostrar total registrados");
+        Button cantNacimiento = new Button("total chilenos registrados");
         cantNacimiento.setPrefSize(200, 50);
         boxes.get(1).getChildren().addAll(regNacimiento,cantNacimiento);
         boxes.get(1).setVisible(false);
         seleccionarOpcion(opciones.get(1), boxes, 1, triangulo);
-        
         regNacimiento.setOnMouseClicked(menuOpcion::registrarNacimiento);
         cantNacimiento.setOnMouseClicked(menuOpcion::cantidadNacidos);
+        
+        
         Button regDefuncion = new Button("Registrar defuncion");
         regDefuncion.setPrefSize(200, 50);
         //Button buscarDefuncion = new Button("Buscar difunto");
@@ -214,13 +218,16 @@ public class Pantalla_Principal{
         regMatrimonio.setOnMouseClicked(menuOpcion::registrarMatrimonio);
         //buscarMatrimonio.setOnMouseClicked(menuOpcion::buscarMatrimonio);
         
-        Button regExtranjeros = new Button("Registrar antecedente");
+        Button regExtranjeros = new Button("Registrar Extranjero");
         regExtranjeros.setPrefSize(200, 50);
-        boxes.get(4).getChildren().addAll(regExtranjeros);
+        Button cantExtranjeros = new Button("total extranjeros registrados");
+        cantNacimiento.setPrefSize(200, 50);
+        boxes.get(4).getChildren().addAll(regExtranjeros, cantExtranjeros);
         boxes.get(4).setVisible(false);
         seleccionarOpcion(opciones.get(4), boxes, 4, triangulo);
         
         regExtranjeros.setOnMouseClicked(menuOpcion::registrarExtranjero);
+        cantExtranjeros.setOnMouseClicked(menuOpcion::cantidadExtranjeros);
         
         /*Button regVehiculo = new Button("Registrar vehiculo");
         regVehiculo.setPrefSize(200, 50);

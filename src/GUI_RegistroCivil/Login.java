@@ -56,7 +56,6 @@ public class Login extends Main{
         
         //ventana
         logueo.initStyle(StageStyle.TRANSPARENT);
-        logueo.setAlwaysOnTop(true);
         
         //crear cuadricula para poner botones, texto, etc
         GridPane grid = new GridPane();
@@ -150,6 +149,7 @@ public class Login extends Main{
         grid.add(errorUsuario, 2,17);        
         //crea botones y HBOX (horizontal box)
         Button ingreso = new Button("ingresar");
+        ingreso.setVisible(false);
         ingreso.setDisable(true);
         ingreso.disableProperty().bind( //boton no presionable si casillas estan vacias
                 leerTexto.textProperty().isEmpty().or( //or = ambas casillas llenas                     
@@ -185,7 +185,7 @@ public class Login extends Main{
     public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password, Label errorUsuario){
         ingreso.setOnAction(lambda -> {
             try{
-                ConexionBD.getInstancia().getConexion("localhost:3306/datos", "c3p0", "64fa4632");
+                ConexionBD.getInstancia().getConexion("localhost:3306/datos", "root", "");
                 if (!ConexionBD.getInstancia().checkConexion()){ //conexion establecida?
                     errorUsuario.setText("error de conexion");
                     errorUsuario.setTextFill(Color.rgb(210, 39, 30));

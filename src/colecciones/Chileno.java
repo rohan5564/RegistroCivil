@@ -1,4 +1,3 @@
-
 package colecciones;
 
 import Enums.EstadoCivil;
@@ -138,5 +137,4 @@ public class Chileno extends Ciudadano implements Registro_Civil{
     public String mostrarIdentificador(){
         return getRut();
     }
-    
 }

@@ -68,27 +68,27 @@ public class Cantidad_Nacidos {
         grid.setPadding(new Insets(50,50,50,50));
         
         ObservableList<PieChart.Data> list = FXCollections.observableList(new ArrayList<PieChart.Data>());
-        ArrayList<regiones> arr = new ArrayList<>();
+        ArrayList<Regiones> arr = new ArrayList<>();
         
-        for(Ciudadano c : poblacion.getPoblacion().values()) {
+        for(Chileno c : poblacion.getChilenos().values()) {
             Chileno ch = (Chileno)c;
-            Iterator<regiones> it = arr.iterator();
+            Iterator<Regiones> it = arr.iterator();
             int flag = 0;
             while(it.hasNext()){
-                regiones region = it.next();
+                Regiones region = it.next();
                 if(region.getReg().equals(ch.getRegionDeNacimiento())){
                     region.sumar();
                     flag = 1;
                 }
             }
             if(flag == 0){
-                regiones aux = new regiones();
+                Regiones aux = new Regiones();
                 aux.setReg(ch.getRegionDeNacimiento());
                 aux.setNum(1);
                 arr.add(aux);
             }
         }
-        arr.sort((regiones o1, regiones o2) -> {
+        arr.sort((Regiones o1, Regiones o2) -> {
             if(o1.getReg().equals(o2.getReg()))
                 return 0;
             return o1.getReg().compareTo(o2.getReg())<0?-1:1;
@@ -99,7 +99,7 @@ public class Cantidad_Nacidos {
         legend.setFont(Font.font("Roboto", FontWeight.LIGHT, 20));
         StringBuilder datosLegend = new StringBuilder();
         
-        for(regiones i: arr){
+        for(Regiones i: arr){
             list.add(new PieChart.Data(i.getReg(), i.getNum()));
             datosLegend.append(i.getReg()+": "+i.getNum()+"\n");
         }
@@ -155,16 +155,16 @@ public class Cantidad_Nacidos {
     }
 }
 
-class regiones{
+class Regiones{
     private int num;
     private String reg;
 
-    public regiones() {
+    public Regiones() {
         num = 0;
         reg = null;
     }
 
-    public regiones(int num, String reg) {
+    public Regiones(int num, String reg) {
         this.num = num;
         this.reg = reg;
     }

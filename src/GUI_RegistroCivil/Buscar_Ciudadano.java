@@ -636,11 +636,8 @@ public class Buscar_Ciudadano {
         pop.add(botones, 0, 1);
         
         ok.setOnMouseClicked(lambda -> {
-            if(!poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).desvincularDeParientes()){
-                Elementos.popMensaje("error de operacion", 300, 100);
-                rut.clear();
-            }
-            else{
+            if(poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).getParientes().getPersonas() == null ||
+                    poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).getParientes().getPersonas().isEmpty()){
                 poblacion.getPoblacion().remove(ciudadano.mostrarIdentificador());
                 logReporte.appendText(
                         "["+horaActual+"] "+"rut "+rut.getText()+" eliminado\n"
@@ -649,6 +646,10 @@ public class Buscar_Ciudadano {
                 Stage exito = Elementos.popMensajeStage("Operacion Exitosa!", largo, ancho);
                 popup.setScene(exito.getScene());
                 ((Button)exito.getUserData()).setOnMouseClicked(alpha -> popup.close());
+            }
+            else if(!poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).desvincularDeParientes()){
+                Elementos.popMensaje("error de operacion", 300, 100);
+                rut.clear();
             }
         });
         
