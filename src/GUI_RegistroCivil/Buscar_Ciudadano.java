@@ -3,6 +3,8 @@ package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
 import Enums.Sexo;
+import Excepciones.FormatoRutException;
+import Excepciones.LongitudRutException;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import java.time.LocalDateTime;
@@ -537,24 +539,24 @@ public class Buscar_Ciudadano {
             CheckBox chkbox, ImageView check){
         //se comprueba que el rut este registrado
         id.textProperty().addListener((observable, o, n)->{
-            //entrada invalida
-            if(n.length()<8){
-                check.setVisible(false);
-                chkbox.setVisible(false);
-            }
-            //se comprueba que sea un rut valido y registrado
-            else if(Chileno.comprobarRut(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    chkbox.setVisible(true);
-                    check.setVisible(true);
+            try{
+                //se comprueba que sea un rut valido y registrado
+                if(Chileno.comprobarRut(n)){
+                    if(poblacion.getPoblacion().containsKey(n)){
+                        chkbox.setVisible(true);
+                        check.setVisible(true);
+                    }
+                    else{
+                        chkbox.setVisible(false);
+                        check.setVisible(false);
+                    }
                 }
-                else{
-                    chkbox.setVisible(false);
+                //entrada invalida
+                else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
                     check.setVisible(false);
+                    chkbox.setVisible(false);
                 }
-            }
-            //entrada invalida
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+            }catch(FormatoRutException | LongitudRutException e){
                 check.setVisible(false);
                 chkbox.setVisible(false);
             }
@@ -566,26 +568,31 @@ public class Buscar_Ciudadano {
         idPariente.textProperty().addListener((observable, o, n)->{
             //si pariente es chileno
             if(!chkbox.isSelected()){
-                //entrada invalida
-                if(n.length()<8){
-                    check.setVisible(false);
-                    mark.setVisible(false);
-                }
-                //se comprueba que sea un rut valido y registrado
-                else if(Chileno.comprobarRut(n)){
-                    if(!n.equals(id.getText()) && poblacion.getPoblacion().containsKey(n)){
-                        mark.setVisible(false);
-                        check.setVisible(true);
-                    }
-                    else{
+                try{
+                    //entrada invalida
+                    if(n.length()<8){
                         check.setVisible(false);
-                        mark.setVisible(true);
+                        mark.setVisible(false);
                     }
-                }
-                //entrada invalida
-                else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                    //se comprueba que sea un rut valido y registrado
+                    else if(Chileno.comprobarRut(n)){
+                        if(!n.equals(id.getText()) && poblacion.getPoblacion().containsKey(n)){
+                            mark.setVisible(false);
+                            check.setVisible(true);
+                        }
+                        else{
+                            check.setVisible(false);
+                            mark.setVisible(true);
+                        }
+                    }
+                    //entrada invalida
+                    else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                        check.setVisible(false);
+                        mark.setVisible(false);
+                    }
+                }catch(FormatoRutException | LongitudRutException e){
                     check.setVisible(false);
-                    mark.setVisible(false);
+                    mark.setVisible(true);
                 }
             }
             //si pariente no es chileno, se acepta una cadena > 7

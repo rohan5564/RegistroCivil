@@ -37,6 +37,8 @@ import colecciones.Poblacion;
 import java.time.LocalDate;
 import java.util.HashMap;
 import javafx.scene.control.CheckBox;
+import javafx.scene.layout.VBox;
+import org.controlsfx.control.PopOver;
 
 
 public class Elementos {
@@ -190,6 +192,9 @@ public class Elementos {
      * 
      *   //señal amarilla
      *   ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(2);</b>
+     * 
+     *   //señal roja
+     *   ImageView error = (ImageView)checkRut.getChildrenUnmodifiable().<b>get(3);</b>
      * </code></pre>
      * @return StackPane de JavaFx
      * @since Entrega A
@@ -198,6 +203,7 @@ public class Elementos {
         StackPane checkRut = new StackPane();
         ImageView check = Elementos.icono("Resources/check.png");
         ImageView mark = Elementos.icono("Resources/yellow_mark.png");
+        ImageView error = Elementos.icono("Resources/x.png");
         TextField rut = new TextField();
         rut.setTextFormatter(new TextFormatter<>((formato) -> {
                 formato.setText(formato.getText().toUpperCase());
@@ -209,7 +215,7 @@ public class Elementos {
             if(n.intValue()>9)
                 rut.setText(rut.getText().substring(0, 9));
         });
-        checkRut.getChildren().addAll(rut, check, mark);
+        checkRut.getChildren().addAll(rut, check, mark, error);
         return checkRut;
     }
     
@@ -230,6 +236,9 @@ public class Elementos {
      *   //señal amarilla
      *   ImageView mark = (ImageView)checkIdentificador.getChildrenUnmodifiable().<b>get(2);</b>
      * 
+     *   //señal roja
+     *   ImageView error = (ImageView)checkIdentificador.getChildrenUnmodifiable().<b>get(4);</b>
+     * 
      *   //checkbox
      *   CheckBox pasaporte = (CheckBox)checkIdentificador.getChildrenUnmodifiable().<b>get(3);</b>
      * </code></pre>
@@ -242,6 +251,7 @@ public class Elementos {
         pasaporte.setSelected(false);
         ImageView check = Elementos.icono("Resources/check.png");
         ImageView mark = Elementos.icono("Resources/yellow_mark.png");
+        ImageView error = Elementos.icono("Resources/x.png");
         mark.setVisible(true);
         TextField identificador = new TextField();
         identificador.setTextFormatter(new TextFormatter<>((formato) -> {
@@ -257,7 +267,7 @@ public class Elementos {
                 });
             }
         });
-        checkIdentificador.getChildren().addAll(identificador, check, mark, pasaporte);
+        checkIdentificador.getChildren().addAll(identificador, check, mark, pasaporte, error);
         return checkIdentificador;
     }
     
@@ -463,5 +473,16 @@ public class Elementos {
         aux.setHoraNacimiento(hora);
         aux.setRut(rut);
         return aux;
+    }
+    
+    public static PopOver popTip(String msj){
+        Label tip = new Label(msj);
+        tip.setStyle("-fx-text-fill: black");
+        tip.setFont(Font.font("bold", FontWeight.NORMAL, 16));
+        VBox tool = new VBox(tip);
+        tool.setStyle("-fx-background-color : #DFD500");
+        PopOver tooltip = new PopOver();
+        tooltip.setContentNode(tool);
+        return tooltip;
     }
 }

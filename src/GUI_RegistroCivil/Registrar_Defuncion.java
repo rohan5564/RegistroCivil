@@ -2,8 +2,12 @@
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
+import Excepciones.FormatoPasaporteException;
+import Excepciones.FormatoRutException;
+import Excepciones.LongitudRutException;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
+import colecciones.Extranjero;
 import colecciones.Poblacion;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -36,7 +40,7 @@ public class Registrar_Defuncion {
     private TextArea logReporte;
     private ArchivoProperties prop;
     private Poblacion poblacion;
-    private Chileno aux;
+    private Ciudadano aux;
     
     public Registrar_Defuncion(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
         this.logReporte = logReporte;
@@ -71,27 +75,7 @@ public class Registrar_Defuncion {
         ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().get(2);
         GridPane registro = registroDatos(guardar, rut);
         rut.textProperty().addListener((observable, o, n)->{
-            if(n.length()<8){
-                check.setVisible(false);
-                mark.setVisible(false);
-            }
-            else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)){
-                    if(poblacion.getPoblacion().get(n).getDefuncion() == null){
-                        mark.setVisible(false);
-                        aux = (Chileno)poblacion.getPoblacion().get(n);
-                        check.setVisible(true);
-                        registro.setVisible(true);
-                    }
-                    else{
-                        check.setVisible(false);
-                        registro.setVisible(false);
-                        mark.setVisible(true);
-                    }
-            }            
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
-                check.setVisible(false);
-                mark.setVisible(false);
-            }
+            checkearExistente(check, mark, mark, o, n);
         });
         
         Label persona = new Label("");
@@ -99,7 +83,7 @@ public class Registrar_Defuncion {
         
         check.visibleProperty().addListener((obs, o, n)->{
             if(n.booleanValue()){
-                this.aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
+                aux = poblacion.getCiudadano(rut.getText());
                 persona.setText(aux.getNombre()+" "+aux.getApellido());
             }
             else{
@@ -163,11 +147,37 @@ public class Registrar_Defuncion {
             }
             logReporte.appendText(
                     "["+horaActual+"]"+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
-                    ", rut: "+aux.getRut()+" QDEP\n");
+                    ", id: "+aux.mostrarIdentificador()+" QDEP\n");
             Elementos.popMensaje("Operacion Exitosa!", 300, 100);
             rut.clear();
             datos.setVisible(false);
         });       
         return datos;
+    }
+    
+    private void checkearExistente(ImageView check, ImageView mark, ImageView error, String o, String n){
+        try{
+            if(Chileno.comprobarRut(n) || Extranjero.comprobarPasaporte(n)){
+                if(poblacion.getCiudadano(n)!=null){
+                    check.setVisible(true);
+                    mark.setVisible(false);
+                    error.setVisible(false);
+                }
+                else{
+                    mark.setVisible(false);
+                    check.setVisible(false);
+                    error.setVisible(true);
+                }
+            }
+            else{
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(false);
+            }
+        }catch(FormatoRutException | FormatoPasaporteException | LongitudRutException e){
+            check.setVisible(false);
+            mark.setVisible(false);
+            error.setVisible(true);
+        }
     }
 }

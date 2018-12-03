@@ -164,7 +164,7 @@ public class Parientes {
             lista.removerEstadoATodos(estado);
         });
         personas.clear();        
-        return personas.isEmpty();
+        return personas.isEmpty() || personas==null;
     }
     
     /**

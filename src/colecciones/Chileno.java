@@ -1,9 +1,11 @@
 package colecciones;
 
 import Enums.EstadoCivil;
-import Interfaces.Registro_Civil;
+import Excepciones.FormatoRutException;
+import Excepciones.LongitudRutException;
+import Interfaces.RegistroPersonal;
 
-public class Chileno extends Ciudadano implements Registro_Civil{
+public class Chileno extends Ciudadano implements RegistroPersonal{
     
     private String rut; //verificador 0-9 / 'K'
     private String numeroDeDocumento; //PERMITE NULL
@@ -60,27 +62,36 @@ public class Chileno extends Ciudadano implements Registro_Civil{
     /**
      * permite comprobar si un rut ingresado es valido, para ello solo puede poseer 
      * numeros y el caracter 'K' y tambien debe cumplir con el algoritmo ingresado
-     * @param rut rut a comprobar
+     * @param rut rut a comprobar     
      * @return true si es un rut valido, false en caso contrario
+     * @throws FormatoRutException
+     * @throws LongitudRutException 
      */
-    public static boolean comprobarRut(String rut){
-        rut = rut.toUpperCase();
-        rut.replace(".","");
-        rut.replace("-","");
+    public static boolean comprobarRut(String rut) throws FormatoRutException, LongitudRutException{
+        rut = rut.toUpperCase().replace(".","").replace("-","");
+        
+        //se verifica que no posea un largo menor a 8 caracteres
+        if(rut.length()<8 || rut.length()>9)
+            throw new LongitudRutException();
+        
         //se verifica que no posea caracteres distintos a 0..9-K
         if(rut.matches(".*[^1234567890K].*"))
-            return false;
+            throw new FormatoRutException();
+        
+        //se separa el rut y el verificador
         int _rut = Integer.parseInt(rut.substring(0, rut.length()-1));
-        char _verificador = rut.charAt(rut.length()-1);
+        char verificador = rut.charAt(rut.length()-1);
+        
+        //algoritmo para comprobar el digito verificador
         int total = 1, i = 0;
         while(_rut != 0){
-            total = (total + _rut % 10 * (9 - i++ % 6)) % 11;
+            total = (total+_rut%10*(9-i++%6)) % 11;
             _rut /= 10;
         }
-        char verificador = (char)(total!=0 ? total+47 : 75);
-        if(_verificador == verificador)
-            return true;
-        return false;
+        char _verificador = (char)(total!=0 ? total+47 : 75);
+        
+        //se comprueba el rut en base al digito verificador ingresado con el calculado
+        return _verificador==verificador;
     }
     
     /**
@@ -101,38 +112,24 @@ public class Chileno extends Ciudadano implements Registro_Civil{
                 && super.getEstadoCivil() != null
                 && rut != null;
     }
-    
-    /**
-     * @return true si el Chileno puede registrarse, false en caso contrario
-     */
-    @Override
-    public boolean registrar(){
-        return getRequisitosMinimos() && comprobarRut(rut);
-    }
 
-    /**
-     * @return true si puede registrarse la defuncion, false en caso contrario
-     */
+    /***************************************************************************
+     *                  interfaz: RegistroPersonal                             *
+     **************************************************************************/
     @Override
     public boolean registrarDefuncion(){
         return super.getDefuncion()!=null;
     }
 
-    /**
-     * se rige bajo el principio de monogamia
-     * @return true si puede registrarse un nuevo matrimonio con otra persona,
-     * false en caso contrario
-     */
     @Override
     public boolean registrarMatrimonio(){
         return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null
                 || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).estaVacia();
     }
     
-    /**
-     * identificador por defecto para un chileno es el rut
-     * @return identificador unico del chileno
-     */
+    /***************************************************************************
+     *                  clase abstracta: Ciudadano                             *
+     **************************************************************************/
     @Override
     public String mostrarIdentificador(){
         return getRut();

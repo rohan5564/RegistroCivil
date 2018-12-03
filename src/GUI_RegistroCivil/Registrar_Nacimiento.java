@@ -4,6 +4,9 @@ package GUI_RegistroCivil;
 import Enums.EstadoCivil;
 import Enums.Nacionalidad;
 import Enums.Sexo;
+import Excepciones.FormatoPasaporteException;
+import Excepciones.FormatoRutException;
+import Excepciones.LongitudRutException;
 import utilidades.ArchivoProperties;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
@@ -35,16 +38,24 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import Interfaces.Chile;
+import colecciones.Extranjero;
 import colecciones.Poblacion;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import org.controlsfx.control.PopOver;
 
 
 public class Registrar_Nacimiento {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+    private String tip = new String();
+    private PopOver tooltip = Elementos.popTip(tip);
     private TextArea logReporte;
     private ArchivoProperties prop;
     private Poblacion poblacion;
-
+    
     public Registrar_Nacimiento(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
@@ -52,7 +63,7 @@ public class Registrar_Nacimiento {
     }
     
     public void registrarNacimiento(MouseEvent click){
-        
+
         Stage ventana = new Stage();
         ventana.setX(370);
         ventana.setY(80);
@@ -82,29 +93,21 @@ public class Registrar_Nacimiento {
         Spinner<LocalTime> hora = Elementos.hora("hora del nacimiento");
         
         StackPane checkRut = Elementos.checkRut();
+        TextField rut = (TextField)checkRut.getChildrenUnmodifiable().get(0);
         ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().get(1);
         ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().get(2);
-        TextField rut = (TextField)checkRut.getChildrenUnmodifiable().get(0);
+        ImageView error = (ImageView)checkRut.getChildrenUnmodifiable().get(3);
+        
         rut.textProperty().addListener((observable, o, n)->{
-            if(n.length()<8){
-                check.setVisible(false);
-                mark.setVisible(false);
-            }
-            else if(Chileno.comprobarRut(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    check.setVisible(false);
-                    mark.setVisible(true);
-                }
-                else{
-                    mark.setVisible(false);
-                    check.setVisible(true);
-                }
-            }
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
-                check.setVisible(false);
-                mark.setVisible(false);
-            }
+            checkearRut(check, mark, error, o, n);
         });
+        
+        error.setOnMouseEntered(lambda-> tooltip.show(error));
+        error.setOnMouseExited(lambda-> tooltip.hide());
+        
+        mark.setOnMouseEntered(lambda-> tooltip.show(mark));
+        mark.setOnMouseExited(lambda-> tooltip.hide());
+        
         checkRut.setTranslateX(-30);
         
         ToggleGroup sexo = new ToggleGroup();
@@ -123,44 +126,27 @@ public class Registrar_Nacimiento {
         extMadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
         ImageView checkRutMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(1);
         ImageView markRutMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(2);
+        ImageView errorRutMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(4);
         madre.textProperty().addListener((observable, o, n)->{
             if(n.equals(rut.getText())){
                 checkRutMadre.setVisible(false);
                 markRutMadre.setVisible(false);
+                errorRutMadre.setVisible(true);
+                tip = "Identico al rut que se desea \nregistrar";
             }
-            else if(n.length()==0){
-                checkRutMadre.setVisible(false);
-                markRutMadre.setVisible(true);
-            }
-            else if(n.length()>0 && n.length()<8){
-                checkRutMadre.setVisible(false);
-                markRutMadre.setVisible(false);
-            }
-            else if(!extMadre.isSelected() && Chileno.comprobarRut(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkRutMadre.setVisible(true);
-                    markRutMadre.setVisible(false);
-                }
-                else{
-                    markRutMadre.setVisible(true);
-                    checkRutMadre.setVisible(false);
-                }
+            else if(!extMadre.isSelected()){
+                checkearRutExistente(checkRutMadre, markRutMadre, errorRutMadre, o, n);
             }
             else if(extMadre.isSelected()){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkRutMadre.setVisible(true);
-                    markRutMadre.setVisible(false);
-                }
-                else{
-                    markRutMadre.setVisible(true);
-                    checkRutMadre.setVisible(false);
-                }
-            }
-            else if(!extMadre.isSelected() && (!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)) ){
-                checkRutMadre.setVisible(false);
-                markRutMadre.setVisible(false);
+                checkearPasaporteExistente(checkRutMadre, markRutMadre, errorRutMadre, o, n);
             }
         });
+        
+        errorRutMadre.setOnMouseEntered(lambda-> tooltip.show(errorRutMadre));
+        errorRutMadre.setOnMouseExited(lambda-> tooltip.hide());
+        
+        markRutMadre.setOnMouseEntered(lambda-> tooltip.show(markRutMadre));
+        markRutMadre.setOnMouseExited(lambda-> tooltip.hide());
         
         ComboBox region = new ComboBox();
         region.setPromptText(" Region");
@@ -201,40 +187,27 @@ public class Registrar_Nacimiento {
         extPadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
         ImageView checkRutPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(1);
         ImageView markRutPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(2);
+        ImageView errorRutPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(4);
         padre.textProperty().addListener((observable, o, n)->{
-            if(n.length()==0){
-                checkRutPadre.setVisible(false);
-                markRutPadre.setVisible(true);
-            }
-            else if(n.length()>0 && n.length()<8){
+            if(n.equals(rut.getText())){
                 checkRutPadre.setVisible(false);
                 markRutPadre.setVisible(false);
+                errorRutPadre.setVisible(true);
+                tip = "Identico al rut que se desea \nregistrar";
             }
-            else if(!extPadre.isSelected() && Chileno.comprobarRut(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkRutPadre.setVisible(true);
-                    markRutPadre.setVisible(false);
-                }
-                else{
-                    markRutPadre.setVisible(true);
-                    checkRutPadre.setVisible(false);
-                }
+            else if(!extMadre.isSelected()){
+                checkearRutExistente(checkRutPadre, markRutPadre, errorRutPadre, o, n);
             }
-            else if(extPadre.isSelected()){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkRutPadre.setVisible(true);
-                    markRutPadre.setVisible(false);
-                }
-                else{
-                    markRutPadre.setVisible(true);
-                    checkRutPadre.setVisible(false);
-                }
-            }
-            else if(!extPadre.isSelected() && (!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)) ){
-                checkRutPadre.setVisible(false);
-                markRutPadre.setVisible(false);
+            else if(extMadre.isSelected()){
+                checkearPasaporteExistente(checkRutPadre, markRutPadre, errorRutPadre, o, n);
             }
         });
+        
+        errorRutPadre.setOnMouseEntered(lambda-> tooltip.show(errorRutPadre));
+        errorRutPadre.setOnMouseExited(lambda-> tooltip.hide());
+        
+        markRutPadre.setOnMouseEntered(lambda-> tooltip.show(markRutPadre));
+        markRutPadre.setOnMouseExited(lambda-> tooltip.hide());
         
         TextArea comentario = new TextArea();
         comentario.setWrapText(true);
@@ -299,34 +272,30 @@ public class Registrar_Nacimiento {
             
             rut.clear();
             
-            if(aux.registrar()){
-                if(poblacion.getPoblacion().containsKey(aux.getRut()))
-                    Elementos.popMensaje("Rut ya registrado", 300, 100);
-                else{
-                    //limpiar casillas
-                    nombre.clear();
-                    apellido.clear();
-                    if(f.isSelected())
-                        f.setSelected(false);
-                    else
-                        m.setSelected(false);
-                    nacimiento.setValue(null);
-                    hora.setUserData(null);
-                    rut.clear();
-                    madre.clear();
-                    //extMadre.setSelected(false);
-                    padre.clear();
-                    //extPadre.setSelected(false);
-                    
-                    //registrar nacido
-                    //ArchivoXML archivo = new ArchivoXML();
-                    //archivo.guardar(aux);
-                    poblacion.getPoblacion().put(aux.getRut(), aux);
-                    logReporte.appendText(
-                            "["+horaActual+"] "+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
-                            ", rut: "+aux.getRut()+" registrado \n");
-                    Elementos.popMensaje("Operacion Exitosa!", 300, 100);
-                }
+            if(poblacion.esRegistrable(aux.mostrarIdentificador())){
+                poblacion.registrarCiudadano(aux);
+                //limpiar casillas
+                nombre.clear();
+                apellido.clear();
+                if(f.isSelected())
+                    f.setSelected(false);
+                else
+                    m.setSelected(false);
+                nacimiento.setValue(null);
+                hora.setUserData(null);
+                rut.clear();
+                madre.clear();
+                //extMadre.setSelected(false);
+                padre.clear();
+                //extPadre.setSelected(false);
+                
+                logReporte.appendText(
+                        "["+horaActual+"] "+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
+                        ", rut: "+aux.getRut()+" registrado \n");
+                Elementos.popMensaje("Operacion Exitosa!", 300, 100);
+            }
+            else{   
+                Elementos.popMensaje("Rut ya registrado", 300, 100);
             }
         });
         
@@ -352,6 +321,115 @@ public class Registrar_Nacimiento {
         scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
         ventana.setScene(scene);
         ventana.show();
+    }
+    
+    
+    private void checkearRut(ImageView check, ImageView mark, ImageView error, String o, String n){
+        try{
+            if(Chileno.comprobarRut(n)){
+                if(poblacion.getChileno(n)==null){
+                    check.setVisible(true);
+                    mark.setVisible(false);
+                    error.setVisible(false);
+                }
+                else{
+                    check.setVisible(false);
+                    mark.setVisible(false);
+                    error.setVisible(true);
+                    tip = "rut ya registrado";
+                }
+            }
+            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(false);
+            }
+        }catch(LongitudRutException e){
+            if(n.length()==0){
+                check.setVisible(false);
+                mark.setVisible(true);
+                error.setVisible(false);
+                tip = "¿ingresara un Chileno sin rut?";
+            }
+            else{
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(true);
+                tip = LongitudRutException.getMensaje();
+            }
+        }catch(FormatoRutException e){
+            check.setVisible(false);
+            mark.setVisible(false);
+            error.setVisible(true);
+            tip = FormatoRutException.getMensaje();
+        }
+    }
+    
+    private void checkearPasaporteExistente(ImageView check, ImageView mark, ImageView error, String o, String n){
+        try{
+            if(Extranjero.comprobarPasaporte(n)){
+                if(poblacion.getExtranjero(n)!=null){
+                    check.setVisible(true);
+                    mark.setVisible(false);
+                    error.setVisible(false);
+                }
+                else{
+                    mark.setVisible(false);
+                    check.setVisible(false);
+                    error.setVisible(true);
+                }
+            }
+            else if(!Extranjero.comprobarPasaporte(n) || Extranjero.comprobarPasaporte(o)){
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(false);
+            }
+        }catch(FormatoPasaporteException e){
+            check.setVisible(false);
+            mark.setVisible(false);
+            error.setVisible(true);
+        }
+    }
+    
+    private void checkearRutExistente(ImageView check, ImageView mark, ImageView error, String o, String n){
+        try{
+            if(Chileno.comprobarRut(n)){
+                if(poblacion.getChileno(n)!=null){
+                    check.setVisible(true);
+                    mark.setVisible(false);
+                    error.setVisible(false);
+                }
+                else{
+                    mark.setVisible(false);
+                    check.setVisible(false);
+                    error.setVisible(true);
+                    tip = "no existe Chileno registrado con el rut";
+                }
+            }
+            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(false);
+            }
+        }catch(LongitudRutException e){
+            if(n.length()==0){
+                check.setVisible(false);
+                mark.setVisible(true);
+                error.setVisible(false);
+                tip = "¿no registrara al pariente?";
+            }
+            else{
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(true);
+                tip = LongitudRutException.getMensaje();
+            }
+        }catch(FormatoRutException e){
+            check.setVisible(false);
+            mark.setVisible(false);
+            error.setVisible(true);
+            tip = FormatoRutException.getMensaje();
+        }
     }
     
 }

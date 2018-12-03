@@ -49,6 +49,13 @@ public abstract class Ciudadano{
         parientes = new Parientes();
     }
     
+    /**
+     * permite mostrar el identificador unico de un ciudadano. En caso de ser
+     * chileno corresponde al Rut, si es extranjero corresponde al pasaporte
+     * @return identificador del ciudadano
+     */
+    abstract public String mostrarIdentificador();
+    
     public String getNombre() {
         return nombre;
     }
@@ -162,13 +169,6 @@ public abstract class Ciudadano{
     public void setParientes(Parientes parientes) {
         this.parientes = parientes;
     }
-    
-    /**
-     * permite mostrar el identificador unico de un ciudadano. En caso de ser
-     * chileno corresponde al Rut, si es extranjero corresponde al pasaporte
-     * @return identificador del ciudadano
-     */
-    abstract public String mostrarIdentificador();
             
     /**
      * permite calcular la edad del ciudadano, partiendo desde su nacimiento hasta hoy

@@ -5,6 +5,8 @@ import Enums.EstadoCivil;
 import Enums.Nacionalidad;
 import Enums.Sexo;
 import Enums.Visa;
+import Excepciones.FormatoRutException;
+import Excepciones.LongitudRutException;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import colecciones.Extranjero;
@@ -425,7 +427,7 @@ public class ConexionBD{
      * @return si encuentra al ciudadano en la base de datos lo retorna, sino
      * returna null
      */
-    public Object buscarCiudadano(String identificador){
+    public Object buscarCiudadano(String identificador)throws FormatoRutException, LongitudRutException{
         Chileno chileno = null;
         Extranjero extranjero = null;
         String consulta = null;

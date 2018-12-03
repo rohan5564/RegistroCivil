@@ -5,6 +5,9 @@ import Enums.EstadoCivil;
 import Enums.Nacionalidad;
 import Enums.Sexo;
 import Enums.Visa;
+import Excepciones.FormatoPasaporteException;
+import Excepciones.FormatoRutException;
+import Excepciones.LongitudRutException;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import colecciones.Extranjero;
@@ -93,24 +96,7 @@ public class Registrar_Extranjero {
         chkPasaporte.setVisible(false);
         
         pasaporte.textProperty().addListener((observable, o, n)->{
-            if(n.length()<8){
-                check.setVisible(false);
-                mark.setVisible(false);
-            }
-            else if(Extranjero.comprobarPasaporte(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    check.setVisible(false);
-                    mark.setVisible(true);
-                }
-                else{
-                    mark.setVisible(false);
-                    check.setVisible(true);
-                }
-            }
-            else if(!Extranjero.comprobarPasaporte(n) || Extranjero.comprobarPasaporte(o)){
-                check.setVisible(false);
-                mark.setVisible(false);
-            }
+            checkearPasaporte(check, mark, mark, o, n);
         });
         checkIdentificador.setTranslateX(-30);
         
@@ -120,55 +106,6 @@ public class Registrar_Extranjero {
         RadioButton m = new RadioButton("masculino");
         m.setToggleGroup(sexo);
         HBox sexoBox = new HBox(f, m);        
-        
-        StackPane parienteMadre = Elementos.checkIdentificador();
-        TextField madre = (TextField)parienteMadre.getChildrenUnmodifiable().get(0);
-        madre.setTranslateX(-30);
-        madre.setPromptText("identificador de madre");
-        CheckBox extMadre = (CheckBox)parienteMadre.getChildrenUnmodifiable().get(3);
-        extMadre.setSelected(true);
-        extMadre.setTranslateX(60);
-        extMadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
-        ImageView checkIdMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(1);
-        ImageView markIdMadre = (ImageView)parienteMadre.getChildrenUnmodifiable().get(2);
-        madre.textProperty().addListener((observable, o, n)->{
-            if(n.equals(pasaporte.getText())){
-                checkIdMadre.setVisible(false);
-                markIdMadre.setVisible(false);
-            }
-            else if(n.length()==0){
-                checkIdMadre.setVisible(false);
-                markIdMadre.setVisible(true);
-            }
-            else if(n.length()>0 && n.length()<8){
-                checkIdMadre.setVisible(false);
-                markIdMadre.setVisible(false);
-            }
-            else if(!extMadre.isSelected() && Chileno.comprobarRut(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkIdMadre.setVisible(true);
-                    markIdMadre.setVisible(false);
-                }
-                else{
-                    markIdMadre.setVisible(true);
-                    checkIdMadre.setVisible(false);
-                }
-            }
-            else if(extMadre.isSelected()){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkIdMadre.setVisible(true);
-                    markIdMadre.setVisible(false);
-                }
-                else{
-                    markIdMadre.setVisible(true);
-                    checkIdMadre.setVisible(false);
-                }
-            }
-            else if(!extMadre.isSelected() && (!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)) ){
-                checkIdMadre.setVisible(false);
-                markIdMadre.setVisible(false);
-            }
-        });
         
         ComboBox tipoVisa = new ComboBox();
         tipoVisa.setPromptText(" Visa");
@@ -185,51 +122,6 @@ public class Registrar_Extranjero {
         DatePicker primeraVisa = Elementos.fecha("primera visa");
         
         HBox visa = new HBox(20, primeraVisa, tipoVisa);
-                
-        StackPane parientePadre = Elementos.checkIdentificador();
-        TextField padre = (TextField)parientePadre.getChildrenUnmodifiable().get(0);
-        padre.setTranslateX(-30);
-        padre.setPromptText("identificador de padre");
-        CheckBox extPadre = (CheckBox)parientePadre.getChildrenUnmodifiable().get(3);
-        extPadre.setTranslateX(60);
-        extPadre.setSelected(true);
-        extPadre.setTooltip(new Tooltip("extanjero: debe ingreesar pasaporte"));
-        ImageView checkIdPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(1);
-        ImageView markIdPadre = (ImageView)parientePadre.getChildrenUnmodifiable().get(2);
-        padre.textProperty().addListener((observable, o, n)->{
-            if(n.length()==0){
-                checkIdPadre.setVisible(false);
-                markIdPadre.setVisible(true);
-            }
-            else if(n.length()>0 && n.length()<8){
-                checkIdPadre.setVisible(false);
-                markIdPadre.setVisible(false);
-            }
-            else if(!extPadre.isSelected() && Chileno.comprobarRut(n)){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkIdPadre.setVisible(true);
-                    markIdPadre.setVisible(false);
-                }
-                else{
-                    markIdPadre.setVisible(true);
-                    checkIdPadre.setVisible(false);
-                }
-            }
-            else if(extPadre.isSelected()){
-                if(poblacion.getPoblacion().containsKey(n)){
-                    checkIdPadre.setVisible(true);
-                    markIdPadre.setVisible(false);
-                }
-                else{
-                    markIdPadre.setVisible(true);
-                    checkIdPadre.setVisible(false);
-                }
-            }
-            else if(!extPadre.isSelected() && (!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)) ){
-                checkIdPadre.setVisible(false);
-                markIdPadre.setVisible(false);
-            }
-        });
         
         Button guardar = new Button("guardar");
         guardar.setDisable(true);
@@ -244,10 +136,8 @@ public class Registrar_Extranjero {
                 m.selectedProperty()).not()).or(
                 tipoVisa.valueProperty().isNull().or(
                 primeraVisa.valueProperty().isNull().or(
-                hora.valueProperty().isNull().or(
-                markIdMadre.visibleProperty().not().and(
-                checkIdMadre.visibleProperty().not()
-                ))))))));
+                hora.valueProperty().isNull()
+                ))))));
         
         guardar.disableProperty().bind(validacion);
         
@@ -265,55 +155,31 @@ public class Registrar_Extranjero {
             aux.setEstadoCivil(EstadoCivil.HIJO);
             aux.setNacionalidades(Nacionalidad.CHILE);
             
-            //requisitos opcionales
-            Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
-            if(mama != null && aux.getParientes().buscarPariente(mama) == null){
-                mama.setEstadoCivil(EstadoCivil.MADRE);
-                aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
-                mama.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
-                if(extMadre.isSelected())
-                    aux.setNacionalidades(mama.getNacionalidades());
-            }
-            
-            Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
-            if(papa != null && aux.getParientes().buscarPariente(papa) == null){
-                papa.setEstadoCivil(EstadoCivil.PADRE);
-                aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
-                papa.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
-                if(extPadre.isSelected())
-                    aux.setNacionalidades(papa.getNacionalidades());
-            }
-            
             pasaporte.clear();
             
-            if(aux.registrar()){
-                if(poblacion.getPoblacion().containsKey(aux.getPasaporte()))
-                    Elementos.popMensaje("pasaporte ya registrado", 300, 100);
-                else{
-                    //limpiar casillas
-                    nombre.clear();
-                    apellido.clear();
-                    if(f.isSelected())
-                        f.setSelected(false);
-                    else
-                        m.setSelected(false);
-                    nacimiento.setValue(null);
-                    hora.setUserData(null);
-                    pasaporte.clear();
-                    madre.clear();
-                    //extMadre.setSelected(false);
-                    padre.clear();
-                    //extPadre.setSelected(false);
-                    
-                    //registrar nacido
-                    //ArchivoXML archivo = new ArchivoXML();
-                    //archivo.guardar(aux);
-                    poblacion.getPoblacion().put(aux.getPasaporte(), aux);
-                    logReporte.appendText(
-                            "["+horaActual+"] "+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
-                            ", pasaporte: "+aux.getPasaporte()+" registrado \n");
-                    Elementos.popMensaje("Operacion Exitosa!", 300, 100);
-                }
+            if(poblacion.esRegistrable(aux.mostrarIdentificador())){
+                poblacion.registrarCiudadano(aux);
+                //limpiar casillas
+                nombre.clear();
+                apellido.clear();
+                if(f.isSelected())
+                    f.setSelected(false);
+                else
+                    m.setSelected(false);
+                nacimiento.setValue(null);
+                hora.setUserData(null);
+                pasaporte.clear();
+                
+                //registrar nacido
+                //ArchivoXML archivo = new ArchivoXML();
+                //archivo.guardar(aux);
+                logReporte.appendText(
+                        "["+horaActual+"] "+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
+                                ", pasaporte: "+aux.getPasaporte()+" registrado \n");   
+                Elementos.popMensaje("Operacion Exitosa!", 300, 100);
+            }
+            else{
+                Elementos.popMensaje("pasaporte ya registrado", 300, 100);
             }
         });
         
@@ -329,13 +195,37 @@ public class Registrar_Extranjero {
         grid.add(nacimiento,0,4);
         grid.add(hora, 0, 5);
         grid.add(checkIdentificador,0,6);
-        grid.add(parienteMadre, 0, 7);
-        grid.add(parientePadre, 0, 8);
-        grid.add(barra,0,9);
+        grid.add(barra,0,7);
         
         Scene scene = new Scene(grid);
         scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
         ventana.setScene(scene);
         ventana.show();
+    }
+    
+    private void checkearPasaporte(ImageView check, ImageView mark, ImageView error, String o, String n){
+        try{
+            if(Extranjero.comprobarPasaporte(n)){
+                if(poblacion.esRegistrable(n)){
+                    check.setVisible(true);
+                    mark.setVisible(false);
+                    error.setVisible(false);
+                }
+                else{
+                    mark.setVisible(false);
+                    check.setVisible(true);
+                    error.setVisible(false);
+                }
+            }
+            /*else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(false);
+            }*/
+        }catch(FormatoPasaporteException e){
+            check.setVisible(false);
+            mark.setVisible(false);
+            error.setVisible(true);
+        }
     }
 }

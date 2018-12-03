@@ -2,7 +2,11 @@
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
+import Excepciones.FormatoPasaporteException;
+import Excepciones.FormatoRutException;
+import Excepciones.LongitudRutException;
 import colecciones.Chileno;
+import colecciones.Extranjero;
 import colecciones.ListadoParientes;
 import colecciones.Poblacion;
 import java.time.LocalDateTime;
@@ -70,6 +74,7 @@ public class Registrar_Matrimonio {
         rutEsposo.setMinWidth(220);
         ImageView checkEsposo = (ImageView)esposo.getChildrenUnmodifiable().get(1);
         ImageView markEsposo = (ImageView)esposo.getChildrenUnmodifiable().get(2);
+        ImageView errorEsposo = (ImageView)esposo.getChildrenUnmodifiable().get(3);
         
         Label lblEsposa = new Label("Esposa");
         lblEsposa.setFont(Font.font("times new roman", FontWeight.LIGHT, 20));
@@ -81,148 +86,55 @@ public class Registrar_Matrimonio {
         rutEsposa.setDisable(true);
         ImageView checkEsposa = (ImageView)esposa.getChildrenUnmodifiable().get(1);
         ImageView markEsposa = (ImageView)esposo.getChildrenUnmodifiable().get(2);
+        ImageView errorEsposa = (ImageView)esposo.getChildrenUnmodifiable().get(3);
         
         rutEsposo.textProperty().addListener((observable, o, n)->{
-            if(n.length()<8){
-                checkEsposo.setVisible(false);
-                markEsposo.setVisible(false);
-            }
-            else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
-                    && poblacion.getPoblacion().get(n).getDefuncion()==null){
-                ListadoParientes listEsposa = 
-                        poblacion.getPoblacion().get(n).getParientes().buscarListaParentesco(EstadoCivil.CASADO);
-                if(!listEsposa.existe() || listEsposa.estaVacia()){
-                    markEsposo.setVisible(false);
-                    checkEsposo.setVisible(true);
-                }
-                else{
-                    checkEsposo.setVisible(false);
-                    markEsposo.setVisible(true);
-                }
-            }            
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
-                checkEsposo.setVisible(false);
-                markEsposo.setVisible(false);
-            }
+            checkearRut(checkEsposo, markEsposo, errorEsposo, o, n);
         });
         markEsposo.visibleProperty().addListener((obs, o, n)->{
             if(n.booleanValue()){
-                aux1 = (Chileno)poblacion.getPoblacion().get(rutEsposo.getText());
-                if(aux1 == null)
-                    lblEsposo.setText("Esposo");
-                else{
-                    lblEsposo.setText("Esposo: "+ aux1.getNombre() +"");
-                    if(!aux1.registrarMatrimonio()){
-                        rutEsposa.setDisable(true);
-                        estadoEsposo.setText("Estado: Casado");
-                    }
-                    else{
-                        rutEsposa.setDisable(false);
-                        estadoEsposo.setText("Estado: Disponible");
-                    }
-                }
+                estadoEsposo.setText("Estado: Casado");
             }
             else{
-                rutEsposa.setDisable(true);
-                lblEsposo.setText("Esposo");
                 estadoEsposo.setText("");
-                aux1 = null;
             }
         });
         checkEsposo.visibleProperty().addListener((obs, o, n)->{
-            if(n.booleanValue()){
-                aux1 = (Chileno)poblacion.getPoblacion().get(rutEsposo.getText());
-                if(aux1 == null)
-                    lblEsposo.setText("Esposo");
-                else{
-                    lblEsposo.setText("Esposo: "+ aux1.getNombre() +"");
-                    if(!aux1.registrarMatrimonio()){
-                        rutEsposa.setDisable(true);
-                        estadoEsposo.setText("Estado: Casado");
-                    }
-                    else{
-                        rutEsposa.setDisable(false);
-                        estadoEsposo.setText("Estado: Disponible");
-                    }
+            try{
+                if(n.booleanValue()){
+                    estadoEsposo.setText("Estado: Disponible");
+                    aux1 = poblacion.getChileno(rutEsposo.getText());
                 }
-            }
-            else{
-                rutEsposa.setDisable(true);
-                lblEsposo.setText("Esposo");
-                estadoEsposo.setText("");
-                aux1 = null;
+                else{
+                    estadoEsposo.setText("");
+                }
+            }catch(FormatoRutException | LongitudRutException e){
+                e.printStackTrace();
             }
         });
         
         rutEsposa.textProperty().addListener((observable, o, n)->{
-            if(n.length()<8){
-                checkEsposa.setVisible(false);
-                markEsposa.setVisible(false);
-            }
-            else if(Chileno.comprobarRut(n) && poblacion.getPoblacion().containsKey(n)
-                    && poblacion.getPoblacion().get(n).getDefuncion()==null){
-                ListadoParientes listEsposo = 
-                        poblacion.getPoblacion().get(n).getParientes().buscarListaParentesco(EstadoCivil.CASADO);
-                if(!listEsposo.existe() || listEsposo.estaVacia()){
-                    markEsposa.setVisible(false);
-                    checkEsposa.setVisible(true);
-                }
-                else{
-                    checkEsposa.setVisible(false);
-                    markEsposa.setVisible(true);
-                }
-            }            
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
-                checkEsposa.setVisible(false);
-                markEsposa.setVisible(false);
-            }
+            checkearRut(checkEsposa, markEsposa, errorEsposa, o, n);
         });
         markEsposa.visibleProperty().addListener((obs, o, n)->{
             if(n.booleanValue()){
-                aux2 = (Chileno)poblacion.getPoblacion().get(rutEsposa.getText());
-                if(aux2 == null)
-                    lblEsposa.setText("Esposa");
-                else{
-                    lblEsposa.setText("Esposa: "+ aux2.getNombre() +"");
-                    if(!aux2.registrarMatrimonio()){
-                        guardar.setDisable(true);
-                        estadoEsposa.setText("Estado: Casada");
-                    }
-                    else{
-                        guardar.setDisable(false);
-                        estadoEsposa.setText("Estado: Disponible");
-                    }
-                }
+                estadoEsposa.setText("Estado: Casada");
             }
             else{
-                guardar.setDisable(false);
-                lblEsposa.setText("Esposa");
                 estadoEsposa.setText("");
-                aux2 = null;
             }
         });
         checkEsposa.visibleProperty().addListener((obs, o, n)->{
-            if(n.booleanValue()){
-                aux2 = (Chileno)poblacion.getPoblacion().get(rutEsposa.getText());
-                if(aux2 == null)
-                    lblEsposa.setText("Esposa");
-                else{
-                    lblEsposa.setText("Esposa: "+ aux2.getNombre() +"");
-                    if(!aux2.registrarMatrimonio()){
-                        guardar.setDisable(true);
-                        estadoEsposa.setText("Estado: Casada");
-                    }
-                    else{
-                        guardar.setDisable(false);
-                        estadoEsposa.setText("Estado: Disponible");
-                    }
+            try{
+                if(n.booleanValue()){
+                    estadoEsposa.setText("Estado: Disponible");
+                    aux2 = poblacion.getChileno(rutEsposa.getText());
                 }
-            }
-            else{
-                guardar.setDisable(false);
-                lblEsposa.setText("Esposa");
-                estadoEsposa.setText("");
-                aux2 = null;
+                else{
+                    estadoEsposa.setText("");
+                }
+            }catch(FormatoRutException | LongitudRutException e){
+                e.printStackTrace();
             }
         });
         
@@ -257,4 +169,36 @@ public class Registrar_Matrimonio {
         ventana.setScene(scene);
         ventana.show();
     }
+    
+    private void checkearRut(ImageView check, ImageView mark, ImageView error, String o, String n){
+        try{
+            if(Chileno.comprobarRut(n) && poblacion.getChileno(n)!=null && poblacion.getChileno(n).getDefuncion()==null){
+                ListadoParientes listEsposa = poblacion.getChileno(n).getParientes().buscarListaParentesco(EstadoCivil.CASADO);
+                if(!listEsposa.existe() || listEsposa.estaVacia()){
+                    check.setVisible(true);
+                    mark.setVisible(false);
+                    error.setVisible(false);
+                }
+                else{
+                    check.setVisible(false);
+                    mark.setVisible(true);
+                    error.setVisible(false);
+                }
+            }            
+            /*else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(false);
+            }*/
+        }catch(LongitudRutException e){
+            check.setVisible(false);
+            mark.setVisible(false);
+            error.setVisible(true);
+        }catch(FormatoRutException e){
+            check.setVisible(false);
+            mark.setVisible(false);
+            error.setVisible(true);
+        }
+    }
+    
 }

@@ -3,11 +3,12 @@ package colecciones;
 
 import Enums.EstadoCivil;
 import Enums.Visa;
-import Interfaces.Registro_Civil;
+import Excepciones.FormatoPasaporteException;
 import java.time.LocalDate;
+import Interfaces.RegistroPersonal;
 
 
-public class Extranjero extends Ciudadano implements Registro_Civil{
+public class Extranjero extends Ciudadano implements RegistroPersonal{
     
     private String pasaporte;
     private Visa tipoDeVisa;
@@ -46,46 +47,39 @@ public class Extranjero extends Ciudadano implements Registro_Civil{
     }
     
     /**
-     * @return true si el extranjero puede registrarse, false en caso contrario
+     * permite comprobar que un pasaporte ingresado tenga un formato correcto para 
+     * el registro civil
+     * @param str pasaporte a comprobar
+     * @return true si es un pasaporte valido, false en caso contrario
+     * @throws FormatoPasaporteException si se ingresan caracteres no alfanumericos
      */
-    @Override
-    public boolean registrar(){
-        return super.getRequisitosMinimos() && pasaporte != null;
+    public static boolean comprobarPasaporte(String str) throws FormatoPasaporteException{
+        if(str.toUpperCase().matches(".*[^1234567890QWERTYUIOPASDFGHJKLZXCVBNM].*"))
+            throw new FormatoPasaporteException();
+        return str.length()>6;
     }
-
-    /**
-     * @return true si puede registrarse la defuncion, false en caso contrario
-     */
+    
+    
+    /***************************************************************************
+     *                  interfaz: RegistroPersonal                             *
+     **************************************************************************/
     @Override
     public boolean registrarDefuncion(){
         return super.getDefuncion()!=null && primeraVisa != null;
     }
-
-    /**
-     * se rige bajo el principio de monogamia, del mismo modo que un chileno
-     * @return true si puede registrarse un nuevo matrimonio con otra persona,
-     * false en caso contrario
-     */
+    
     @Override
     public boolean registrarMatrimonio(){
         return super.getParientes().buscarListaParentesco(EstadoCivil.CASADO).estaVacia()
                 || super.getParientes().buscarListaParentesco(EstadoCivil.CASADO) == null;
     }
     
-    /**
-     * identificador por defecto para un extranjero es el pasapoprte
-     * @return identificador unico del extranjero en chile
-     */
+    /***************************************************************************
+     *                  clase abstracta: Ciudadano                             *
+     **************************************************************************/
     @Override
     public String mostrarIdentificador(){
         return pasaporte;
     }
     
-    /**
-     * @param str pasaporte a comprobar
-     * @return true si es un pasaporte valido, false en caso contrario
-     */
-    public static boolean comprobarPasaporte(String str){
-        return str.length()>=8;
-    }
 }
