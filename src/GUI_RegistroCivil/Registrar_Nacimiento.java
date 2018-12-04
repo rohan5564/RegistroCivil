@@ -50,8 +50,7 @@ import org.controlsfx.control.PopOver;
 
 public class Registrar_Nacimiento {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-    private String tip = new String();
-    private PopOver tooltip = Elementos.popTip(tip);
+    private PopOver tooltip;
     private TextArea logReporte;
     private ArchivoProperties prop;
     private Poblacion poblacion;
@@ -132,7 +131,7 @@ public class Registrar_Nacimiento {
                 checkRutMadre.setVisible(false);
                 markRutMadre.setVisible(false);
                 errorRutMadre.setVisible(true);
-                tip = "Identico al rut que se desea \nregistrar";
+                tooltip = Elementos.popTip("Identico al rut que se desea \nregistrar");
             }
             else if(!extMadre.isSelected()){
                 checkearRutExistente(checkRutMadre, markRutMadre, errorRutMadre, o, n);
@@ -193,7 +192,7 @@ public class Registrar_Nacimiento {
                 checkRutPadre.setVisible(false);
                 markRutPadre.setVisible(false);
                 errorRutPadre.setVisible(true);
-                tip = "Identico al rut que se desea \nregistrar";
+                tooltip = Elementos.popTip("Identico al rut que se desea \nregistrar");
             }
             else if(!extMadre.isSelected()){
                 checkearRutExistente(checkRutPadre, markRutPadre, errorRutPadre, o, n);
@@ -336,7 +335,7 @@ public class Registrar_Nacimiento {
                     check.setVisible(false);
                     mark.setVisible(false);
                     error.setVisible(true);
-                    tip = "rut ya registrado";
+                    tooltip = Elementos.popTip("rut ya registrado");
                 }
             }
             else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
@@ -347,21 +346,21 @@ public class Registrar_Nacimiento {
         }catch(LongitudRutException e){
             if(n.length()==0){
                 check.setVisible(false);
-                mark.setVisible(true);
-                error.setVisible(false);
-                tip = "¿ingresara un Chileno sin rut?";
+                mark.setVisible(false);
+                error.setVisible(true);
+                tooltip = Elementos.popTip("Debe ingresar un rut");
             }
             else{
                 check.setVisible(false);
                 mark.setVisible(false);
                 error.setVisible(true);
-                tip = LongitudRutException.getMensaje();
+                tooltip = Elementos.popTip(LongitudRutException.getMensaje());
             }
         }catch(FormatoRutException e){
             check.setVisible(false);
             mark.setVisible(false);
             error.setVisible(true);
-            tip = FormatoRutException.getMensaje();
+            tooltip = Elementos.popTip(FormatoRutException.getMensaje());
         }
     }
     
@@ -403,7 +402,7 @@ public class Registrar_Nacimiento {
                     mark.setVisible(false);
                     check.setVisible(false);
                     error.setVisible(true);
-                    tip = "no existe Chileno registrado con el rut";
+                    tooltip = Elementos.popTip("no existe Chileno registrado con el rut");
                 }
             }
             else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
@@ -416,19 +415,19 @@ public class Registrar_Nacimiento {
                 check.setVisible(false);
                 mark.setVisible(true);
                 error.setVisible(false);
-                tip = "¿no registrara al pariente?";
+                tooltip = Elementos.popTip("¿no registrara al pariente?");
             }
             else{
                 check.setVisible(false);
                 mark.setVisible(false);
                 error.setVisible(true);
-                tip = LongitudRutException.getMensaje();
+                tooltip = Elementos.popTip(LongitudRutException.getMensaje());
             }
         }catch(FormatoRutException e){
             check.setVisible(false);
             mark.setVisible(false);
             error.setVisible(true);
-            tip = FormatoRutException.getMensaje();
+            tooltip = Elementos.popTip(FormatoRutException.getMensaje());
         }
     }
     

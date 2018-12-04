@@ -6,10 +6,6 @@ import Enums.Nacionalidad;
 import Enums.Sexo;
 import Enums.Visa;
 import Excepciones.FormatoPasaporteException;
-import Excepciones.FormatoRutException;
-import Excepciones.LongitudRutException;
-import colecciones.Chileno;
-import colecciones.Ciudadano;
 import colecciones.Extranjero;
 import colecciones.Poblacion;
 import java.time.LocalDateTime;
@@ -31,7 +27,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -48,8 +43,6 @@ public class Registrar_Extranjero {
     private TextArea logReporte;
     private ArchivoProperties prop;
     private Poblacion poblacion;
-    private Chileno aux1;
-    private Chileno aux2;
 
     public Registrar_Extranjero(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
         this.logReporte = logReporte;
@@ -217,11 +210,11 @@ public class Registrar_Extranjero {
                     error.setVisible(false);
                 }
             }
-            /*else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+            else if(!Extranjero.comprobarPasaporte(n) || Extranjero.comprobarPasaporte(o)){
                 check.setVisible(false);
                 mark.setVisible(false);
-                error.setVisible(false);
-            }*/
+                error.setVisible(true);
+            }
         }catch(FormatoPasaporteException e){
             check.setVisible(false);
             mark.setVisible(false);

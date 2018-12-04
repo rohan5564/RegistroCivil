@@ -36,6 +36,7 @@ import colecciones.Ciudadano;
 import colecciones.Poblacion;
 import java.time.LocalDate;
 import java.util.HashMap;
+import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.PopOver;
@@ -202,8 +203,11 @@ public class Elementos {
     public static StackPane checkRut(){
         StackPane checkRut = new StackPane();
         ImageView check = Elementos.icono("Resources/check.png");
+        check.setTranslateX(100);
         ImageView mark = Elementos.icono("Resources/yellow_mark.png");
+        mark.setTranslateX(100);
         ImageView error = Elementos.icono("Resources/x.png");
+        error.setTranslateX(100);
         TextField rut = new TextField();
         rut.setTextFormatter(new TextFormatter<>((formato) -> {
                 formato.setText(formato.getText().toUpperCase());
@@ -250,8 +254,11 @@ public class Elementos {
         CheckBox pasaporte = new CheckBox();
         pasaporte.setSelected(false);
         ImageView check = Elementos.icono("Resources/check.png");
+        check.setTranslateX(110);
         ImageView mark = Elementos.icono("Resources/yellow_mark.png");
+        mark.setTranslateX(110);
         ImageView error = Elementos.icono("Resources/x.png");
+        error.setTranslateX(110);
         mark.setVisible(true);
         TextField identificador = new TextField();
         identificador.setTextFormatter(new TextFormatter<>((formato) -> {
@@ -479,10 +486,8 @@ public class Elementos {
         Label tip = new Label(msj);
         tip.setStyle("-fx-text-fill: black");
         tip.setFont(Font.font("bold", FontWeight.NORMAL, 16));
-        VBox tool = new VBox(tip);
-        tool.setStyle("-fx-background-color : #DFD500");
         PopOver tooltip = new PopOver();
-        tooltip.setContentNode(tool);
+        tooltip.setContentNode(tip);
         return tooltip;
     }
 }
