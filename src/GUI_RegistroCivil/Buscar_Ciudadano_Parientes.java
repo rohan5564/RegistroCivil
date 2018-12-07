@@ -4,6 +4,7 @@ package GUI_RegistroCivil;
 import Enums.EstadoCivil;
 import Enums.Sexo;
 import colecciones.Ciudadano;
+import colecciones.Poblacion;
 import java.util.LinkedList;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,6 +25,7 @@ import utilidades.ArchivoProperties;
 public class Buscar_Ciudadano_Parientes {
     private Ciudadano ciudadano;
     private ArchivoProperties prop;
+    private Poblacion poblacion = Poblacion.getInstancia();
     
     public Buscar_Ciudadano_Parientes(Ciudadano ciudadano, ArchivoProperties prop){
         this.ciudadano = ciudadano;
@@ -99,7 +101,7 @@ public class Buscar_Ciudadano_Parientes {
         List<Listado> mapaDeParientes = new LinkedList<>();
         //Map<EstadoCivil, Ciudadano> mapaDeParientes = new EnumMap<>(EstadoCivil.class);
         ciudadano.getParientes().getPersonas().forEach((llave, valor) -> {
-            valor.getListadoParientes().forEach(persona -> mapaDeParientes.add(new Listado(llave, persona)));
+            valor.getListadoParientes().forEach(persona -> mapaDeParientes.add(new Listado(llave, poblacion.getCiudadano(persona))));
         });
         
         ObservableList<Listado> listadoParientes = 

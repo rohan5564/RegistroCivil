@@ -4,6 +4,7 @@ package GUI_RegistroCivil;
 import Enums.EstadoCivil;
 import Enums.Nacionalidad;
 import Enums.Sexo;
+import Excepciones.CantidadParentescoException;
 import Excepciones.FormatoPasaporteException;
 import Excepciones.FormatoRutException;
 import Excepciones.LongitudRutException;
@@ -40,11 +41,7 @@ import javafx.stage.StageStyle;
 import Interfaces.Chile;
 import colecciones.Extranjero;
 import colecciones.Poblacion;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import org.controlsfx.control.PopOver;
 
 
@@ -53,12 +50,11 @@ public class Registrar_Nacimiento {
     private PopOver tooltip;
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
     
-    public Registrar_Nacimiento(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public Registrar_Nacimiento(TextArea logReporte, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
-        this.prop = prop;
     }
     
     public void registrarNacimiento(MouseEvent click){
@@ -251,22 +247,30 @@ public class Registrar_Nacimiento {
             if(!comentario.getText().isEmpty())
                 aux.setComentarioNacimiento(comentario.getText());
             
-            Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
-            if(mama != null && aux.getParientes().buscarPariente(mama) == null){
-                mama.setEstadoCivil(EstadoCivil.MADRE);
-                aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
-                mama.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
-                if(extMadre.isSelected())
-                    aux.setNacionalidades(mama.getNacionalidades());
+            Ciudadano mama = poblacion.getCiudadano(madre.getText());
+            if(mama != null && aux.getParientes().buscarPariente(mama.mostrarIdentificador()) == null){
+                try{
+                    aux.getParientes().agregarPariente(mama.mostrarIdentificador(), EstadoCivil.MADRE);
+                    mama.setEstadoCivil(EstadoCivil.MADRE);
+                    mama.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
+                    if(extMadre.isSelected())
+                        aux.setNacionalidades(mama.getNacionalidades());
+                }catch(CantidadParentescoException e){
+                    Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje());
+                }
             }
             
-            Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
-            if(papa != null && aux.getParientes().buscarPariente(papa) == null){
-                papa.setEstadoCivil(EstadoCivil.PADRE);
-                aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
-                papa.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
-                if(extPadre.isSelected())
-                    aux.setNacionalidades(papa.getNacionalidades());
+            Ciudadano papa = poblacion.getCiudadano(padre.getText());
+            if(papa != null && aux.getParientes().buscarPariente(papa.mostrarIdentificador()) == null){
+                try{
+                    aux.getParientes().agregarPariente(papa.mostrarIdentificador(), EstadoCivil.PADRE);
+                    papa.setEstadoCivil(EstadoCivil.PADRE);
+                    papa.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
+                    if(extPadre.isSelected())
+                        aux.setNacionalidades(papa.getNacionalidades());
+                }catch(CantidadParentescoException e){
+                    Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje());
+                }
             }
             
             rut.clear();

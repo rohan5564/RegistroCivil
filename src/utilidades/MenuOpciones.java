@@ -20,19 +20,18 @@ public class MenuOpciones {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
     
-    public MenuOpciones(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public MenuOpciones(TextArea logReporte, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
-        this.prop = prop;
     }
     /**
      * Busca a un ciudanano
      * @param click 
      */
     public void buscarCiudadano(MouseEvent click){
-        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, prop);
         accesoDirecto.buscarCiudadano(click);
     }
     /**
@@ -40,7 +39,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarNacimiento(MouseEvent click){
-        Registrar_Nacimiento accesoDirecto = new Registrar_Nacimiento(logReporte, poblacion, prop);
+        Registrar_Nacimiento accesoDirecto = new Registrar_Nacimiento(logReporte, prop);
         accesoDirecto.registrarNacimiento(click);
     }
     /**
@@ -52,7 +51,7 @@ public class MenuOpciones {
             Elementos.popMensaje("Sin poblacion agregada", 350, 100);
             return;
         }
-        Cantidad_Nacidos accesoDirecto = new Cantidad_Nacidos(logReporte, poblacion, prop);
+        Cantidad_Nacidos accesoDirecto = new Cantidad_Nacidos(logReporte, prop);
         accesoDirecto.cantidadNacidos(click);
     }
     /**
@@ -64,7 +63,7 @@ public class MenuOpciones {
             Elementos.popMensaje("Sin poblacion agregada", 350, 100);
             return;
         }
-        Cantidad_Extranjeros accesoDirecto = new Cantidad_Extranjeros(logReporte, poblacion, prop);
+        Cantidad_Extranjeros accesoDirecto = new Cantidad_Extranjeros(logReporte, prop);
         accesoDirecto.cantidadExtranjeros(click);
     }
     /**
@@ -72,7 +71,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarDefuncion(MouseEvent click){
-        Registrar_Defuncion accesoDirecto = new Registrar_Defuncion(logReporte, poblacion, prop);
+        Registrar_Defuncion accesoDirecto = new Registrar_Defuncion(logReporte, prop);
         accesoDirecto.registrarDefuncion(click);
     }
     /**
@@ -80,7 +79,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarMatrimonio(MouseEvent click){
-        Registrar_Matrimonio accesoDirecto = new Registrar_Matrimonio(logReporte, poblacion, prop);
+        Registrar_Matrimonio accesoDirecto = new Registrar_Matrimonio(logReporte, prop);
         accesoDirecto.registrarMatrimonio(click);
     }
     /**
@@ -88,7 +87,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarExtranjero(MouseEvent click){
-        Registrar_Extranjero accesoDirecto = new Registrar_Extranjero(logReporte, poblacion, prop);
+        Registrar_Extranjero accesoDirecto = new Registrar_Extranjero(logReporte, prop);
         accesoDirecto.registrarExtranjero(click);
     }
     /**
@@ -98,7 +97,7 @@ public class MenuOpciones {
     public void buscarDefuncion(MouseEvent click){
         /*Buscar_Defuncion accesoDirecto = new Buscar_Defuncion(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
-        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, prop);
         accesoDirecto.buscarCiudadano(click);
     }
     /**
@@ -108,7 +107,7 @@ public class MenuOpciones {
     public void buscarMatrimonio(MouseEvent click){
         /*Buscar_Matrimonio accesoDirecto = new Buscar_Matrimonio(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
-        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, poblacion, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, prop);
         accesoDirecto.buscarCiudadano(click);
     }
 }

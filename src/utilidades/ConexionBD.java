@@ -537,7 +537,7 @@ public class ConexionBD{
             rs__ = st__.executeQuery();
             while(rs__.next()){
                 parientes.agregarPariente(
-                        (Ciudadano)buscarCiudadano(rs__.getString("id_pariente")), EstadoCivil.valueOf(rs__.getString("parentesco").toUpperCase()));
+                        ((Ciudadano)buscarCiudadano(rs__.getString("id_pariente"))).mostrarIdentificador(), EstadoCivil.valueOf(rs__.getString("parentesco").toUpperCase()));
                 
             }
             

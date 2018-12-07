@@ -1,28 +1,27 @@
 
 package colecciones;
 
-import Enums.EstadoCivil;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ListadoParientes {
     
-    private List<Ciudadano> listadoParientes = null;
+    private List<String> listadoParientes = null;
 
     public ListadoParientes(){
         listadoParientes = new ArrayList<>();
     }
     
-    public ListadoParientes(List<Ciudadano> listadoParientes) {
+    public ListadoParientes(List<String> listadoParientes) {
         this.listadoParientes = listadoParientes;
     }
-    
-    public List<Ciudadano> getListadoParientes() {
+
+    public List<String> getListadoParientes() {
         return listadoParientes;
     }
 
-    public void setListadoParientes(List<Ciudadano> listadoParientes) {
+    public void setListadoParientes(List<String> listadoParientes) {
         this.listadoParientes = listadoParientes;
     }
     
@@ -37,7 +36,7 @@ public class ListadoParientes {
      * @param persona persona a buscar
      * @return true si encuentra a la persona, false caso contrario
      */
-    public boolean contienePersona(Ciudadano persona){
+    public boolean contienePersona(String persona){
         return listadoParientes.contains(persona);
     }
     
@@ -45,7 +44,7 @@ public class ListadoParientes {
      * @param personas listado de personas
      * @return true si contiene a todo el listado, false caso contrario
      */
-    public boolean contieneListadoPersonas(List<Ciudadano> personas){
+    public boolean contieneListadoPersonas(List<String> personas){
         return listadoParientes.containsAll(personas);
     }
     
@@ -53,7 +52,7 @@ public class ListadoParientes {
      * @param persona persona a agregar
      * @return true si agrega, false caso contrario
      */
-    public boolean agregar(Ciudadano persona){
+    public boolean agregar(String persona){
         return listadoParientes.add(persona);
     }
     
@@ -61,7 +60,7 @@ public class ListadoParientes {
      * @param persona listado de personas
      * @return  true si agrega al listado, false caso contrario
      */
-    public boolean agregarListado(List<Ciudadano> persona){
+    public boolean agregarListado(List<String> persona){
         return listadoParientes.addAll(persona);
     }
     
@@ -69,7 +68,7 @@ public class ListadoParientes {
      * @param persona persona a borrar
      * @return true si elimina a la persona del listado, false caso contrario
      */
-    public boolean borrar(Ciudadano persona){
+    public boolean borrar(String persona){
         return listadoParientes.remove(persona);
     }
     
@@ -77,7 +76,7 @@ public class ListadoParientes {
      * @param persona listado de personas
      * @return  true si borra las personas, false en caso contrario
      */
-    public boolean borrarListado(List<Ciudadano> persona){
+    public boolean borrarListado(List<String> persona){
         return listadoParientes.removeAll(persona);
     }
     
@@ -96,19 +95,11 @@ public class ListadoParientes {
     
     /**
      * 
-     * @param estado remueve el estados a todos
-     */
-    public void removerEstadoATodos(EstadoCivil estado){
-        listadoParientes.forEach(persona->{
-            persona.getEstadoCivil().remove(estado);
-        });
-    }
-    /**
-     * 
      * @param index posición del pariente a obtener
      * @return Ciudadano buscado 
      */
-    public Ciudadano obtenerCiudadano(int index){
+    public String obtenerCiudadano(int index){
         return listadoParientes.get(index);
     }
+    
 }

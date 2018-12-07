@@ -39,7 +39,7 @@ public class Cantidad_Extranjeros {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
     private Chileno aux;
 
     public Cantidad_Extranjeros(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {

@@ -2,11 +2,10 @@
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
-import Excepciones.FormatoPasaporteException;
+import Excepciones.CantidadParentescoException;
 import Excepciones.FormatoRutException;
 import Excepciones.LongitudRutException;
 import colecciones.Chileno;
-import colecciones.Extranjero;
 import colecciones.ListadoParientes;
 import colecciones.Poblacion;
 import java.time.LocalDateTime;
@@ -35,14 +34,13 @@ public class Registrar_Matrimonio {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
     private Chileno aux1;
     private Chileno aux2;
 
-    public Registrar_Matrimonio(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public Registrar_Matrimonio(TextArea logReporte, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
-        this.prop = prop;
     }
     
     public void registrarMatrimonio(MouseEvent click){
@@ -141,18 +139,23 @@ public class Registrar_Matrimonio {
         
         cancelar.setOnMouseClicked(lambda -> ventana.close());
         guardar.setOnMouseClicked(lambda -> {
-            logReporte.appendText(
-                    "["+horaActual+"] "+aux1.getNombre().toLowerCase()+" "+aux1.getApellido().toLowerCase()+" y "+
-                    aux2.getNombre().toLowerCase()+" "+aux2.getApellido().toLowerCase()+" se unieron en matrimonio\n");            
-            aux1.getParientes().agregarPariente(aux2, EstadoCivil.CASADO);
-            aux1.getEstadoCivil().add(EstadoCivil.CASADO);
-            aux2.getParientes().agregarPariente(aux1, EstadoCivil.CASADO);
-            aux2.getEstadoCivil().add(EstadoCivil.CASADO);
-            rutEsposo.clear();
-            rutEsposa.clear();
-            Elementos.popMensaje("Operacion exitosa!", 300, 100);
-            guardar.setDisable(true);
-            
+            try{
+                aux1.getParientes().agregarPariente(aux2.mostrarIdentificador(), EstadoCivil.CASADO);
+                aux1.getEstadoCivil().add(EstadoCivil.CASADO);
+                aux2.getParientes().agregarPariente(aux1.mostrarIdentificador(), EstadoCivil.CASADO);
+                aux2.getEstadoCivil().add(EstadoCivil.CASADO);
+                logReporte.appendText(
+                        "["+horaActual+"] "+aux1.getNombre().toLowerCase()+" "+aux1.getApellido().toLowerCase()+" y "+
+                        aux2.getNombre().toLowerCase()+" "+aux2.getApellido().toLowerCase()+" se unieron en matrimonio\n");            
+                
+                Elementos.popMensaje("Operacion exitosa!", 300, 100);
+            }catch(CantidadParentescoException e){
+                Elementos.notificar("Error", CantidadParentescoException.getMensaje());
+            }finally{
+                rutEsposo.clear();
+                rutEsposa.clear();
+                guardar.setDisable(true);
+            }
         });
         
         grid.add(lblEsposo, 0, 0);

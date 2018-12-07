@@ -2,6 +2,7 @@
 package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
+import Excepciones.CantidadParentescoException;
 import Excepciones.FormatoPasaporteException;
 import Excepciones.FormatoRutException;
 import Excepciones.LongitudRutException;
@@ -39,13 +40,12 @@ public class Registrar_Defuncion {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
     private Ciudadano aux;
     
-    public Registrar_Defuncion(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public Registrar_Defuncion(TextArea logReporte, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
-        this.prop = prop;
     }
     
     public void registrarDefuncion(MouseEvent click){
@@ -140,17 +140,22 @@ public class Registrar_Defuncion {
             aux.setDefuncion(dia.getValue());
             aux.setHoraDefuncion(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
             aux.setComentarioDefuncion(comentario.getText());
-            if(aux.getParientes().buscarListaParentesco(EstadoCivil.CASADO)!=null){
-                Ciudadano conyuge = aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.CASADO, 0);
-                conyuge.setEstadoCivil(EstadoCivil.VIUDO);
-                conyuge.getParientes().agregarPariente(aux, EstadoCivil.VIUDO);
+            try{
+                if(aux.getParientes().buscarListaParentesco(EstadoCivil.CASADO)!=null){
+                    Ciudadano conyuge = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.CASADO, 0));
+                    conyuge.setEstadoCivil(EstadoCivil.VIUDO);
+                    conyuge.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.VIUDO);
+                }
+                logReporte.appendText(
+                        "["+horaActual+"]"+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
+                        ", id: "+aux.mostrarIdentificador()+" QDEP\n");
+                Elementos.popMensaje("Operacion Exitosa!", 300, 100);
+            }catch(CantidadParentescoException e){
+                Elementos.notificar("Error", CantidadParentescoException.getMensaje());
+            }finally{
+                rut.clear();
+                datos.setVisible(false);
             }
-            logReporte.appendText(
-                    "["+horaActual+"]"+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
-                    ", id: "+aux.mostrarIdentificador()+" QDEP\n");
-            Elementos.popMensaje("Operacion Exitosa!", 300, 100);
-            rut.clear();
-            datos.setVisible(false);
         });       
         return datos;
     }

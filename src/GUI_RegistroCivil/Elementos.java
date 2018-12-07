@@ -2,6 +2,7 @@
 package GUI_RegistroCivil;
 
 import Enums.Sexo;
+import Excepciones.CantidadParentescoException;
 import java.time.LocalTime;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ import java.util.HashMap;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PopOver;
 
 
@@ -418,7 +421,8 @@ public class Elementos {
         return arreglo;
     }
     
-    public static void crearDatosIniciales(Poblacion poblacion){
+    public static void crearDatosIniciales(){
+        Poblacion poblacion = Poblacion.getInstancia();
         HashMap<String, Ciudadano> aux = (HashMap<String, Ciudadano>)poblacion.getPoblacion();
         Chileno n1 = (Chileno)nuevoNacido("jean","rodriguez",Chile.REGIONES.VALPARAISO.toString(), Chile.VALPARAISO.NOGALES.toString(), Sexo.MASCULINO, "1996-07-08", "03:33:33", "194037228");
         aux.put(n1.getRut(), n1);
@@ -489,5 +493,14 @@ public class Elementos {
         PopOver tooltip = new PopOver();
         tooltip.setContentNode(tip);
         return tooltip;
+    }
+    
+    public static void notificar(String titulo, String mensaje){
+        Notifications.create()
+                    .title(titulo)
+                    .text(mensaje)
+                    .darkStyle()
+                    .hideAfter(Duration.seconds(1.5))
+                    .showWarning();
     }
 }

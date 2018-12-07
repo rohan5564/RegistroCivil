@@ -3,6 +3,7 @@ package GUI_RegistroCivil;
 
 import Enums.EstadoCivil;
 import Enums.Sexo;
+import Excepciones.CantidadParentescoException;
 import Excepciones.FormatoRutException;
 import Excepciones.LongitudRutException;
 import colecciones.Chileno;
@@ -56,13 +57,12 @@ public class Buscar_Ciudadano {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
     private Chileno aux;
 
-    public Buscar_Ciudadano(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public Buscar_Ciudadano(TextArea logReporte, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
-        this.prop = prop;
     }
     
     public void buscarCiudadano(MouseEvent click){
@@ -315,14 +315,14 @@ public class Buscar_Ciudadano {
                 parienteMadre.setDisable(false);
                 if(aux.getParientes().existeEstado(EstadoCivil.MADRE)
                         && !aux.getParientes().estadoEstaVacio(EstadoCivil.MADRE)){
-                    Ciudadano mama = aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.MADRE, 0);
+                    Ciudadano mama = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.MADRE, 0));
                     madre.setText(mama.mostrarIdentificador());
                 }
                 
                 parientePadre.setDisable(false);
                 if(aux.getParientes().existeEstado(EstadoCivil.PADRE)
                         && !aux.getParientes().estadoEstaVacio(EstadoCivil.PADRE)){
-                    Ciudadano papa = aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.PADRE, 0);
+                    Ciudadano papa = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.PADRE, 0));
                     padre.setText(papa.mostrarIdentificador());
                 }
                 
@@ -480,17 +480,25 @@ public class Buscar_Ciudadano {
             }
             
             Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
-            if(mama != null && aux.getParientes().buscarPariente(mama) == null){
-                mama.setEstadoCivil(EstadoCivil.MADRE);
-                aux.getParientes().agregarPariente(mama, EstadoCivil.MADRE);
-                mama.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
+            if(mama != null && aux.getParientes().buscarPariente(mama.mostrarIdentificador()) == null){
+                try{
+                    aux.getParientes().agregarPariente(mama.mostrarIdentificador(), EstadoCivil.MADRE);
+                    mama.setEstadoCivil(EstadoCivil.MADRE);
+                    mama.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
+                }catch(CantidadParentescoException e){
+                    Elementos.notificar("Error", CantidadParentescoException.getMensaje());
+                }
             }
             
             Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
-            if(papa != null && aux.getParientes().buscarPariente(papa) == null){
-                papa.setEstadoCivil(EstadoCivil.PADRE);
-                aux.getParientes().agregarPariente(papa, EstadoCivil.PADRE);
-                papa.getParientes().agregarPariente(aux, EstadoCivil.HIJO);
+            if(papa != null && aux.getParientes().buscarPariente(papa.mostrarIdentificador()) == null){
+                try{
+                    aux.getParientes().agregarPariente(papa.mostrarIdentificador(), EstadoCivil.PADRE);
+                    papa.setEstadoCivil(EstadoCivil.PADRE);
+                    papa.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
+                }catch(CantidadParentescoException e){
+                    Elementos.notificar("Error", CantidadParentescoException.getMensaje());
+                }
             }
             
             //se registra informacion en el historial, terminando la operacion de forma exitosa

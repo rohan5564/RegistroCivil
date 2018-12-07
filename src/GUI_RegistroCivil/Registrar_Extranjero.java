@@ -42,12 +42,11 @@ public class Registrar_Extranjero {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
 
-    public Registrar_Extranjero(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public Registrar_Extranjero(TextArea logReporte, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
-        this.prop = prop;
     }
     
     public void registrarExtranjero(MouseEvent click){

@@ -58,8 +58,8 @@ public class Pantalla_Principal{
     private TextArea logReporte = new TextArea("[" + horaActual +"]: Inicio de sesion.\n");    //reportes por pantalla
     private ArchivoProperties prop = new ArchivoProperties();
     private FileWriter log;
-    private Poblacion poblacion = new Poblacion();
-    private MenuOpciones menuOpcion = new MenuOpciones(logReporte, poblacion, prop);
+    private Poblacion poblacion = Poblacion.getInstancia();
+    private MenuOpciones menuOpcion = new MenuOpciones(logReporte, prop);
    
     
     public Pantalla_Principal(Stage logueo) {
@@ -70,7 +70,7 @@ public class Pantalla_Principal{
     public void menu(){
         //cargar datos de inicio
         prop.crear();
-        Elementos.crearDatosIniciales(poblacion);
+        Elementos.crearDatosIniciales();
         
         Stage menu = new Stage();
         

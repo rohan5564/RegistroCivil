@@ -12,9 +12,16 @@ import java.util.Map;
 public class Poblacion implements RegistroCivil{
     
     private Map<String, Ciudadano> poblacion;
-
-    public Poblacion() {
+    private static Poblacion singleton;
+    
+    private Poblacion() {
         this.poblacion = new HashMap<>();
+    }
+    
+    public static Poblacion getInstancia(){
+        if(singleton == null)
+            singleton = new Poblacion();
+        return singleton;
     }
 
     public Poblacion(HashMap<String, Ciudadano> poblacion) {

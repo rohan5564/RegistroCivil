@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public abstract class Ciudadano{
@@ -193,39 +192,6 @@ public abstract class Ciudadano{
                 && nacimiento != null
                 && horaNacimiento != null
                 && estadoCivil != null;
-    }
-    
-    /**
-     * permite desvincular al ciudadano de sus parientes
-     * @return true si puede completar la accion de forma exitosa, false en caso 
-     * contrario
-     */
-    public boolean desvincularDeParientes(){
-        boolean resultado = false;
-        for(Map.Entry<EstadoCivil, ListadoParientes> listaParientes : parientes.getPersonas().entrySet()){
-            for(Ciudadano cadaPariente : listaParientes.getValue().getListadoParientes()){
-                EstadoCivil estadoABorrar = null;
-                int estados = cadaPariente.getParientes().removerPariente(this, estadoABorrar);
-                if(estados == 0){
-                    if(estadoABorrar==EstadoCivil.HIJO){
-                        if(cadaPariente.getEstadoCivil().contains(EstadoCivil.MADRE))
-                            cadaPariente.getEstadoCivil().remove(EstadoCivil.MADRE);
-                        else
-                            cadaPariente.getEstadoCivil().remove(EstadoCivil.PADRE);
-                    }
-                    else
-                        cadaPariente.getEstadoCivil().remove(estadoABorrar);
-                    resultado = true;
-                    break;
-                }
-                else if(estados == 1){
-                    resultado = true;
-                    break;
-                }
-            }
-        }
-        
-        return resultado;
     }
     
 }

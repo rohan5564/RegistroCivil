@@ -38,13 +38,12 @@ public class Cantidad_Nacidos {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private TextArea logReporte;
     private ArchivoProperties prop;
-    private Poblacion poblacion;
+    private Poblacion poblacion = Poblacion.getInstancia();
     private Chileno aux;
 
-    public Cantidad_Nacidos(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
+    public Cantidad_Nacidos(TextArea logReporte, ArchivoProperties prop) {
         this.logReporte = logReporte;
         this.poblacion = poblacion;
-        this.prop = prop;
     }
     
     public void cantidadNacidos(MouseEvent click){
