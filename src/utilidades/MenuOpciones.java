@@ -10,28 +10,19 @@ import GUI_RegistroCivil.Registrar_Extranjero;
 import GUI_RegistroCivil.Registrar_Matrimonio;
 import GUI_RegistroCivil.Registrar_Nacimiento;
 import colecciones.Poblacion;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 
 
 public class MenuOpciones {
-    private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-    private TextArea logReporte;
-    private ArchivoProperties prop;
-    private Poblacion poblacion = Poblacion.getInstancia();
     
-    public MenuOpciones(TextArea logReporte, ArchivoProperties prop) {
-        this.logReporte = logReporte;
-        this.poblacion = poblacion;
+    public MenuOpciones() {
     }
     /**
      * Busca a un ciudanano
      * @param click 
      */
     public void buscarCiudadano(MouseEvent click){
-        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano();
         accesoDirecto.buscarCiudadano(click);
     }
     /**
@@ -39,7 +30,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarNacimiento(MouseEvent click){
-        Registrar_Nacimiento accesoDirecto = new Registrar_Nacimiento(logReporte, prop);
+        Registrar_Nacimiento accesoDirecto = new Registrar_Nacimiento();
         accesoDirecto.registrarNacimiento(click);
     }
     /**
@@ -47,11 +38,12 @@ public class MenuOpciones {
      * @param click 
      */
     public void cantidadNacidos(MouseEvent click){
+        Poblacion poblacion = Poblacion.getInstancia();
         if(poblacion.getPoblacion() == null || poblacion.getPoblacion().isEmpty()){
             Elementos.popMensaje("Sin poblacion agregada", 350, 100);
             return;
         }
-        Cantidad_Nacidos accesoDirecto = new Cantidad_Nacidos(logReporte, prop);
+        Cantidad_Nacidos accesoDirecto = new Cantidad_Nacidos();
         accesoDirecto.cantidadNacidos(click);
     }
     /**
@@ -59,11 +51,12 @@ public class MenuOpciones {
      * @param click 
      */
     public void cantidadExtranjeros(MouseEvent click){
+        Poblacion poblacion = Poblacion.getInstancia();
         if(poblacion.getExtranjeros() == null || poblacion.getExtranjeros().isEmpty()){
             Elementos.popMensaje("Sin poblacion agregada", 350, 100);
             return;
         }
-        Cantidad_Extranjeros accesoDirecto = new Cantidad_Extranjeros(logReporte, prop);
+        Cantidad_Extranjeros accesoDirecto = new Cantidad_Extranjeros();
         accesoDirecto.cantidadExtranjeros(click);
     }
     /**
@@ -71,7 +64,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarDefuncion(MouseEvent click){
-        Registrar_Defuncion accesoDirecto = new Registrar_Defuncion(logReporte, prop);
+        Registrar_Defuncion accesoDirecto = new Registrar_Defuncion();
         accesoDirecto.registrarDefuncion(click);
     }
     /**
@@ -79,7 +72,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarMatrimonio(MouseEvent click){
-        Registrar_Matrimonio accesoDirecto = new Registrar_Matrimonio(logReporte, prop);
+        Registrar_Matrimonio accesoDirecto = new Registrar_Matrimonio();
         accesoDirecto.registrarMatrimonio(click);
     }
     /**
@@ -87,7 +80,7 @@ public class MenuOpciones {
      * @param click 
      */
     public void registrarExtranjero(MouseEvent click){
-        Registrar_Extranjero accesoDirecto = new Registrar_Extranjero(logReporte, prop);
+        Registrar_Extranjero accesoDirecto = new Registrar_Extranjero();
         accesoDirecto.registrarExtranjero(click);
     }
     /**
@@ -97,7 +90,7 @@ public class MenuOpciones {
     public void buscarDefuncion(MouseEvent click){
         /*Buscar_Defuncion accesoDirecto = new Buscar_Defuncion(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
-        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano();
         accesoDirecto.buscarCiudadano(click);
     }
     /**
@@ -107,7 +100,7 @@ public class MenuOpciones {
     public void buscarMatrimonio(MouseEvent click){
         /*Buscar_Matrimonio accesoDirecto = new Buscar_Matrimonio(logReporte, poblacion, prop);
         accesoDirecto.registrarMatrimonio(click);*/
-        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano(logReporte, prop);
+        Buscar_Ciudadano accesoDirecto = new Buscar_Ciudadano();
         accesoDirecto.buscarCiudadano(click);
     }
 }

@@ -33,19 +33,20 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.controlsfx.control.PopOver;
 import utilidades.ArchivoProperties;
+import utilidades.Reporte;
 
 
 public class Registrar_Defuncion {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-    private TextArea logReporte;
-    private ArchivoProperties prop;
+    private TextArea logReporte = Reporte.getInstancia().getLog();
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
+    private PopOver tooltip;
     private Poblacion poblacion = Poblacion.getInstancia();
     private Ciudadano aux;
     
-    public Registrar_Defuncion(TextArea logReporte, ArchivoProperties prop) {
-        this.logReporte = logReporte;
-        this.poblacion = poblacion;
+    public Registrar_Defuncion() {
     }
     
     public void registrarDefuncion(MouseEvent click){
@@ -73,10 +74,13 @@ public class Registrar_Defuncion {
         TextField rut = (TextField)checkRut.getChildrenUnmodifiable().get(0);
         ImageView check = (ImageView)checkRut.getChildrenUnmodifiable().get(1);
         ImageView mark = (ImageView)checkRut.getChildrenUnmodifiable().get(2);
+        ImageView error = (ImageView)checkRut.getChildrenUnmodifiable().get(3);
         GridPane registro = registroDatos(guardar, rut);
         rut.textProperty().addListener((observable, o, n)->{
-            checkearExistente(check, mark, mark, o, n);
+            checkearExistente(check, mark, error, o, n);
         });
+        
+        mark.visibleProperty().addListener((obserbable, o, n)->tooltip.show(mark));
         
         Label persona = new Label("");
         persona.setFont(Font.font("bold", FontWeight.NORMAL, 22));
@@ -85,9 +89,11 @@ public class Registrar_Defuncion {
             if(n.booleanValue()){
                 aux = poblacion.getCiudadano(rut.getText());
                 persona.setText(aux.getNombre()+" "+aux.getApellido());
+                registro.setVisible(true);
             }
             else{
-                this.aux = null;
+                registro.setVisible(false);
+                aux = null;
                 persona.setText("");
             }
         });
@@ -151,7 +157,7 @@ public class Registrar_Defuncion {
                         ", id: "+aux.mostrarIdentificador()+" QDEP\n");
                 Elementos.popMensaje("Operacion Exitosa!", 300, 100);
             }catch(CantidadParentescoException e){
-                Elementos.notificar("Error", CantidadParentescoException.getMensaje());
+                Elementos.notificar("Error", CantidadParentescoException.getMensaje()).showError();
             }finally{
                 rut.clear();
                 datos.setVisible(false);
@@ -163,15 +169,25 @@ public class Registrar_Defuncion {
     private void checkearExistente(ImageView check, ImageView mark, ImageView error, String o, String n){
         try{
             if(Chileno.comprobarRut(n) || Extranjero.comprobarPasaporte(n)){
-                if(poblacion.getCiudadano(n)!=null){
-                    check.setVisible(true);
-                    mark.setVisible(false);
-                    error.setVisible(false);
+                Ciudadano ciudadano = poblacion.getCiudadano(n);
+                if(ciudadano!=null){
+                    if(ciudadano.getDefuncion()==null){
+                        check.setVisible(true);
+                        mark.setVisible(false);
+                        error.setVisible(false);
+                    }
+                    else{
+                        check.setVisible(false);
+                        mark.setVisible(true);
+                        error.setVisible(false);
+                        tooltip = Elementos.popTip("ciudadano ya fallecido");
+                    }
                 }
                 else{
                     mark.setVisible(false);
                     check.setVisible(false);
                     error.setVisible(true);
+                    tooltip = Elementos.popTip("identificador no registrado");
                 }
             }
             else{
@@ -182,7 +198,7 @@ public class Registrar_Defuncion {
         }catch(FormatoRutException | FormatoPasaporteException | LongitudRutException e){
             check.setVisible(false);
             mark.setVisible(false);
-            error.setVisible(true);
+            error.setVisible(false);
         }
     }
 }

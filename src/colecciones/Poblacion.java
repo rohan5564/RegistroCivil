@@ -38,24 +38,6 @@ public class Poblacion implements RegistroCivil{
     
     /**
      * 
-     * @param chileno
-     * @return retorna true, si puede removerse, si no null
-     */
-    private boolean removerChileno(Chileno chileno){
-        return chileno.getParientes().estaVacia() && poblacion.remove(chileno.getRut())!=null;
-    }
-    
-    /**
-     * 
-     * @param extranjero
-     * @return returna true si puede removerse, si no null
-     */
-    private boolean removerExtranjero(Extranjero extranjero){
-        return extranjero.getParientes().estaVacia() && poblacion.remove(extranjero.getPasaporte())!=null;
-    }
-    
-    /**
-     * 
      * @return extranjeros registrados
      */
     public Map<String, Extranjero> getExtranjeros(){
@@ -128,10 +110,8 @@ public class Poblacion implements RegistroCivil{
         if(!poblacion.containsValue(ciudadano))
             return false;
         
-        if(ciudadano instanceof Chileno)
-            return ciudadano.getParientes().removerParientes() && removerChileno((Chileno)ciudadano);
-        else 
-            return ciudadano.getParientes().removerParientes() && removerExtranjero((Extranjero)ciudadano);
+        return poblacion.get(ciudadano).getParientes().removerParientes() 
+                && poblacion.remove(ciudadano.mostrarIdentificador()) != null;
     }
     
     @Override

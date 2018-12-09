@@ -1,6 +1,7 @@
 
 package utilidades;
 
+import GUI_RegistroCivil.Elementos;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -27,13 +28,13 @@ public class ArchivoTxt {
         FileChooser dir = new FileChooser();
         dir.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo de texto (*.txt)", "*.txt"));
         dir.setInitialDirectory(new File(System.getProperty("user.home")+"/desktop"));
-        File archivo = dir.showSaveDialog(ventana);;
+        File archivo = dir.showSaveDialog(ventana);
         if(archivo != null)
             try{
                 log = new FileWriter(archivo, true);
                 archivoLog(str);
         }catch(IOException e){
-            e.printStackTrace();
+            Elementos.notificar(" ", "\terror al abrir la ventana de guardado").showError();
         }finally{
             directorio = archivo.toString();
         }

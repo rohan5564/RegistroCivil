@@ -45,7 +45,7 @@ public class Parientes {
      * @return true si el estado no registra un listado de parientes
      */
     public boolean estadoEstaVacio(EstadoCivil estado){
-        return personas.get(estado).estaVacia();
+        return personas.get(estado)==null || personas.get(estado).estaVacia();
     }
             
     /**

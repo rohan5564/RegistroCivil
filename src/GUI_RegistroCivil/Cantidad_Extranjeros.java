@@ -2,7 +2,6 @@
 package GUI_RegistroCivil;
 
 import colecciones.Chileno;
-import colecciones.Ciudadano;
 import colecciones.Extranjero;
 import colecciones.Poblacion;
 import java.time.LocalDateTime;
@@ -33,19 +32,17 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import utilidades.ArchivoProperties;
+import utilidades.Reporte;
 
 
 public class Cantidad_Extranjeros {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-    private TextArea logReporte;
-    private ArchivoProperties prop;
+    private TextArea logReporte = Reporte.getInstancia().getLog();
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
     private Poblacion poblacion = Poblacion.getInstancia();
     private Chileno aux;
 
-    public Cantidad_Extranjeros(TextArea logReporte, Poblacion poblacion, ArchivoProperties prop) {
-        this.logReporte = logReporte;
-        this.poblacion = poblacion;
-        this.prop = prop;
+    public Cantidad_Extranjeros() {
     }
     
     public void cantidadExtranjeros(MouseEvent click){

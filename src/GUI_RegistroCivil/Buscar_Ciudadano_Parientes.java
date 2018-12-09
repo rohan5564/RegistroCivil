@@ -24,12 +24,11 @@ import utilidades.ArchivoProperties;
 
 public class Buscar_Ciudadano_Parientes {
     private Ciudadano ciudadano;
-    private ArchivoProperties prop;
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
     private Poblacion poblacion = Poblacion.getInstancia();
     
-    public Buscar_Ciudadano_Parientes(Ciudadano ciudadano, ArchivoProperties prop){
+    public Buscar_Ciudadano_Parientes(Ciudadano ciudadano){
         this.ciudadano = ciudadano;
-        this.prop = prop;
     }
 
     public Ciudadano getCiudadano() {

@@ -90,7 +90,7 @@ public class ListadoParientes {
      * @return true si no hay parientes, false caso contrario
      */
     public boolean estaVacia(){
-        return listadoParientes.isEmpty();
+        return !existe() || listadoParientes.isEmpty();
     }
     
     /**

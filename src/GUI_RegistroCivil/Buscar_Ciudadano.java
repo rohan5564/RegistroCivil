@@ -48,6 +48,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import utilidades.Reporte;
 
 /**
  * ventana que permite la modificacion de datos para los ruts registrados
@@ -55,14 +56,12 @@ import javafx.scene.text.FontWeight;
  */
 public class Buscar_Ciudadano {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-    private TextArea logReporte;
-    private ArchivoProperties prop;
+    private TextArea logReporte = Reporte.getInstancia().getLog();
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
     private Poblacion poblacion = Poblacion.getInstancia();
     private Chileno aux;
 
-    public Buscar_Ciudadano(TextArea logReporte, ArchivoProperties prop) {
-        this.logReporte = logReporte;
-        this.poblacion = poblacion;
+    public Buscar_Ciudadano() {
     }
     
     public void buscarCiudadano(MouseEvent click){
@@ -486,7 +485,7 @@ public class Buscar_Ciudadano {
                     mama.setEstadoCivil(EstadoCivil.MADRE);
                     mama.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
                 }catch(CantidadParentescoException e){
-                    Elementos.notificar("Error", CantidadParentescoException.getMensaje());
+                    Elementos.notificar("Error", CantidadParentescoException.getMensaje()).showError();
                 }
             }
             
@@ -497,7 +496,7 @@ public class Buscar_Ciudadano {
                     papa.setEstadoCivil(EstadoCivil.PADRE);
                     papa.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
                 }catch(CantidadParentescoException e){
-                    Elementos.notificar("Error", CantidadParentescoException.getMensaje());
+                    Elementos.notificar("Error", CantidadParentescoException.getMensaje()).showError();
                 }
             }
             
@@ -683,7 +682,7 @@ public class Buscar_Ciudadano {
     }
     
     private void verParientes(Ciudadano ciudadano){
-        Buscar_Ciudadano_Parientes ventana = new Buscar_Ciudadano_Parientes(ciudadano, prop);
+        Buscar_Ciudadano_Parientes ventana = new Buscar_Ciudadano_Parientes(ciudadano);
         ventana.abrirVentana();
     }
 }

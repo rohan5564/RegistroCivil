@@ -14,16 +14,42 @@ import javafx.stage.Screen;
 
 
 public class ArchivoProperties {
-    final private String actual = new String("");
-    final private String claro = new String("Resources/tema.css");
-    final private String oscuro = new String("Resources/tema_oscuro.css");
-    final private String archivo = new String("config.properties");
+    final private String tabla = "base_de_datos";
+    final private String ip = "localhost";
+    final private String port = "3306";
+    final private String user = "root";
+    final private String pass = "";
+    final private String actual = "";
+    final private String claro = "Resources/tema.css";
+    final private String oscuro = "Resources/tema_oscuro.css";
+    final private String archivo = "config.properties";
     final private Rectangle2D resolucion = Screen.getPrimary().getVisualBounds();//resolucion pantalla
     private Properties prop;
+    private static ArchivoProperties archivoProp;
     
-    public ArchivoProperties(){
+    private ArchivoProperties(){
     }
 
+    public String getIp() {
+        return ip;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    
+    
+    public static ArchivoProperties getInstancia(){
+        if(archivoProp == null)
+            archivoProp = new ArchivoProperties();
+        return archivoProp;
+    }
+    
     public Properties getProp() {
         return prop;
     }
@@ -38,6 +64,11 @@ public class ArchivoProperties {
                 prop.load(new FileInputStream(f));
             }
             else{
+                prop.setProperty("tabla", tabla);
+                prop.setProperty("ip", ip);
+                prop.setProperty("port", port);
+                prop.setProperty("user", user);
+                prop.setProperty("pass", pass);
                 prop.setProperty("tema_actual", actual);
                 prop.setProperty("tema_claro", claro);
                 prop.setProperty("tema_oscuro", oscuro);  

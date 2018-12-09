@@ -2,7 +2,6 @@
 package GUI_RegistroCivil;
 
 import colecciones.Chileno;
-import colecciones.Ciudadano;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javafx.collections.FXCollections;
@@ -32,18 +31,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
+import utilidades.Reporte;
 
 
 public class Cantidad_Nacidos {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-    private TextArea logReporte;
-    private ArchivoProperties prop;
+    private TextArea logReporte = Reporte.getInstancia().getLog();
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
     private Poblacion poblacion = Poblacion.getInstancia();
     private Chileno aux;
 
-    public Cantidad_Nacidos(TextArea logReporte, ArchivoProperties prop) {
-        this.logReporte = logReporte;
-        this.poblacion = poblacion;
+    public Cantidad_Nacidos() {
     }
     
     public void cantidadNacidos(MouseEvent click){

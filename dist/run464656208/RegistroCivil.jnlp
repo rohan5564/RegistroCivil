@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="RegistroCivil.jnlp">
+  <information>
+    <title>RegistroCivil</title>
+    <vendor>Jean</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="RegistroCivil.jar" size="296677" download="eager" />
+    <jar href="lib\c3p0-0.9.5.2.jar" size="497865" download="eager" />
+    <jar href="lib\controlsfx-8.40.14.jar" size="1215643" download="eager" />
+    <jar href="lib\fontbox-2.0.12.jar" size="1557183" download="eager" />
+    <jar href="lib\mchange-commons-java-0.2.11.jar" size="606472" download="eager" />
+    <jar href="lib\mysql-connector-java-8.0.12.jar" size="2020431" download="eager" />
+    <jar href="lib\pdfbox-2.0.12.jar" size="2541248" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="RegistroCivil" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="GUI_RegistroCivil.Main"  name="RegistroCivil" />
+  <update check="always"/>
+</jnlp>

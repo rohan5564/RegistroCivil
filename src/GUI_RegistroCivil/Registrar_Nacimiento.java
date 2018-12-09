@@ -43,18 +43,17 @@ import colecciones.Extranjero;
 import colecciones.Poblacion;
 import javafx.scene.control.Tooltip;
 import org.controlsfx.control.PopOver;
+import utilidades.Reporte;
 
 
 public class Registrar_Nacimiento {
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     private PopOver tooltip;
-    private TextArea logReporte;
-    private ArchivoProperties prop;
+    private TextArea logReporte = Reporte.getInstancia().getLog();
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
     private Poblacion poblacion = Poblacion.getInstancia();
     
-    public Registrar_Nacimiento(TextArea logReporte, ArchivoProperties prop) {
-        this.logReporte = logReporte;
-        this.poblacion = poblacion;
+    public Registrar_Nacimiento() {
     }
     
     public void registrarNacimiento(MouseEvent click){
@@ -137,11 +136,11 @@ public class Registrar_Nacimiento {
             }
         });
         
-        errorRutMadre.setOnMouseEntered(lambda-> tooltip.show(errorRutMadre));
-        errorRutMadre.setOnMouseExited(lambda-> tooltip.hide());
+        errorRutMadre.setOnMouseEntered(lambda-> {if(tooltip!=null) tooltip.show(errorRutMadre);});
+        errorRutMadre.setOnMouseExited(lambda-> {if(tooltip!=null) tooltip.hide();});
         
-        markRutMadre.setOnMouseEntered(lambda-> tooltip.show(markRutMadre));
-        markRutMadre.setOnMouseExited(lambda-> tooltip.hide());
+        markRutMadre.setOnMouseEntered(lambda-> {if(tooltip!=null) tooltip.show(markRutMadre);});
+        markRutMadre.setOnMouseExited(lambda-> {if(tooltip!=null) tooltip.hide();});
         
         ComboBox region = new ComboBox();
         region.setPromptText(" Region");
@@ -198,11 +197,11 @@ public class Registrar_Nacimiento {
             }
         });
         
-        errorRutPadre.setOnMouseEntered(lambda-> tooltip.show(errorRutPadre));
-        errorRutPadre.setOnMouseExited(lambda-> tooltip.hide());
+        errorRutPadre.setOnMouseEntered(lambda-> {if(tooltip!=null) tooltip.show(errorRutPadre);});
+        errorRutPadre.setOnMouseExited(lambda-> {if(tooltip!=null) tooltip.hide();});
         
-        markRutPadre.setOnMouseEntered(lambda-> tooltip.show(markRutPadre));
-        markRutPadre.setOnMouseExited(lambda-> tooltip.hide());
+        markRutPadre.setOnMouseEntered(lambda-> {if(tooltip!=null) tooltip.show(markRutPadre);});
+        markRutPadre.setOnMouseExited(lambda-> {if(tooltip!=null) tooltip.hide();});
         
         TextArea comentario = new TextArea();
         comentario.setWrapText(true);
@@ -256,7 +255,7 @@ public class Registrar_Nacimiento {
                     if(extMadre.isSelected())
                         aux.setNacionalidades(mama.getNacionalidades());
                 }catch(CantidadParentescoException e){
-                    Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje());
+                    Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje()).showWarning();
                 }
             }
             
@@ -269,7 +268,7 @@ public class Registrar_Nacimiento {
                     if(extPadre.isSelected())
                         aux.setNacionalidades(papa.getNacionalidades());
                 }catch(CantidadParentescoException e){
-                    Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje());
+                    Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje()).showWarning();
                 }
             }
             
@@ -342,7 +341,13 @@ public class Registrar_Nacimiento {
                     tooltip = Elementos.popTip("rut ya registrado");
                 }
             }
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+            else if(!Chileno.comprobarRut(n)){
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(true);
+                tooltip = Elementos.popTip("rut invalido");
+            }
+            else if(Chileno.comprobarRut(o)){
                 check.setVisible(false);
                 mark.setVisible(false);
                 error.setVisible(false);
@@ -409,7 +414,13 @@ public class Registrar_Nacimiento {
                     tooltip = Elementos.popTip("no existe Chileno registrado con el rut");
                 }
             }
-            else if(!Chileno.comprobarRut(n) || Chileno.comprobarRut(o)){
+            else if(!Chileno.comprobarRut(n)){
+                check.setVisible(false);
+                mark.setVisible(false);
+                error.setVisible(true);
+                tooltip = Elementos.popTip("rut invalido");
+            }
+            else if(Chileno.comprobarRut(o)){
                 check.setVisible(false);
                 mark.setVisible(false);
                 error.setVisible(false);

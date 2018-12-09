@@ -1,14 +1,11 @@
 
 package GUI_RegistroCivil;
 
-import Enums.EstadoCivil;
 import utilidades.ArchivoTxt;
 import Enums.Tema;
-import colecciones.Chileno;
 import utilidades.ArchivoProperties;
 import colecciones.Poblacion;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +28,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -47,19 +48,18 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import org.controlsfx.control.ToggleSwitch;
-import utilidades.ConexionBD;
 import utilidades.MenuOpciones;
+import utilidades.Reporte;
 
 
 public class Pantalla_Principal{
     
     private Stage logueo;
     private final String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-    private TextArea logReporte = new TextArea("[" + horaActual +"]: Inicio de sesion.\n");    //reportes por pantalla
-    private ArchivoProperties prop = new ArchivoProperties();
-    private FileWriter log;
+    private TextArea logReporte = Reporte.getInstancia("[" + horaActual +"]: Inicio de sesion.\n").getLog();
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
     private Poblacion poblacion = Poblacion.getInstancia();
-    private MenuOpciones menuOpcion = new MenuOpciones(logReporte, prop);
+    private MenuOpciones menuOpcion = new MenuOpciones();
    
     
     public Pantalla_Principal(Stage logueo) {
@@ -269,10 +269,10 @@ public class Pantalla_Principal{
             if(dir.getDirectorio() != null)
                 try{
                     new File(dir.getDirectorio()).createNewFile();
+                    logReporte.appendText("[reporte archivado en: "+dir.getDirectorio()+"]\n");
                 }catch(IOException e){
-                    e.printStackTrace();
+                    Elementos.notificar(" ", "\tOperacion fallida").showError();
                 }
-                logReporte.appendText("[reporte archivado en: "+dir.getDirectorio()+"]\n");
         });
         
         Button subir = new Button("subir datos a la red");
@@ -439,9 +439,10 @@ public class Pantalla_Principal{
         Stage fin = new Stage();
         fin.setResizable(false);
         fin.setAlwaysOnTop(true);
-        fin.initStyle(StageStyle.UTILITY);
+        fin.initStyle(StageStyle.TRANSPARENT);
         fin.initModality(Modality.APPLICATION_MODAL);
         GridPane pop = new GridPane();
+        pop.setBorder(Elementos.borde(4));
         pop.setAlignment(Pos.CENTER);
         pop.setPrefHeight(100);
         pop.setPrefWidth(100);

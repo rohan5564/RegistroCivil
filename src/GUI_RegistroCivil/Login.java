@@ -5,7 +5,6 @@ import utilidades.ConexionBD;
 import Enums.Tema;
 import utilidades.ArchivoProperties;
 import java.beans.PropertyVetoException;
-import java.io.FileWriter;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,7 +25,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.controlsfx.control.ToggleSwitch;
@@ -34,11 +32,9 @@ import org.controlsfx.control.ToggleSwitch;
 
 
 public class Login extends Main{
-
     
     private String horaActual = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH"));
-    private ArchivoProperties prop = new ArchivoProperties();
-    private FileWriter log;
+    private ArchivoProperties prop = ArchivoProperties.getInstancia();
     
     public Login(){
         System.exit(0);
@@ -143,14 +139,8 @@ public class Login extends Main{
         password.setPromptText("ingrese contraseña");
         grid.add(password, 2, 14);
         
-        //texto error de conexion, inicia en boton 1 y se reinicia en ""
-        Label errorUsuario = new Label("");
-        errorUsuario.setTranslateX(175);
-        grid.add(errorUsuario, 2,17);        
         //crea botones y HBOX (horizontal box)
         Button ingreso = new Button("ingresar");
-        ingreso.setVisible(false);
-        ingreso.setDisable(true);
         ingreso.disableProperty().bind( //boton no presionable si casillas estan vacias
                 leerTexto.textProperty().isEmpty().or( //or = ambas casillas llenas                     
                         password.textProperty().isEmpty()));
@@ -163,47 +153,56 @@ public class Login extends Main{
         espacio.setPrefSize(70,10);
         HBox hbIngreso = new HBox(10);
         hbIngreso.setAlignment(Pos.BOTTOM_LEFT);
+        ImageView config = new ImageView(new Image("Resources/configuracion.png", true));
+        config.setFitWidth(35);
+        config.setFitHeight(35);
+        config.setPreserveRatio(true);
+        config.setSmooth(true);
+        config.setTranslateY(60);
+        config.setTranslateX(320);
         hbIngreso.getChildren().addAll(espacio, ingreso, offline, cerrar);//ingresa todos los botones creados de forma ordenada
         grid.add(hbIngreso, 2,20);
+        grid.add(config, 2, 21);
         ingreso.setDefaultButton(true);
-        boton1(logueo, ingreso, offline, leerTexto, password, errorUsuario);
-        boton2(logueo, offline, password, errorUsuario);
+        boton1(logueo, ingreso, offline, leerTexto, password);
+        boton2(logueo, offline, password);
         cerrar(logueo, cerrar);
+        config.setOnMouseClicked(lambda-> LoginBD.getInstrancia().configurarLogin());
         logueo.show();
     }
     
-    public void boton2(Stage logueo, Button ayuda, TextField password, Label errorUsuario){
+    public void boton2(Stage logueo, Button ayuda, TextField password){
         ayuda.setVisible(true);
         ayuda.setOnAction(lambda->{
-            errorUsuario.setText("");
-            password.setText("");
+            password.clear();
             logueo.close();
             super.menu(logueo);
         });       
     }
     
-    public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password, Label errorUsuario){
+    public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password){
         ingreso.setOnAction(lambda -> {
             try{
-                ConexionBD.getInstancia().getConexion("localhost:3306/datos", "root", "");
+                ConexionBD.getInstancia().getConexion(
+                        prop.getProp().getProperty("ip")+":"+prop.getProp().getProperty("port")+"/"+prop.getProp().getProperty("tabla"), 
+                        prop.getProp().getProperty("user"), 
+                        prop.getProp().getProperty("pass"));
                 if (!ConexionBD.getInstancia().checkConexion()){ //conexion establecida?
-                    errorUsuario.setText("error de conexion");
-                    errorUsuario.setTextFill(Color.rgb(210, 39, 30));
+                    Elementos.notificar("Error de conexion", "compruebe la configuracion del servidor").showError();
                 }
                 else {
                     if (ConexionBD.getInstancia().login(leerTexto.getText(),password.getText())){
-                        errorUsuario.setText("");
-                        password.setText("");
+                        password.clear();
                         super.menu(logueo);
                         logueo.hide();
                     }
-                    else {
-                        errorUsuario.setText("datos incorrectos");
-                        errorUsuario.setTextFill(Color.rgb(210, 39, 30));
+                    else{
+                        Elementos.notificar("Error de logueo", "usuario y/o contraseña incorrectos").showWarning();
                     }
                 }
             }catch(PropertyVetoException | SQLException e){
                 e.printStackTrace();
+                Elementos.notificar("error de conexion", "revise la configuracion del servidor").showError();
             }
             //limpiar casillas con la entrada de texto 
             leerTexto.clear();
@@ -213,25 +212,5 @@ public class Login extends Main{
     
     public void cerrar(Stage logueo, Button cerrar){
         cerrar.setOnAction(lambda -> logueo.close());
-    }
-
-    public void desarrollo(){
-        Stage desarrollo = new Stage();
-        desarrollo.setAlwaysOnTop(true);
-        desarrollo.initModality(Modality.APPLICATION_MODAL);
-        desarrollo.initStyle(StageStyle.UTILITY);
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        Label msj = new Label("en desarrollo");
-        msj.setFont(Font.font("new times roman", FontWeight.NORMAL, 32));
-        Button ok = new Button("aceptar");
-        ok.setOnMouseClicked(lambda -> desarrollo.close());
-        ok.setTranslateX(60);
-        grid.add(msj, 0, 0);
-        grid.add(ok, 0, 1);
-        Scene scene = new Scene(grid, 300, 100);
-        scene.getStylesheets().add(prop.getProp().getProperty("tema_actual"));
-        desarrollo.setScene(scene);
-        desarrollo.show();
     }
 }

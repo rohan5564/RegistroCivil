@@ -10,7 +10,6 @@ import Excepciones.LongitudRutException;
 import colecciones.Chileno;
 import colecciones.Ciudadano;
 import colecciones.Extranjero;
-import colecciones.ListadoParientes;
 import colecciones.Parientes;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -19,9 +18,7 @@ import java.beans.PropertyVetoException;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class ConexionBD{
@@ -73,13 +70,20 @@ public class ConexionBD{
         return stat;
     }
     
+    /**
+     * permite loguearse en el sistema buscando la informacion perteneciente al usuario y la contraseña
+     * del individuo en la base de datos
+     * @param user usuario a buscar en la base de datos
+     * @param pass contraseña asignada al usuario
+     * @return true si ingresa correctamente a la base de datos, false en caso contrario
+     */
     public boolean login(String user, String pass){
         String consulta = null;
         Connection con = null;
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
-            consulta = "SELECT * FROM operadores WHERE usuario = \"" + user + "\"";
+            consulta = "SELECT * FROM operador WHERE usuario = \"" + user + "\"";
             con = conexion.getConnection();
             
             st = con.prepareStatement(consulta);
@@ -104,258 +108,6 @@ public class ConexionBD{
             }
         }
         return status;
-    }
-    
-    /**
-     * crea las tablas necesarias para guardar la informacion si es que no existen
-     * en la base de datos
-     */
-    public void crearTablas(){
-        crearTablaPoblacion();
-        crearTablaChilena();
-        crearTablaExtranjera();
-        crearTablaEstadosCiviles();
-        crearTablaFamiliares();
-        crearTablaNacionalidades();
-    }
-    
-    /**
-     * crea la tabla correspondieniente a las nacinalidades de los ciudadanos
-     */
-    private void crearTablaNacionalidades(){
-        String consulta = null;
-        Connection con = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try{
-            consulta = 
-                    "CREATE TABLE IF NOT EXISTS nacionalidades"
-                    +"(identificador                VARCHAR(20) PRIMARY KEY,"
-                    +"nacionalidad                  VARCHAR(50) NOT NULL,"
-                    + "FOREIGN KEY(identificador) REFERENCES poblacion(identificador))";
-            
-            con = conexion.getConnection();
-            st = con.prepareStatement(consulta);
-            st.executeUpdate();
-            
-        }catch (Exception e) {
-            System.err.println("excepcion: " + e.getMessage());
-        }finally {
-            consulta = null;
-            try{
-                if(rs!=null)
-                    rs.close();
-                if(st!=null)
-                    st.close();
-                if(con!=null)
-                    con.close();
-            }catch (SQLException e){
-                System.err.println("excepcion: " + e.getMessage());
-            }
-        }
-    }
-    
-    /**
-     * crea la tabla correspondieniente a poblacion
-     */
-    private void crearTablaPoblacion(){
-        String consulta = null;
-        Connection con = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try{
-            consulta = 
-                    "CREATE TABLE IF NOT EXISTS poblacion"
-                    +"(identificador                VARCHAR(20) PRIMARY KEY)";
-            
-            con = conexion.getConnection();
-            st = con.prepareStatement(consulta);
-            st.executeUpdate();
-            
-        }catch (Exception e) {
-            System.err.println("excepcion: " + e.getMessage());
-        }finally {
-            consulta = null;
-            try{
-                if(rs!=null)
-                    rs.close();
-                if(st!=null)
-                    st.close();
-                if(con!=null)
-                    con.close();
-            }catch (SQLException e){
-                System.err.println("excepcion: " + e.getMessage());
-            }
-        }
-    }
-    
-    /**
-     * crea la tabla correspondieniente a los parientes de cada ciudadano
-     */
-    private void crearTablaFamiliares(){
-        String consulta = null;
-        Connection con = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try{
-            consulta = 
-                    "CREATE TABLE IF NOT EXISTS parientes"
-                    +"(identificador                VARCHAR(20) NOT NULL,"
-                    +"id_pariente                   VARCHAR(20) NOT NULL,"
-                    +"parentesco                    VARCHAR(20) NOT NULL,"
-                    + "FOREIGN KEY(identificador) REFERENCES poblacion(identificador))";
-            
-            con = conexion.getConnection();
-            st = con.prepareStatement(consulta);
-            st.executeUpdate();
-            
-        }catch (Exception e) {
-            System.err.println("excepcion: " + e.getMessage());
-        }finally {
-            consulta = null;
-            try{
-                if(rs!=null)
-                    rs.close();
-                if(st!=null)
-                    st.close();
-                if(con!=null)
-                    con.close();
-            }catch (SQLException e){
-                System.err.println("excepcion: " + e.getMessage());
-            }
-        }
-    }
-    
-    /**
-     * crea la tabla correspondieniente a los estados civiles de cada ciudadano
-     */
-    private void crearTablaEstadosCiviles(){
-        String consulta = null;
-        Connection con = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try{
-            consulta = 
-                    "CREATE TABLE IF NOT EXISTS estados_civiles"
-                    +"(identificador                VARCHAR(10) NOT NULL,"
-                    +"estado                        VARCHAR(10) NOT NULL,"
-                    + "FOREIGN KEY(identificador) REFERENCES poblacion(identificador))";
-            
-            con = conexion.getConnection();
-            st = con.prepareStatement(consulta);
-            st.executeUpdate();
-            
-        }catch (Exception e) {
-            System.err.println("excepcion: " + e.getMessage());
-        }finally {
-            consulta = null;
-            try{
-                if(rs!=null)
-                    rs.close();
-                if(st!=null)
-                    st.close();
-                if(con!=null)
-                    con.close();
-            }catch (SQLException e){
-                System.err.println("excepcion: " + e.getMessage());
-            }
-        }         
-    }
-    
-    /**
-     * crea la tabla correspondieniente a poblacion chilena
-     */
-    private void crearTablaChilena(){
-        String consulta = null;
-        Connection con = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try{
-            consulta = 
-                    "CREATE TABLE IF NOT EXISTS poblacion_chilena"
-                    +"(nombre                       VARCHAR(50) NOT NULL,"
-                    +"apellido                      VARCHAR(50) NOT NULL,"
-                    +"sexo                          VARCHAR(10) NOT NULL,"
-                    +"fecha_de_nacimiento           DATE NOT NULL,"
-                    +"hora_de_nacimiento            VARCHAR(10) NOT NULL,"
-                    +"comentario_de_nacimiento      TEXT,"
-                    +"fecha_de_defuncion            DATE,"
-                    +"hora_de_defuncion             VARCHAR(10),"
-                    +"comentario_de_defuncion       TEXT,"
-                    +"profesion                     VARCHAR(50),"
-                    +"rut                           VARCHAR(9) PRIMARY KEY,"
-                    +"numero_de_documento           VARCHAR(20),"
-                    +"direccion                     VARCHAR(100),"
-                    +"region_de_nacimiento          VARCHAR(100) NOT NULL,"
-                    +"comuna_de_nacimiento          VARCHAR(100) NOT NULL,"
-                    +"FOREIGN KEY(rut) REFERENCES poblacion(identificador))";
-            
-            con = conexion.getConnection();
-            st = con.prepareStatement(consulta);
-            st.executeUpdate();
-            
-        }catch (Exception e) {
-            System.err.println("excepcion: " + e.getMessage());
-        }finally {
-            consulta = null;
-            try{
-                if(rs!=null)
-                    rs.close();
-                if(st!=null)
-                    st.close();
-                if(con!=null)
-                    con.close();
-            }catch (SQLException e){
-                System.err.println("excepcion: " + e.getMessage());
-            }
-        }            
-    }
-    
-    /**
-     * crea la tabla correspondieniente a poblacion extranjera
-     */
-    private void crearTablaExtranjera(){
-        String consulta = null;
-        Connection con = null;
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try{
-            consulta = 
-                    "CREATE TABLE IF NOT EXISTS poblacion_extranjera"
-                    +"(nombre                       VARCHAR(50) NOT NULL,"
-                    +"apellido                      VARCHAR(50) NOT NULL,"
-                    +"sexo                          VARCHAR(10) NOT NULL,"
-                    +"fecha_de_nacimiento           DATE NOT NULL,"
-                    +"hora_de_nacimiento            VARCHAR(10) NOT NULL,"
-                    +"comentario_de_nacimiento      TEXT,"
-                    +"fecha_de_defuncion            DATE,"
-                    +"hora_de_defuncion             VARCHAR(10),"
-                    +"comentario_de_defuncion       TEXT,"
-                    +"profesion                     VARCHAR(50),"
-                    +"pasaporte                     VARCHAR(20) PRIMARY KEY,"
-                    +"tipo_de_visa                  VARCHAR(10) NOT NULL,"
-                    +"primera_visa                  DATE NOT NULL,"
-                    + "FOREIGN KEY(pasaporte) REFERENCES poblacion(identificador))";
-            
-            con = conexion.getConnection();
-            st = con.prepareStatement(consulta);
-            st.executeUpdate();
-            
-        }catch (Exception e) {
-            System.err.println("excepcion: " + e.getMessage());
-        }finally {
-            consulta = null;
-            try{
-                if(rs!=null)
-                    rs.close();
-                if(st!=null)
-                    st.close();
-                if(con!=null)
-                    con.close();
-            }catch (SQLException e){
-                System.err.println("excepcion: " + e.getMessage());
-            }
-        }            
     }
     
     /**

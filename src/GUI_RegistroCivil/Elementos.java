@@ -2,7 +2,6 @@
 package GUI_RegistroCivil;
 
 import Enums.Sexo;
-import Excepciones.CantidadParentescoException;
 import java.time.LocalTime;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -37,16 +36,19 @@ import colecciones.Ciudadano;
 import colecciones.Poblacion;
 import java.time.LocalDate;
 import java.util.HashMap;
-import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PopOver;
 
 
 public class Elementos {
-    private static ArchivoProperties prop = new ArchivoProperties();
+    private static ArchivoProperties prop = ArchivoProperties.getInstancia();
     
     /**
      * crea un campo de texto para lectura de hora con formato en horas:minutos:segundos
@@ -97,10 +99,11 @@ public class Elementos {
         prop.crear();
         Stage popup = new Stage();
         popup.setResizable(false);
-        popup.initStyle(StageStyle.UTILITY);
+        popup.initStyle(StageStyle.TRANSPARENT);
         popup.setAlwaysOnTop(true);
         popup.initModality(Modality.APPLICATION_MODAL);
         GridPane pop = new GridPane();
+        pop.setBorder(borde(4));
         pop.setHgap(5);
         pop.setVgap(5);
         pop.setAlignment(Pos.CENTER);
@@ -132,10 +135,11 @@ public class Elementos {
         prop.crear();
         Stage popup = new Stage();
         popup.setResizable(false);
-        popup.initStyle(StageStyle.UTILITY);
+        popup.initStyle(StageStyle.TRANSPARENT);
         popup.setAlwaysOnTop(true);
         popup.initModality(Modality.APPLICATION_MODAL);
         GridPane pop = new GridPane();
+        pop.setBorder(borde(4));
         pop.setHgap(30);
         pop.setVgap(20);
         pop.setAlignment(Pos.CENTER);
@@ -495,12 +499,19 @@ public class Elementos {
         return tooltip;
     }
     
-    public static void notificar(String titulo, String mensaje){
-        Notifications.create()
+    public static Notifications notificar(String titulo, String mensaje){
+        return Notifications.create()
                     .title(titulo)
                     .text(mensaje)
                     .darkStyle()
-                    .hideAfter(Duration.seconds(1.5))
-                    .showWarning();
+                    .hideAfter(Duration.seconds(1.5));
+    }
+    
+    public static Border borde(Color color, int ancho){
+        return new Border(new BorderStroke(color, BorderStrokeStyle.SOLID, null, new BorderWidths(ancho)));
+    }
+    
+    public static Border borde(int ancho){
+        return new Border(new BorderStroke(Color.DARKCYAN, BorderStrokeStyle.SOLID, null, new BorderWidths(ancho)));
     }
 }
