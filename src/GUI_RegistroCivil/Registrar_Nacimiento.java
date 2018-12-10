@@ -229,31 +229,28 @@ public class Registrar_Nacimiento {
         guardar.disableProperty().bind(validacion);
         
         guardar.setOnMouseClicked(lambda -> {
-            Chileno aux = new Chileno();
-            //requisitos minimos
-            aux.setNombre(nombre.getText());
-            aux.setApellido(apellido.getText());
-            aux.setRegionDeNacimiento(region.getSelectionModel().getSelectedItem().toString());
-            aux.setComunaDeNacimiento(comuna.getSelectionModel().getSelectedItem().toString());
-            aux.setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO);
-            aux.setNacimiento(nacimiento.getValue());
-            aux.setHoraNacimiento(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-            aux.setRut(rut.getText());
-            aux.setEstadoCivil(EstadoCivil.HIJO);
-            aux.setNacionalidades(Nacionalidad.CHILE);
-            
-            //requisitos opcionales
-            if(!comentario.getText().isEmpty())
-                aux.setComentarioNacimiento(comentario.getText());
-            
+            Chileno aux = new Chileno.BuilderChileno()
+                    .setRut(rut.getText())
+                    .setRegionDeNacimiento(region.getSelectionModel().getSelectedItem().toString())
+                    .setComunaDeNacimiento(comuna.getSelectionModel().getSelectedItem().toString())
+                    .setNombre(nombre.getText())
+                    .setApellido(apellido.getText())
+                    .setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO)
+                    .setNacimiento(nacimiento.getValue())
+                    .setHoraNacimiento(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                    .setComentarioNacimiento(comentario.getText())
+                    .setEstadoCivil(EstadoCivil.HIJO)
+                    .setNacionalidades(Nacionalidad.CHILE)
+                    .build();
+                    
             Ciudadano mama = poblacion.getCiudadano(madre.getText());
             if(mama != null && aux.getParientes().buscarPariente(mama.mostrarIdentificador()) == null){
                 try{
                     aux.getParientes().agregarPariente(mama.mostrarIdentificador(), EstadoCivil.MADRE);
-                    mama.setEstadoCivil(EstadoCivil.MADRE);
+                    mama.agregarEstadoCivil(EstadoCivil.MADRE);
                     mama.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
                     if(extMadre.isSelected())
-                        aux.setNacionalidades(mama.getNacionalidades());
+                        aux.agregarNacionalidades(mama.getNacionalidades());
                 }catch(CantidadParentescoException e){
                     Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje()).showWarning();
                 }
@@ -263,10 +260,10 @@ public class Registrar_Nacimiento {
             if(papa != null && aux.getParientes().buscarPariente(papa.mostrarIdentificador()) == null){
                 try{
                     aux.getParientes().agregarPariente(papa.mostrarIdentificador(), EstadoCivil.PADRE);
-                    papa.setEstadoCivil(EstadoCivil.PADRE);
+                    papa.agregarEstadoCivil(EstadoCivil.PADRE);
                     papa.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
                     if(extPadre.isSelected())
-                        aux.setNacionalidades(papa.getNacionalidades());
+                        aux.agregarNacionalidades(papa.getNacionalidades());
                 }catch(CantidadParentescoException e){
                     Elementos.notificar("Advertencia", CantidadParentescoException.getMensaje()).showWarning();
                 }

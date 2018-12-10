@@ -197,26 +197,26 @@ public class ConexionBD{
                 st = con.prepareStatement(consulta);
                 rs = st.executeQuery();
                 if(rs.next()){
-                    chileno = new Chileno();
-                    chileno.setNombre(rs.getString("nombre"));
-                    chileno.setApellido(rs.getString("apellido"));
-                    chileno.setSexo(Sexo.valueOf(rs.getString("sexo").toUpperCase()));
-                    chileno.setNacimiento(rs.getDate("fecha_de_nacimiento").toLocalDate());
-                    chileno.setHoraNacimiento(rs.getString("hora_de_nacimiento"));
-                    chileno.setComentarioNacimiento(rs.getString("comentario_de_nacimiento"));
-                    chileno.setDefuncion(rs.getDate("fecha_de_defuncion").toLocalDate());
-                    chileno.setHoraDefuncion(rs.getString("hora_de_defuncion"));
-                    chileno.setComentarioDefuncion(rs.getString("comentario_de_defuncion"));
-                    chileno.setProfesion(rs.getString("profesion"));
-                    chileno.setEstadoCivil(buscarEstadosCiviles(identificador));
-                    chileno.setNacionalidades(buscarNacionalidades(identificador));
-                    chileno.setParientes(buscarParientes(identificador));
-                    
-                    chileno.setRut(rs.getString("rut"));
-                    chileno.setNumeroDeDocumento(rs.getString("numero_de_documento"));
-                    chileno.setDireccion(rs.getString("direccion"));
-                    chileno.setRegionDeNacimiento(rs.getString("region_de_nacimiento"));
-                    chileno.setComunaDeNacimiento(rs.getString("comuna_de_nacimiento"));
+                    chileno = new Chileno.BuilderChileno()
+                    .setRut(rs.getString("rut"))
+                    .setNumeroDeDocumento(rs.getString("numero_de_documento"))
+                    .setDireccion(rs.getString("direccion"))
+                    .setRegionDeNacimiento(rs.getString("region_de_nacimiento"))
+                    .setComunaDeNacimiento(rs.getString("comuna_de_nacimiento"))
+                    .setNombre(rs.getString("nombre"))
+                    .setApellido(rs.getString("apellido"))
+                    .setSexo(Sexo.valueOf(rs.getString("sexo").toUpperCase()))
+                    .setNacimiento(rs.getDate("fecha_de_nacimiento").toLocalDate())
+                    .setHoraNacimiento(rs.getString("hora_de_nacimiento"))
+                    .setComentarioNacimiento(rs.getString("comentario_de_nacimiento"))
+                    .setDefuncion(rs.getDate("fecha_de_defuncion").toLocalDate())
+                    .setHoraDefuncion(rs.getString("hora_de_defuncion"))
+                    .setComentarioDefuncion(rs.getString("comentario_de_defuncion"))
+                    .setProfesion(rs.getString("profesion"))
+                    .setEstadoCivil(buscarEstadosCiviles(identificador))
+                    .setNacionalidades(buscarNacionalidades(identificador))
+                    .setParientes(buscarParientes(identificador))
+                    .build();
                 }
             }
             else{
@@ -229,24 +229,21 @@ public class ConexionBD{
                 rs = st.executeQuery();
                 
                 if(rs.next()){
-                    extranjero = new Extranjero();
-                    extranjero.setNombre(rs.getString("nombre"));
-                    extranjero.setApellido(rs.getString("apellido"));
-                    extranjero.setSexo(Sexo.valueOf(rs.getString("sexo")));
-                    extranjero.setNacimiento(rs.getDate("fecha de nacimiento").toLocalDate());
-                    extranjero.setHoraNacimiento(rs.getString("hora de nacimiento"));
-                    extranjero.setComentarioNacimiento(rs.getString("comentario de nacimiento"));
-                    extranjero.setDefuncion(rs.getDate("fecha de defuncion").toLocalDate());
-                    extranjero.setHoraDefuncion(rs.getString("hora de defuncion"));
-                    extranjero.setComentarioDefuncion(rs.getString("comentario de defuncion"));
-                    extranjero.setProfesion(rs.getString("profesion"));
-                    //ciudadano.setEstadoCivil(rs.getString("nombre"));
-                    //ciudadano.setNacionalidades(rs.getString("nombre"));
-                    //ciudadano.setParientes(rs.getString("nombre"));
-                    
-                    extranjero.setPasaporte(rs.getString("pasaporte"));
-                    extranjero.setTipoDeVisa(Visa.valueOf(rs.getString("tipo de visa")));
-                    extranjero.setPrimeraVisa(rs.getDate("primera visa").toLocalDate());
+                    extranjero = new Extranjero.BuilderExtranjero()
+                            .setPasaporte(rs.getString("pasaporte"))
+                            .setTipoDeVisa(Visa.valueOf(rs.getString("tipo de visa")))
+                            .setPrimeraVisa(rs.getDate("primera visa").toLocalDate())
+                            .setNombre(rs.getString("nombre"))
+                            .setApellido(rs.getString("apellido"))
+                            .setSexo(Sexo.valueOf(rs.getString("sexo")))
+                            .setNacimiento(rs.getDate("fecha de nacimiento").toLocalDate())
+                            .setHoraNacimiento(rs.getString("hora de nacimiento"))
+                            .setComentarioNacimiento(rs.getString("comentario de nacimiento"))
+                            .setDefuncion(rs.getDate("fecha de defuncion").toLocalDate())
+                            .setHoraDefuncion(rs.getString("hora de defuncion"))
+                            .setComentarioDefuncion(rs.getString("comentario de defuncion"))
+                            .setProfesion(rs.getString("profesion"))
+                            .build();
                 }
             }
             

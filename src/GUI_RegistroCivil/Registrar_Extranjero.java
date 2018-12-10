@@ -133,18 +133,18 @@ public class Registrar_Extranjero {
         guardar.disableProperty().bind(validacion);
         
         guardar.setOnMouseClicked(lambda -> {
-            Extranjero aux = new Extranjero();
-            //requisitos minimos
-            aux.setNombre(nombre.getText());
-            aux.setApellido(apellido.getText());
-            aux.setTipoDeVisa(Visa.valorDe(tipoVisa.getSelectionModel().getSelectedItem().toString()));
-            aux.setPrimeraVisa(primeraVisa.getValue());
-            aux.setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO);
-            aux.setNacimiento(nacimiento.getValue());
-            aux.setHoraNacimiento(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-            aux.setPasaporte(pasaporte.getText());
-            aux.setEstadoCivil(EstadoCivil.HIJO);
-            aux.setNacionalidades(Nacionalidad.CHILE);
+            Extranjero aux = new Extranjero.BuilderExtranjero()
+                    .setPasaporte(pasaporte.getText())
+                    .setTipoDeVisa(Visa.valorDe(tipoVisa.getSelectionModel().getSelectedItem().toString()))
+                    .setPrimeraVisa(primeraVisa.getValue())
+                    .setNombre(nombre.getText())
+                    .setApellido(apellido.getText())
+                    .setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO)
+                    .setNacimiento(nacimiento.getValue())
+                    .setHoraNacimiento(hora.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                    .setEstadoCivil(EstadoCivil.HIJO)
+                    .setNacionalidades(Nacionalidad.CHILE)
+                    .build();
             
             pasaporte.clear();
             

@@ -138,7 +138,7 @@ public class Parientes {
                 return true;
             }
         }
-        return personas.put(estado, new ListadoParientes(Arrays.asList(pariente)))==null;
+        return personas.put(estado, new ListadoParientes(pariente))==null;
     }
     
     /**
@@ -150,8 +150,9 @@ public class Parientes {
     public int removerPariente(String pariente){
         for(Map.Entry<EstadoCivil, ListadoParientes> lista : personas.entrySet()){
             if(lista.getValue().borrar(pariente)){
-                if(lista.getValue().estaVacia())
+                if(lista.getValue().estaVacia()){
                     return 0;
+                }
                 return 1;
             }
         }
@@ -192,7 +193,7 @@ public class Parientes {
         if(personas.containsKey(nuevo))
             personas.get(nuevo).agregar(persona);
         else
-            personas.put(nuevo, new ListadoParientes(Arrays.asList(persona)));
+            personas.put(nuevo, new ListadoParientes(persona));
         
         return true;
     }

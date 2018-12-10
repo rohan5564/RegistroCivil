@@ -2,26 +2,31 @@
 package colecciones;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
 public class ListadoParientes {
     
-    private List<String> listadoParientes = null;
+    private ArrayList<String> listadoParientes = null;
 
     public ListadoParientes(){
         listadoParientes = new ArrayList<>();
     }
     
+    public ListadoParientes(String listadoParientes) {
+        this.listadoParientes = new ArrayList(Arrays.asList(listadoParientes));
+    }
+    
     public ListadoParientes(List<String> listadoParientes) {
-        this.listadoParientes = listadoParientes;
+        this.listadoParientes = new ArrayList(Arrays.asList(listadoParientes));
     }
 
     public List<String> getListadoParientes() {
         return listadoParientes;
     }
 
-    public void setListadoParientes(List<String> listadoParientes) {
+    public void setListadoParientes(ArrayList<String> listadoParientes) {
         this.listadoParientes = listadoParientes;
     }
     
@@ -29,7 +34,7 @@ public class ListadoParientes {
      * @return tamaño del listado de parientes
      */
     public int totalPorParentesco(){
-        return listadoParientes.size();
+        return existe()?listadoParientes.size():0;
     }
     
     /**
@@ -37,7 +42,7 @@ public class ListadoParientes {
      * @return true si encuentra a la persona, false caso contrario
      */
     public boolean contienePersona(String persona){
-        return listadoParientes.contains(persona);
+        return existe()?listadoParientes.contains(persona):false;
     }
     
     /**
@@ -45,7 +50,7 @@ public class ListadoParientes {
      * @return true si contiene a todo el listado, false caso contrario
      */
     public boolean contieneListadoPersonas(List<String> personas){
-        return listadoParientes.containsAll(personas);
+        return existe()?listadoParientes.containsAll(personas):false;
     }
     
     /**
@@ -53,7 +58,7 @@ public class ListadoParientes {
      * @return true si agrega, false caso contrario
      */
     public boolean agregar(String persona){
-        return listadoParientes.add(persona);
+        return existe()?listadoParientes.add(persona):false;
     }
     
     /**
@@ -61,7 +66,7 @@ public class ListadoParientes {
      * @return  true si agrega al listado, false caso contrario
      */
     public boolean agregarListado(List<String> persona){
-        return listadoParientes.addAll(persona);
+        return existe()?listadoParientes.addAll(persona):false;
     }
     
     /**
@@ -69,7 +74,7 @@ public class ListadoParientes {
      * @return true si elimina a la persona del listado, false caso contrario
      */
     public boolean borrar(String persona){
-        return listadoParientes.remove(persona);
+        return existe()?listadoParientes.remove(persona):false;
     }
     
     /**
@@ -77,7 +82,7 @@ public class ListadoParientes {
      * @return  true si borra las personas, false en caso contrario
      */
     public boolean borrarListado(List<String> persona){
-        return listadoParientes.removeAll(persona);
+        return existe()?listadoParientes.removeAll(persona):false;
     }
     
     /**
@@ -99,7 +104,7 @@ public class ListadoParientes {
      * @return Ciudadano buscado 
      */
     public String obtenerCiudadano(int index){
-        return listadoParientes.get(index);
+        return existe()?listadoParientes.get(index):null;
     }
     
 }

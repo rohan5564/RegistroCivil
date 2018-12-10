@@ -5,7 +5,44 @@ import Excepciones.FormatoRutException;
 import Excepciones.LongitudRutException;
 import Interfaces.RegistroPersonal;
 
-public class Chileno extends Ciudadano implements RegistroPersonal{
+public class Chileno extends Ciudadano<Chileno> implements RegistroPersonal{
+    
+    /**
+     * PARTIR POR ATRIBUTOS PROPIOS DEL CIUDADANO CHILENO
+     */
+    public static class BuilderChileno extends Ciudadano.Builder<Chileno>{
+        private String rut = null; //verificador 0-9 / 'K'
+        private String numeroDeDocumento = null; //PERMITE NULL
+        private String direccion = null; //PERMITE NULL
+        private String regionDeNacimiento = null;
+        private String comunaDeNacimiento = null;
+        
+        public BuilderChileno setRut(String rut){
+            this.rut = rut.toUpperCase();
+            return this;
+        }
+        public BuilderChileno setNumeroDeDocumento(String numeroDeDocumento) {
+            this.numeroDeDocumento = numeroDeDocumento;
+            return this;
+        }
+        public BuilderChileno setDireccion(String direccion) {
+            this.direccion = direccion.toUpperCase();
+            return this;
+        }
+        public BuilderChileno setRegionDeNacimiento(String regionDeNacimiento) {
+            this.regionDeNacimiento = regionDeNacimiento;
+            return this;
+        }
+        public BuilderChileno setComunaDeNacimiento(String comunaDeNacimiento) {
+            this.comunaDeNacimiento = comunaDeNacimiento;
+            return this;
+        }
+        
+        @Override
+        public Chileno build(){
+            return new Chileno(this);
+        }
+    }
     
     private String rut; //verificador 0-9 / 'K'
     private String numeroDeDocumento; //PERMITE NULL
@@ -13,48 +50,68 @@ public class Chileno extends Ciudadano implements RegistroPersonal{
     private String regionDeNacimiento;
     private String comunaDeNacimiento;
 
-    public Chileno(){
-        super();
-        rut = null;
-        numeroDeDocumento = null;
+    
+    private Chileno(final BuilderChileno builder){
+        super(builder);
+        this.rut = builder.rut;
+        this.numeroDeDocumento = builder.numeroDeDocumento;
+        this.direccion = builder.direccion;
+        this.regionDeNacimiento = builder.regionDeNacimiento;
+        this.comunaDeNacimiento = builder.comunaDeNacimiento;
     }    
     
     public String getRut(){
         return rut;
     }
-    
-    public void setRut(String rut){
-        this.rut = rut.toUpperCase();
-    }
 
     public String getNumeroDeDocumento() {
         return numeroDeDocumento;
-    }
-
-    public void setNumeroDeDocumento(String numeroDeDocumento) {
-        this.numeroDeDocumento = numeroDeDocumento;
     }
        
     public String getDireccion() {
         return direccion;
     }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion.toUpperCase();
-    }
-    
+        
     public String getRegionDeNacimiento() {
         return regionDeNacimiento;
-    }
-
-    public void setRegionDeNacimiento(String regionDeNacimiento) {
-        this.regionDeNacimiento = regionDeNacimiento;
     }
 
     public String getComunaDeNacimiento() {
         return comunaDeNacimiento;
     }
 
+    /**
+     * permite reemplazar el numero de documento guardado o agregarlo si es 
+     * que no existe
+     * @param numeroDeDocumento numero de documento que reemplaza al existente
+     */
+    public void setNumeroDeDocumento(String numeroDeDocumento) {
+        this.numeroDeDocumento = numeroDeDocumento;
+    }
+
+    /**
+     * permite reemplazar la direccion guardada o agregarlo si es 
+     * que no existe
+     * @param direccion direccion que reemplaza al existente
+     */
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    /**
+     * permite reemplazar la region de nacimiento guardada o agregarlo si es 
+     * que no existe
+     * @param regionDeNacimiento region de nacimiento que reemplaza al existente
+     */
+    public void setRegionDeNacimiento(String regionDeNacimiento) {
+        this.regionDeNacimiento = regionDeNacimiento;
+    }
+
+    /**
+     * permite reemplazar la comuna de nacimiento guardada o agregarlo si es 
+     * que no existe
+     * @param comunaDeNacimiento comuna de nacimiento que reemplaza al existente
+     */
     public void setComunaDeNacimiento(String comunaDeNacimiento) {
         this.comunaDeNacimiento = comunaDeNacimiento;
     }

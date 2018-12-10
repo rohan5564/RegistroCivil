@@ -110,7 +110,7 @@ public class Poblacion implements RegistroCivil{
         if(!poblacion.containsValue(ciudadano))
             return false;
         
-        return poblacion.get(ciudadano).getParientes().removerParientes() 
+        return getCiudadano(ciudadano.mostrarIdentificador()).desvincularDeParientes()
                 && poblacion.remove(ciudadano.mostrarIdentificador()) != null;
     }
     

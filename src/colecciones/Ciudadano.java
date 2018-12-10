@@ -11,8 +11,112 @@ import java.util.List;
 import java.util.Map;
 
 
-public abstract class Ciudadano{
+public abstract class Ciudadano<T extends Ciudadano<T>>{
     
+    /**
+     * solo agregar datos de un ciudadano, da igual si es Chileno o Extranjero
+     * @param <T> Tipo de ciudadano
+     */
+    public static abstract class Builder<T>{
+        private String nombre = null;
+        private String apellido = null;
+        private Sexo sexo = null;
+        private LocalDate nacimiento = null; //yo.setNacimiento(LocalDate.of(1996,8,7))
+        private String horaNacimiento = null;
+        private String comentarioNacimiento = null; //PERMITE NULL
+        private LocalDate defuncion = null; //PERMITE NULL
+        private String horaDefuncion = null; //PERMITE NULL
+        private String comentarioDefuncion = null; //PERMITE NULL
+        private String profesion = null; //PERMITE NULL
+        private List<EstadoCivil> estadoCivil = new ArrayList<>();
+        private List<Nacionalidad> nacionalidades = new ArrayList<>();
+        private Parientes parientes = new Parientes();
+
+        public Builder<T> setNombre(String nombre) {
+            this.nombre = nombre.toUpperCase();
+            return this;
+        }
+
+        public Builder<T> setApellido(String apellido) {
+            this.apellido = apellido.toUpperCase();
+            return this;
+        }
+
+        public Builder<T> setSexo(Sexo sexo) {
+            this.sexo = sexo;
+            return this;
+        }
+
+        public Builder<T> setNacimiento(LocalDate nacimiento) {
+            this.nacimiento = nacimiento;
+            return this;
+        }
+
+        public Builder<T> setHoraNacimiento(String horaNacimiento) {
+            this.horaNacimiento = horaNacimiento;
+            return this;
+        }
+
+        public Builder<T> setComentarioNacimiento(String comentarioNacimiento) {
+            this.comentarioNacimiento = comentarioNacimiento;
+            return this;
+        }
+
+        public Builder<T> setDefuncion(LocalDate defuncion) {
+            this.defuncion = defuncion;
+            return this;
+        }
+
+        public Builder<T> setHoraDefuncion(String horaDefuncion) {
+            this.horaDefuncion = horaDefuncion;
+            return this;
+        }
+
+        public Builder<T> setComentarioDefuncion(String comentarioDefuncion) {
+            this.comentarioDefuncion = comentarioDefuncion;
+            return this;
+        }
+
+        public Builder<T> setProfesion(String profesion) {
+            this.profesion = profesion;
+            return this;
+        }
+        
+        public Builder<T> setEstadoCivil(List<EstadoCivil> estadoCivil){
+            this.estadoCivil.addAll(estadoCivil);
+            return this;
+        }
+    
+        public Builder<T> setEstadoCivil(EstadoCivil estadoCivil){
+            if(!this.estadoCivil.contains(estadoCivil))
+                this.estadoCivil.add(estadoCivil);
+            return this;
+        }
+
+        public Builder<T> setNacionalidades(List<Nacionalidad> nacionalidades) {
+            this.nacionalidades.addAll(nacionalidades);
+            return this;
+        }
+
+        public Builder<T> setNacionalidades(Nacionalidad nacionalidad) {
+            this.nacionalidades.add(nacionalidad);
+            return this;
+        }
+        
+        public Builder<T> setParientes(Parientes parientes) {
+            this.parientes = parientes;
+            return this;
+        }
+            
+        public abstract T build();
+    }
+    
+    
+    /************************************************************************************
+    *   No-Nulos: nombre, apellido, sexo, region, nacimiento, defuncion, estadoCivil    *
+    *                                                                                   *
+    *   nulos: direccion, defuncion, pasaporte, profesion                               *
+    ************************************************************************************/
     private String nombre;
     private String apellido; 
     private Sexo sexo;
@@ -23,30 +127,28 @@ public abstract class Ciudadano{
     private String horaDefuncion; //PERMITE NULL
     private String comentarioDefuncion; //PERMITE NULL
     private String profesion; //PERMITE NULL
-    private List<EstadoCivil> estadoCivil;
-    private List<Nacionalidad> nacionalidades;
-    private Parientes parientes;
+    private List<EstadoCivil> estadoCivil = new ArrayList<>();
+    private List<Nacionalidad> nacionalidades = new ArrayList<>();
+    private Parientes parientes = new Parientes();
     
-    /************************************************************************************
-    *   No-Nulos: nombre, apellido, sexo, region, nacimiento, defuncion, estadoCivil    *
-    *                                                                                   *
-    *   nulos: direccion, defuncion, pasaporte, profesion                               *
-    ************************************************************************************/
-    
-    public Ciudadano() {
-        nombre = null;
-        apellido = null;
-        sexo = null;
-        nacimiento = null;
-        horaNacimiento = null;
-        comentarioNacimiento = null;
-        defuncion = null;
-        horaDefuncion = null;
-        comentarioDefuncion = null;
-        profesion = null;
-        estadoCivil = new ArrayList<>();
-        nacionalidades = new ArrayList<>();
-        parientes = new Parientes();
+    /**
+     * solo agregar datos de un ciudadano, da igual si es Chileno o Extranjero
+     * @param builder builder del ciudadano
+     */
+    public Ciudadano(final Builder<T> builder){
+        this.apellido = builder.apellido;
+        this.comentarioDefuncion = builder.comentarioDefuncion;
+        this.comentarioNacimiento = builder.comentarioNacimiento;
+        this.defuncion = builder.defuncion;
+        this.estadoCivil = builder.estadoCivil;
+        this.horaDefuncion = builder.horaDefuncion;
+        this.horaNacimiento = builder.horaNacimiento;
+        this.nacimiento = builder.nacimiento;
+        this.nacionalidades = builder.nacionalidades;
+        this.nombre = builder.nombre;
+        this.parientes = builder.parientes;
+        this.profesion = builder.profesion;
+        this.sexo = builder.sexo;
     }
     
     /**
@@ -59,117 +161,179 @@ public abstract class Ciudadano{
     public String getNombre() {
         return nombre;
     }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre.toUpperCase();
-    }
     
     public String getApellido() {
         return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido.toUpperCase();
     }
     
     public Sexo getSexo() {
         return sexo;
     }
 
-    public void setSexo(Sexo sexo) {
-        this.sexo = sexo;
-    }
-    
     public LocalDate getNacimiento() {
         return nacimiento;
-    }
-
-    public void setNacimiento(LocalDate nacimiento) {
-        this.nacimiento = nacimiento;
     }
     
     public String getHoraNacimiento() {
         return horaNacimiento;
     }
 
-    public void setHoraNacimiento(String horaNacimiento) {
-        this.horaNacimiento = horaNacimiento;
-    }
-
     public String getComentarioNacimiento() {
         return comentarioNacimiento;
     }
-    
-    public void setComentarioNacimiento(String comentarioNacimiento) {
-        this.comentarioNacimiento = comentarioNacimiento;
-    }
-    
+        
     public LocalDate getDefuncion() {
         return defuncion;
     }
-    
-    public void setDefuncion(LocalDate defuncion) {
-        this.defuncion = defuncion;
-    }
-    
+        
     public String getHoraDefuncion() {
         return horaDefuncion;
-    }
-
-    public void setHoraDefuncion(String horaDefuncion) {
-        this.horaDefuncion = horaDefuncion;
     }
 
     public String getComentarioDefuncion() {
         return comentarioDefuncion;
     }
 
-    public void setComentarioDefuncion(String comentarioDefuncion) {
-        this.comentarioDefuncion = comentarioDefuncion;
-    }
-    
     public String getProfesion() {
         return profesion;
     }
-
-    public void setProfesion(String profesion) {
-        this.profesion = profesion.toUpperCase();
-    }
-    
-    
+        
     public List<EstadoCivil> getEstadoCivil(){
         return estadoCivil;
     }
     
-    public void setEstadoCivil(List<EstadoCivil> estadoCivil){
-        this.estadoCivil.addAll(estadoCivil);
-    }
-    
-    public void setEstadoCivil(EstadoCivil estadoCivil){
-        if(!this.estadoCivil.contains(estadoCivil))
-            this.estadoCivil.add(estadoCivil);
-    }
     
     public List<Nacionalidad> getNacionalidades() {
         return nacionalidades;
-    }
-
-    public void setNacionalidades(List<Nacionalidad> nacionalidades) {
-        this.nacionalidades.addAll(nacionalidades);
-    }
-    
-    public void setNacionalidades(Nacionalidad nacionalidad) {
-        this.nacionalidades.add(nacionalidad);
     }
     
     public Parientes getParientes() {
         return parientes;
     }
 
-    public void setParientes(Parientes parientes) {
-        this.parientes = parientes;
+    /**
+     * permite reemplazar el nombre guardado o agregarlo si es 
+     * que no existe
+     * @param nombre nombre que reemplaza al existente
+     */
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
-            
+
+    /**
+     * permite reemplazar el apellido guardado o agregarlo si es 
+     * que no existe
+     * @param apellido apellido que reemplaza al existente
+     */
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    /**
+     * permite reemplazar el sexo guardado o agregarlo si es 
+     * que no existe
+     * @param sexo sexo que reemplaza al existente
+     */
+    public void setSexo(Sexo sexo) {
+        this.sexo = sexo;
+    }
+
+    /**
+     * permite reemplazar la fecha de nacimiento guardada o agregarlo si es 
+     * que no existe
+     * @param nacimiento fecha de nacimiento que reemplaza al existente
+     */
+    public void setNacimiento(LocalDate nacimiento) {
+        this.nacimiento = nacimiento;
+    }
+
+    /**
+     * permite reemplazar la hora de nacimiento guardada o agregarlo si es 
+     * que no existe
+     * @param horaNacimiento hora de nacimiento que reemplaza al existente
+     */
+    public void setHoraNacimiento(String horaNacimiento) {
+        this.horaNacimiento = horaNacimiento;
+    }
+
+    /**
+     * permite reemplazar el comentario de nacimiento guardado o agregarlo si es 
+     * que no existe
+     * @param comentarioNacimiento comentario de nacimiento que reemplaza al existente
+     */
+    public void setComentarioNacimiento(String comentarioNacimiento) {
+        this.comentarioNacimiento = comentarioNacimiento;
+    }
+    
+    /**
+     * permite reemplazar el dia de defuncion guardado o agregarlo si es 
+     * que no existe
+     * @param defuncion fecha de defuncion que reemplaza al existente
+     */
+    public void setDefuncion(LocalDate defuncion) {
+        this.defuncion = defuncion;
+    }
+
+    /**
+     * permite reemplazar la hora de defuncion guardad o agregarla si es 
+     * que no existe
+     * @param horaDefuncion hora de defuncion que reemplaza al existente
+     */
+    public void setHoraDefuncion(String horaDefuncion) {
+        this.horaDefuncion = horaDefuncion;
+    }
+
+    /**
+     * permite reemplazar el comentario de defuncion guardado o agregarlo si es 
+     * que no existe
+     * @param comentarioDefuncion comentario de defuncion que reemplaza al existente
+     */
+    public void setComentarioDefuncion(String comentarioDefuncion) {
+        this.comentarioDefuncion = comentarioDefuncion;
+    }
+
+    /**
+     * permite reemplazar la profesion guardada o agregarlo si es 
+     * que no existe
+     * @param profesion profesion que reemplaza a la existente
+     */
+    public void setProfesion(String profesion) {
+        this.profesion = profesion;
+    }
+    
+    /**
+     * permite agregar un listado de estados civiles
+     * @param estadoCivil List<> de estados a agregar
+     */
+    public void agregarEstadoCivil(List<EstadoCivil> estadoCivil){
+        this.estadoCivil.addAll(estadoCivil);
+    }
+    
+    /**
+     * permite agregar un estado civil
+     * @param estadoCivil estado a agregar
+     */
+    public void agregarEstadoCivil(EstadoCivil estadoCivil){
+        if(!this.estadoCivil.contains(estadoCivil))
+            this.estadoCivil.add(estadoCivil);           
+    }
+    
+    /**
+     * permite agregar un listado de nacionalidades
+     * @param nacionalidades List<> de nacionalidades a agregar
+     */
+    public void agregarNacionalidades(List<Nacionalidad> nacionalidades) {
+        this.nacionalidades.addAll(nacionalidades);
+    }
+
+    /**
+     * permite agregar una nacionalidad
+     * @param nacionalidad nacionalidad a agregar
+     */
+    public void agregarNacionalidades(Nacionalidad nacionalidad) {
+        this.nacionalidades.add(nacionalidad);
+    }
+    
     /**
      * permite calcular la edad del ciudadano, partiendo desde su nacimiento hasta hoy
      * o el dia de su muerte

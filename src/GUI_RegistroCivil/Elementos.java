@@ -478,16 +478,15 @@ public class Elementos {
     
     public static Ciudadano nuevoNacido(String nombre, String apellido, String region, String comuna, 
             Sexo sexo, String fecha, String hora, String rut){
-        Chileno aux = new Chileno();
-        aux.setNombre(nombre);
-        aux.setApellido(apellido);
-        aux.setRegionDeNacimiento(region.replace("_"," ").toLowerCase());
-        aux.setComunaDeNacimiento(comuna.replace("_"," ").toLowerCase());
-        aux.setSexo(sexo);
-        aux.setNacimiento(LocalDate.parse(fecha));
-        aux.setHoraNacimiento(hora);
-        aux.setRut(rut);
-        return aux;
+        return  new Chileno.BuilderChileno()
+                .setRut(rut)
+                .setRegionDeNacimiento(region.replace("_"," ").toLowerCase())
+                .setComunaDeNacimiento(comuna.replace("_"," ").toLowerCase())
+                .setNombre(nombre)
+                .setApellido(apellido)
+                .setSexo(sexo)
+                .setNacimiento(LocalDate.parse(fecha))
+                .setHoraNacimiento(hora).build();
     }
     
     public static PopOver popTip(String msj){

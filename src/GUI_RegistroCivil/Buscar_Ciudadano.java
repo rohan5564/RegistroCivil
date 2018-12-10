@@ -172,7 +172,6 @@ public class Buscar_Ciudadano {
         //creacion del boton que abre la lista de parientes
         Button parientes = new Button("Parientes");
         parientes.setDisable(true);
-        parientes.setMouseTransparent(true);
         
         //creacion del campo que captura los comentarios de nacimiento
         TextArea comentarioNacimiento = new TextArea();
@@ -344,16 +343,16 @@ public class Buscar_Ciudadano {
                 profesion.clear();
                 
                 fechaNacimiento.setDisable(true);
-                fechaNacimiento.setValue(LocalDate.MIN);
+                fechaNacimiento.setValue(null);
                 
                 fechaDefuncion.setDisable(true);
-                fechaDefuncion.setValue(LocalDate.MIN);
+                fechaDefuncion.setValue(null);
                 
                 horaNacimiento.setDisable(true);
-                horaNacimiento.getValueFactory().setValue(LocalTime.MIDNIGHT);
+                horaNacimiento.getValueFactory().setValue(null);
                 
                 horaDefuncion.setDisable(true);
-                horaDefuncion.getValueFactory().setValue(LocalTime.MIDNIGHT);
+                horaDefuncion.getValueFactory().setValue(null);
                 
                 f.setDisable(true);
                 f.setSelected(false);
@@ -401,7 +400,6 @@ public class Buscar_Ciudadano {
                 horaDefuncion.setMouseTransparent(false);
                 parienteMadre.setMouseTransparent(false);
                 parientePadre.setMouseTransparent(false);
-                parientes.setMouseTransparent(false);
                 region.setMouseTransparent(false);
                 comuna.setMouseTransparent(false);
                 f.setMouseTransparent(false);
@@ -423,7 +421,6 @@ public class Buscar_Ciudadano {
                 horaDefuncion.setMouseTransparent(true);
                 parienteMadre.setMouseTransparent(true);
                 parientePadre.setMouseTransparent(true);
-                parientes.setMouseTransparent(true);
                 region.setMouseTransparent(true);
                 comuna.setMouseTransparent(true);
                 f.setMouseTransparent(true);
@@ -457,7 +454,6 @@ public class Buscar_Ciudadano {
             aux.setSexo(f.isSelected()?Sexo.FEMENINO:Sexo.MASCULINO);
             aux.setNacimiento(fechaNacimiento.getValue());
             aux.setHoraNacimiento(horaNacimiento.getValue().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-            aux.setRut(rut.getText());
             
             //requisitos opcionales
             aux.setProfesion(profesion.getText());
@@ -482,7 +478,7 @@ public class Buscar_Ciudadano {
             if(mama != null && aux.getParientes().buscarPariente(mama.mostrarIdentificador()) == null){
                 try{
                     aux.getParientes().agregarPariente(mama.mostrarIdentificador(), EstadoCivil.MADRE);
-                    mama.setEstadoCivil(EstadoCivil.MADRE);
+                    mama.agregarEstadoCivil(EstadoCivil.MADRE);
                     mama.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
                 }catch(CantidadParentescoException e){
                     Elementos.notificar("Error", CantidadParentescoException.getMensaje()).showError();
@@ -493,7 +489,7 @@ public class Buscar_Ciudadano {
             if(papa != null && aux.getParientes().buscarPariente(papa.mostrarIdentificador()) == null){
                 try{
                     aux.getParientes().agregarPariente(papa.mostrarIdentificador(), EstadoCivil.PADRE);
-                    papa.setEstadoCivil(EstadoCivil.PADRE);
+                    papa.agregarEstadoCivil(EstadoCivil.PADRE);
                     papa.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.HIJO);
                 }catch(CantidadParentescoException e){
                     Elementos.notificar("Error", CantidadParentescoException.getMensaje()).showError();
@@ -629,10 +625,11 @@ public class Buscar_Ciudadano {
     private void ventanaBorrar(TextField rut, Ciudadano ciudadano, double largo, double ancho){
         Stage popup = new Stage();
         popup.setResizable(false);
-        popup.initStyle(StageStyle.UTILITY);
+        popup.initStyle(StageStyle.TRANSPARENT);
         popup.setAlwaysOnTop(true);
         popup.initModality(Modality.APPLICATION_MODAL);
         GridPane pop = new GridPane();
+        pop.setBorder(Elementos.borde(4));
         pop.setHgap(5);
         pop.setVgap(5);
         pop.setAlignment(Pos.CENTER);
@@ -650,11 +647,10 @@ public class Buscar_Ciudadano {
         pop.add(botones, 0, 1);
         
         ok.setOnMouseClicked(lambda -> {
-            if(poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).getParientes().getPersonas() == null ||
-                    poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).getParientes().getPersonas().isEmpty()){
-                poblacion.getPoblacion().remove(ciudadano.mostrarIdentificador());
+            Ciudadano aux = poblacion.getCiudadano(ciudadano.mostrarIdentificador());
+            if(!aux.getParientes().estaVacia() && poblacion.removerCiudadano(ciudadano)){
                 logReporte.appendText(
-                        "["+horaActual+"] "+"rut "+rut.getText()+" eliminado\n"
+                        "["+horaActual+"] "+"rut "+rut.getText()+" eliminado y desvinculado de sus parientes\n"
                 );
                 rut.clear();
                 Stage exito = Elementos.popMensajeStage("Operacion Exitosa!", largo, ancho);
@@ -663,7 +659,6 @@ public class Buscar_Ciudadano {
             }
             else if(!poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).desvincularDeParientes()){
                 Elementos.popMensaje("error de operacion", 300, 100);
-                rut.clear();
             }
         });
         
@@ -682,7 +677,11 @@ public class Buscar_Ciudadano {
     }
     
     private void verParientes(Ciudadano ciudadano){
-        Buscar_Ciudadano_Parientes ventana = new Buscar_Ciudadano_Parientes(ciudadano);
-        ventana.abrirVentana();
+        if(ciudadano.getParientes().estaVacia())
+            Elementos.notificar("Error", "No contiene parientes");
+        else{
+            Buscar_Ciudadano_Parientes ventana = new Buscar_Ciudadano_Parientes(ciudadano);
+            ventana.abrirVentana();
+        }
     }
 }

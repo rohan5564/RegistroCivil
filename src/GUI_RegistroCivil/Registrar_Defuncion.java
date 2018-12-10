@@ -149,7 +149,7 @@ public class Registrar_Defuncion {
             try{
                 if(aux.getParientes().buscarListaParentesco(EstadoCivil.CASADO)!=null){
                     Ciudadano conyuge = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.CASADO, 0));
-                    conyuge.setEstadoCivil(EstadoCivil.VIUDO);
+                    conyuge.agregarEstadoCivil(EstadoCivil.VIUDO);
                     conyuge.getParientes().agregarPariente(aux.mostrarIdentificador(), EstadoCivil.VIUDO);
                 }
                 logReporte.appendText(
