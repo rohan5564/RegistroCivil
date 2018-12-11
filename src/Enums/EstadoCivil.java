@@ -39,4 +39,8 @@ public enum EstadoCivil{
     public String getNombreFemenino(){
         return nombreFemenino;
     }
+    
+    public static EstadoCivil valorDe(String str){
+        return EstadoCivil.valueOf(str.toUpperCase());
+    }
 }

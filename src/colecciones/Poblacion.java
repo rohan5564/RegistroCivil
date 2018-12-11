@@ -7,6 +7,7 @@ import Excepciones.LongitudRutException;
 import Interfaces.RegistroCivil;
 import java.util.HashMap;
 import java.util.Map;
+import utilidades.ConexionBD;
 
 
 public class Poblacion implements RegistroCivil{
@@ -28,12 +29,32 @@ public class Poblacion implements RegistroCivil{
         this.poblacion = poblacion;
     }
 
-    public Map<String, Ciudadano> getPoblacion() {
-        return poblacion;
-    }
-
     public void setPoblacion(Map<String, Ciudadano> poblacion) {
         this.poblacion = poblacion;
+    }
+    
+    /**
+     * permite mostrar si la poblacion esta vacia o no
+     * @return true si esta vacia, false en caso contrario
+     */
+    public boolean estaVacia(){
+        return poblacion == null || poblacion.isEmpty();
+    }
+    
+    /**
+     * permite contar la cantidad de registrados en el sistema
+     * @return cantidad de registrados
+     */
+    public int totalPoblacion(){
+        return poblacion.size();
+    }
+    
+    /**
+     * permite contar la cantidad de registrados en el sistema
+     * @return cantidad de registrados
+     */
+    public int totalPoblacionBD(){
+        return ConexionBD.getInstancia().totalChilenos();
     }
     
     /**
@@ -100,6 +121,18 @@ public class Poblacion implements RegistroCivil{
     /***************************************************************************
      *                      interfaz: RegistroCivil                            *
      **************************************************************************/
+    
+    @Override
+    public void actualizarBase(){
+        poblacion.forEach((k,v)->{
+            if(v instanceof Chileno)
+                ConexionBD.getInstancia().crearChileno((Chileno)v);
+            else if(v instanceof Extranjero)
+                ConexionBD.getInstancia().crearExtranjero((Extranjero)v);
+        });
+        poblacion.clear();
+    }
+    
     @Override
     public void registrarCiudadano(Ciudadano ciudadano){
         poblacion.put(ciudadano.mostrarIdentificador(), ciudadano);
@@ -116,6 +149,24 @@ public class Poblacion implements RegistroCivil{
     
     @Override
     public boolean esRegistrable(String identificador){
+        Ciudadano c = getCiudadanoBD(identificador);
+        if(c!=null)
+            registrarCiudadano(c);
         return !poblacion.containsKey(identificador);
+    }
+    
+    @Override
+    public Ciudadano getCiudadanoBD(String id){
+        return ConexionBD.getInstancia().buscarCiudadano(id);
+    }
+    
+    @Override
+    public Chileno getChilenoBD(String id){
+        return ConexionBD.getInstancia().buscarChileno(id);
+    }
+    
+    @Override
+    public Extranjero getExtranjeroBD(String id){
+        return ConexionBD.getInstancia().buscarExtranjero(id);
     }
 }

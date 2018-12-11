@@ -14,4 +14,8 @@ public enum Sexo{
         public String getNombre(){
             return nombre;
         }
+        
+        public static Sexo valorDe(String str){
+            return Sexo.valueOf(str.toUpperCase());
+        }
 }

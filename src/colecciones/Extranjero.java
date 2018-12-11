@@ -92,7 +92,7 @@ public class Extranjero extends Ciudadano<Extranjero> implements RegistroPersona
      */
     public static boolean comprobarPasaporte(String str) throws FormatoPasaporteException{
         str = str.toUpperCase();
-        if(str.matches(".*[^1234567890QWERTYUIOPASDFGHJKLZXCVBNM].*") || !Pattern.compile("^[A-Z]").matcher(str).find())
+        if(FormatoPasaporteException.exception(str))
             throw new FormatoPasaporteException();
         return str.length()>6;
     }

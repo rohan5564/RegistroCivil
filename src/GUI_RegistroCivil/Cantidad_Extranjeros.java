@@ -32,6 +32,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import utilidades.ArchivoProperties;
+import utilidades.ConexionBD;
 import utilidades.Reporte;
 
 
@@ -68,24 +69,10 @@ public class Cantidad_Extranjeros {
         ObservableList<PieChart.Data> list = FXCollections.observableList(new ArrayList<PieChart.Data>());
         ArrayList<Visas> arr = new ArrayList<>();
         
-        for(Extranjero c : poblacion.getExtranjeros().values()) {
-            Extranjero ext = (Extranjero)c;
-            Iterator<Visas> it = arr.iterator();
-            int flag = 0;
-            while(it.hasNext()){
-                Visas visa = it.next();
-                if(visa.getVisa().equals(ext.getTipoDeVisa().getNombre())){
-                    visa.sumar();
-                    flag = 1;
-                }
-            }
-            if(flag == 0){
-                Visas aux = new Visas();
-                aux.setVisa(ext.getTipoDeVisa().getNombre());
-                aux.setNum(1);
-                arr.add(aux);
-            }
-        }
+        ConexionBD.getInstancia().totalExtranjerosPorVisa().forEach((k,v)->{
+            arr.add(new Visas(k,v.intValue()));
+        });
+        
         arr.sort((Visas o1, Visas o2) -> {
             if(o1.getVisa().equals(o2.getVisa()))
                 return 0;
@@ -162,7 +149,7 @@ class Visas{
         visa = null;
     }
 
-    public Visas(int num, String visa) {
+    public Visas(String visa,int num) {
         this.num = num;
         this.visa = visa;
     }

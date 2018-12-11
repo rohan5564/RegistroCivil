@@ -11,4 +11,12 @@ public class FormatoRutException extends Exception{
     public static String getMensaje(){
         return mensaje;
     }
+    /**
+     * se verifica que no posea caracteres distintos a 0..9-K
+     * @param rut rut a comprobar
+     * @return true si es valido, false en caso contrario
+     */
+    public static boolean exception(String rut){
+        return rut.matches(".*[^1234567890K].*");
+    }
 }

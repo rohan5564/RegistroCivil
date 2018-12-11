@@ -28,10 +28,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -47,6 +43,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 import org.controlsfx.control.ToggleSwitch;
 import utilidades.MenuOpciones;
 import utilidades.Reporte;
@@ -70,7 +67,7 @@ public class Pantalla_Principal{
     public void menu(){
         //cargar datos de inicio
         prop.crear();
-        Elementos.crearDatosIniciales();
+        //Elementos.crearDatosIniciales();
         
         Stage menu = new Stage();
         
@@ -277,23 +274,12 @@ public class Pantalla_Principal{
         
         Button subir = new Button("subir datos a la red");
         subir.setOnMouseClicked(lambda -> {
-            /*try{
-                if(conexion == null)
-                    logReporte.appendText("[modo offline]\n");
-                else{
-                    if(conexion.isConnected()){
-                        conexion.save(poblacion);
-                        logReporte.appendText("[base de datos actualizada]\n");
-                    }
-                    else
-                        logReporte.appendText("[conexion fallida]\n");
-                }
-            }catch(ObjectNotFoundException e){
-                e.printStackTrace();
-            }catch(Exception e){
-                e.printStackTrace();
-            }*/
-            
+            poblacion.actualizarBase();
+            Notifications.create()
+                    .text("Base de datos Actualizada")
+                    .darkStyle()
+                    .hideAfter(Duration.seconds(1.5))
+                    .showConfirm();
         });
         
         hbox1.getChildren().addAll(guardar, subir);

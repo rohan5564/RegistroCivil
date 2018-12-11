@@ -9,22 +9,17 @@ public class Operador {
 
     private String usuario;
     private String contraseña;
-    private String nombre;
-    private String apellido;
-    private String rut;
-    private Date nacimiento;
+    private String region;
+    private String correo;
+    private static Operador op;
             
-            
-    public Operador(){
+    private Operador(){
     }
     
-    public Operador(String usuario, String contraseña, String nombre, String apellido, String rut, LocalDate nacimiento) {
-        this.usuario = usuario;
-        this.contraseña = contraseña;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.rut = rut;
-        this.nacimiento = Date.valueOf(nacimiento);
+    public static Operador getInstancia(){
+        if(op == null)
+            op = new Operador();
+        return op;
     }
 
     public String getUsuario() {
@@ -43,36 +38,20 @@ public class Operador {
         this.contraseña = contraseña;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getRegion() {
+        return region;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setRegion(String region) {
+        this.region = region;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public String getRut() {
-        return rut;
-    }
-
-    public void setRut(String rut) {
-        this.rut = rut;
-    }
-
-    public LocalDate getNacimiento() {
-        return nacimiento.toLocalDate();
-    }
-
-    public void setNacimiento(Date nacimiento) {
-        this.nacimiento = nacimiento;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
 }

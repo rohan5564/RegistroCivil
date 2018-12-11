@@ -425,57 +425,6 @@ public class Elementos {
         return arreglo;
     }
     
-    public static void crearDatosIniciales(){
-        Poblacion poblacion = Poblacion.getInstancia();
-        HashMap<String, Ciudadano> aux = (HashMap<String, Ciudadano>)poblacion.getPoblacion();
-        Chileno n1 = (Chileno)nuevoNacido("jean","rodriguez",Chile.REGIONES.VALPARAISO.toString(), Chile.VALPARAISO.NOGALES.toString(), Sexo.MASCULINO, "1996-07-08", "03:33:33", "194037228");
-        aux.put(n1.getRut(), n1);
-        Chileno n2 = (Chileno)nuevoNacido("pablo","contreras",Chile.REGIONES.REGION_METROPOLITANA.toString(), Chile.REGION_METROPOLITANA.ESTACIÓN_CENTRAL.toString(), Sexo.MASCULINO, "1995-11-20", "13:33:33", "19287285K");
-        aux.put(n2.getRut(), n2);
-        Chileno n3 = (Chileno)nuevoNacido("roberto","rojas",Chile.REGIONES.REGION_METROPOLITANA.toString(), Chile.REGION_METROPOLITANA.MAIPÚ.toString(), Sexo.MASCULINO, "1994-11-22", "04:44:44", "189545614");
-        aux.put(n3.getRut(), n3);
-        Chileno n4 = (Chileno)nuevoNacido("claudio","cubillos",Chile.REGIONES.VALPARAISO.toString(), Chile.VALPARAISO.VIÑA_DEL_MAR.toString(), Sexo.MASCULINO, "1974-12-22", "12:12:12", "105771959");
-        aux.put(n4.getRut(), n4);
-        Chileno n5 = (Chileno)nuevoNacido("monica","galindo",Chile.REGIONES.MAGALLANES_Y_ANTARTICA.toString(), Chile.MAGALLANES_Y_ANTARTICA.ANTÁRTICA.toString(), Sexo.FEMENINO, "1999-01-12", "13:13:13", "19403721K");
-        aux.put(n5.getRut(), n5);
-        
-        
-        Chileno nq = (Chileno)nuevoNacido("j","roduez",Chile.REGIONES.ANTOFAGASTA.toString(), Chile.ANTOFAGASTA.CALAMA.toString(), Sexo.MASCULINO, "1996-07-08", "03:33:33", "194237228");
-        aux.put(nq.getRut(), nq);
-        Chileno nw = (Chileno)nuevoNacido("pao","contreras",Chile.REGIONES.ARICA_Y_PARINACOTA.toString(), Chile.ARICA_Y_PARINACOTA.CAMARONES.toString(), Sexo.MASCULINO, "1995-11-20", "13:33:33", "19281285K");
-        aux.put(nw.getRut(), nw);
-        Chileno ne = (Chileno)nuevoNacido("rberto","rojas",Chile.REGIONES.ATACAMA.toString(), Chile.ATACAMA.CALDERA.toString(), Sexo.MASCULINO, "1994-11-22", "04:44:44", "181545614");
-        aux.put(ne.getRut(), ne);
-        Chileno nr = (Chileno)nuevoNacido("caudio","cubillos",Chile.REGIONES.AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO.toString(), Chile.AYSEN_DEL_GENERAL_CARLOS_IBANEZ_DEL_CAMPO.CHILE_CHICO.toString(), Sexo.MASCULINO, "1974-12-22", "12:12:12", "115771959");
-        aux.put(nr.getRut(), nr);
-        Chileno nt = (Chileno)nuevoNacido("mnica","galindo",Chile.REGIONES.BIO_BIO.toString(), Chile.MAGALLANES_Y_ANTARTICA.ANTÁRTICA.toString(), Sexo.FEMENINO, "1999-01-12", "13:13:13", "11403721K");
-        aux.put(nt.getRut(), nt);
-        
-        Chileno ny = (Chileno)nuevoNacido("jean","rodriguez",Chile.REGIONES.COQUIMBO.toString(), Chile.VALPARAISO.NOGALES.toString(), Sexo.MASCULINO, "1996-07-08", "03:33:33", "94037228");
-        aux.put(ny.getRut(), ny);
-        Chileno nu = (Chileno)nuevoNacido("pablo","contreras",Chile.REGIONES.LA_ARAUCANIA.toString(), Chile.REGION_METROPOLITANA.ESTACIÓN_CENTRAL.toString(), Sexo.MASCULINO, "1995-11-20", "13:33:33", "9287285K");
-        aux.put(nu.getRut(), nu);
-        Chileno ni = (Chileno)nuevoNacido("roberto","rojas",Chile.REGIONES.LIBERTADOR_GENERAL_BERNARDO_OHIGGINS.toString(), Chile.REGION_METROPOLITANA.MAIPÚ.toString(), Sexo.MASCULINO, "1994-11-22", "04:44:44", "89545614");
-        aux.put(ni.getRut(), ni);
-        Chileno no = (Chileno)nuevoNacido("claudio","cubillos",Chile.REGIONES.LOS_LAGOS.toString(), Chile.VALPARAISO.VIÑA_DEL_MAR.toString(), Sexo.MASCULINO, "1974-12-22", "12:12:12", "05771959");
-        aux.put(no.getRut(), no);
-        Chileno np = (Chileno)nuevoNacido("monica","galindo",Chile.REGIONES.LOS_RIOS.toString(), Chile.MAGALLANES_Y_ANTARTICA.ANTÁRTICA.toString(), Sexo.FEMENINO, "1999-01-12", "13:13:13", "9403721K");
-        aux.put(np.getRut(), np);
-        
-        
-        Chileno na = (Chileno)nuevoNacido("jean","rodriguez",Chile.REGIONES.MAULE.toString(), Chile.VALPARAISO.NOGALES.toString(), Sexo.MASCULINO, "1996-07-08", "03:33:33", "19037228");
-        aux.put(na.getRut(), na);
-        Chileno ns = (Chileno)nuevoNacido("pablo","contreras",Chile.REGIONES.TARAPACA.toString(), Chile.REGION_METROPOLITANA.ESTACIÓN_CENTRAL.toString(), Sexo.MASCULINO, "1995-11-20", "13:33:33", "1928725K");
-        aux.put(ns.getRut(), ns);
-        Chileno nd = (Chileno)nuevoNacido("roberto","rojas",Chile.REGIONES.ÑUBLE.toString(), Chile.REGION_METROPOLITANA.MAIPÚ.toString(), Sexo.MASCULINO, "1994-11-22", "04:44:44", "18955614");
-        aux.put(nd.getRut(), nd);
-        Chileno nf = (Chileno)nuevoNacido("claudio","cubillos",Chile.REGIONES.VALPARAISO.toString(), Chile.VALPARAISO.VIÑA_DEL_MAR.toString(), Sexo.MASCULINO, "1974-12-22", "12:12:12", "10577199");
-        aux.put(nf.getRut(), nf);
-        Chileno ng = (Chileno)nuevoNacido("monica","galindo",Chile.REGIONES.MAGALLANES_Y_ANTARTICA.toString(), Chile.MAGALLANES_Y_ANTARTICA.ANTÁRTICA.toString(), Sexo.FEMENINO, "1999-01-12", "13:13:13", "1940371K");
-        aux.put(ng.getRut(), ng);
-        
-    }
-    
     public static Ciudadano nuevoNacido(String nombre, String apellido, String region, String comuna, 
             Sexo sexo, String fecha, String hora, String rut){
         return  new Chileno.BuilderChileno()

@@ -145,10 +145,11 @@ public class Login extends Main{
                 leerTexto.textProperty().isEmpty().or( //or = ambas casillas llenas                     
                         password.textProperty().isEmpty()));
         
-        Button offline = new Button("offline"); //explicacion en el metodo boton2 
         Button cerrar = new Button("cerrar"); 
+        Button btnEspacio = new Button("espacio"); 
+        btnEspacio.setVisible(false);
+        btnEspacio.setMouseTransparent(true);
         cerrar.setCancelButton(true);
-        offline.setVisible(false);
         Pane espacio = new Pane();
         espacio.setPrefSize(70,10);
         HBox hbIngreso = new HBox(10);
@@ -160,12 +161,11 @@ public class Login extends Main{
         config.setSmooth(true);
         config.setTranslateY(60);
         config.setTranslateX(320);
-        hbIngreso.getChildren().addAll(espacio, ingreso, offline, cerrar);//ingresa todos los botones creados de forma ordenada
+        hbIngreso.getChildren().addAll(espacio, btnEspacio, ingreso, cerrar);//ingresa todos los botones creados de forma ordenada
         grid.add(hbIngreso, 2,20);
         grid.add(config, 2, 21);
         ingreso.setDefaultButton(true);
-        boton1(logueo, ingreso, offline, leerTexto, password);
-        boton2(logueo, offline, password);
+        boton1(logueo, ingreso, leerTexto, password);
         cerrar(logueo, cerrar);
         config.setOnMouseClicked(lambda-> LoginBD.getInstrancia().configurarLogin());
         logueo.show();
@@ -180,7 +180,7 @@ public class Login extends Main{
         });       
     }
     
-    public void boton1(Stage logueo, Button ingreso, Button offline, TextField leerTexto, TextField password){
+    public void boton1(Stage logueo, Button ingreso, TextField leerTexto, TextField password){
         ingreso.setOnAction(lambda -> {
             try{
                 ConexionBD.getInstancia().getConexion(

@@ -70,4 +70,8 @@ public enum Nacionalidad {
         public String getNombre(){
             return nombre;
         }
+        
+        public static Nacionalidad valorDe(String str){
+            return Nacionalidad.valueOf(str.toUpperCase());
+        }
 }

@@ -54,6 +54,10 @@ public class ArchivoProperties {
         return prop;
     }
     
+    /**
+     * permite crear y/o cargar el archivo .properties que contiene algunos datos de configuraciones
+     * que cargara el programa
+     */
     public void crear(){
         OutputStream out = null;
         try {
@@ -99,13 +103,17 @@ public class ArchivoProperties {
         }
     }
     
-    public void modificarTema(Tema o){
+    /**
+     * permite modificar el tema del programa por el que se ingrese como parametro
+     * @param tema tema que se modificara en el archivo .properties
+     */
+    public void modificarTema(Tema tema){
         OutputStream out = null;
         try {
             File f = new File(archivo);
             if(f.exists()){
                 prop.load(new FileReader(f));
-                prop.setProperty("tema_actual", o==Tema.ACTUAL?actual:o==Tema.CLARO?claro:oscuro);
+                prop.setProperty("tema_actual", tema==Tema.ACTUAL?actual:tema==Tema.CLARO?claro:oscuro);
             }
             out = new FileOutputStream(f);
             prop.store(out, null);

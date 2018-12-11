@@ -35,6 +35,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.controlsfx.control.PopOver;
 import utilidades.ArchivoProperties;
+import utilidades.ConexionBD;
 import utilidades.Reporte;
 
 
@@ -88,6 +89,8 @@ public class Registrar_Defuncion {
         check.visibleProperty().addListener((obs, o, n)->{
             if(n.booleanValue()){
                 aux = poblacion.getCiudadano(rut.getText());
+                if(aux == null)
+                    aux = ConexionBD.getInstancia().buscarCiudadano(rut.getText());
                 persona.setText(aux.getNombre()+" "+aux.getApellido());
                 registro.setVisible(true);
             }

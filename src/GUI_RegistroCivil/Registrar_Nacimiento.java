@@ -43,6 +43,7 @@ import colecciones.Extranjero;
 import colecciones.Poblacion;
 import javafx.scene.control.Tooltip;
 import org.controlsfx.control.PopOver;
+import utilidades.ConexionBD;
 import utilidades.Reporte;
 
 
@@ -292,6 +293,7 @@ public class Registrar_Nacimiento {
                         "["+horaActual+"] "+aux.getNombre().toLowerCase()+" "+aux.getApellido().toLowerCase()+
                         ", rut: "+aux.getRut()+" registrado \n");
                 Elementos.popMensaje("Operacion Exitosa!", 300, 100);
+                ventana.close();
             }
             else{   
                 Elementos.popMensaje("Rut ya registrado", 300, 100);
@@ -326,7 +328,7 @@ public class Registrar_Nacimiento {
     private void checkearRut(ImageView check, ImageView mark, ImageView error, String o, String n){
         try{
             if(Chileno.comprobarRut(n)){
-                if(poblacion.getChileno(n)==null){
+                if(poblacion.getChilenoBD(n)==null && poblacion.getChileno(n)==null){
                     check.setVisible(true);
                     mark.setVisible(false);
                     error.setVisible(false);

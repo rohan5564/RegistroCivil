@@ -22,11 +22,13 @@ public class Chileno extends Ciudadano<Chileno> implements RegistroPersonal{
             return this;
         }
         public BuilderChileno setNumeroDeDocumento(String numeroDeDocumento) {
-            this.numeroDeDocumento = numeroDeDocumento;
+            if(numeroDeDocumento!=null)
+                this.numeroDeDocumento = numeroDeDocumento;
             return this;
         }
         public BuilderChileno setDireccion(String direccion) {
-            this.direccion = direccion.toUpperCase();
+            if(direccion!=null)
+                this.direccion = direccion.toUpperCase();
             return this;
         }
         public BuilderChileno setRegionDeNacimiento(String regionDeNacimiento) {
@@ -127,12 +129,10 @@ public class Chileno extends Ciudadano<Chileno> implements RegistroPersonal{
     public static boolean comprobarRut(String rut) throws FormatoRutException, LongitudRutException{
         rut = rut.toUpperCase().replace(".","").replace("-","");
         
-        //se verifica que no posea un largo menor a 8 caracteres
-        if(rut.length()<8 || rut.length()>9)
+        if(LongitudRutException.exception(rut))
             throw new LongitudRutException();
         
-        //se verifica que no posea caracteres distintos a 0..9-K
-        if(rut.matches(".*[^1234567890K].*"))
+        if(FormatoRutException.exception(rut))
             throw new FormatoRutException();
         
         //se separa el rut y el verificador

@@ -48,6 +48,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import utilidades.ConexionBD;
 import utilidades.Reporte;
 
 /**
@@ -245,91 +246,97 @@ public class Buscar_Ciudadano {
         //se evalua el estado del rut ingresado (valido y registrado)
         check.visibleProperty().addListener((obs, o, n) -> {
             //si es valido y esta registrado, se muestran los datos por pantalla y se permite la modificacion
-            if(n.booleanValue()){        
-                aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
-                
-                editar.setVisible(true);
-                
-                nombre.setDisable(false);
-                nombre.setText(aux.getNombre());
-                
-                apellido.setDisable(false);
-                apellido.setText(aux.getApellido());
-                
-                profesion.setDisable(false);
-                if(aux.getProfesion()!=null)
-                    profesion.setText(aux.getProfesion());
-                
-                fechaNacimiento.setDisable(false);
-                fechaNacimiento.setValue(aux.getNacimiento());
-                
-                fechaDefuncion.setDisable(false);
-                if(aux.getDefuncion()!=null)
-                    fechaDefuncion.setValue(aux.getDefuncion());
-                
-                horaNacimiento.setDisable(false);
-                horaNacimiento.getValueFactory().setValue(LocalTime.parse(aux.getHoraNacimiento()));
-                
-                horaDefuncion.setDisable(false);
-                if(aux.getHoraDefuncion()!=null)
-                    horaDefuncion.getValueFactory().setValue(LocalTime.parse(aux.getHoraDefuncion()));
-                
-                f.setDisable(false);
-                m.setDisable(false);
-                if(aux.getSexo().equals(Sexo.FEMENINO))
-                    f.setSelected(true);
-                else 
-                    m.setSelected(true);
-                
-                int casilla=0;
-                region.setDisable(false);
-                ObservableList<String>itemsRegion = region.getItems();
-                for(String i : itemsRegion){
-                    if(i.equals(aux.getRegionDeNacimiento())){
-                        region.getSelectionModel().select(casilla);
-                        casilla = 0;
-                        break;
+            if(n.booleanValue()){
+                try{
+                    aux = poblacion.getChileno(rut.getText());
+                    if(aux==null)
+                        aux = poblacion.getChilenoBD(rut.getText());
+                    
+                    editar.setVisible(true);
+                    
+                    nombre.setDisable(false);
+                    nombre.setText(aux.getNombre());
+                    
+                    apellido.setDisable(false);
+                    apellido.setText(aux.getApellido());
+                    
+                    profesion.setDisable(false);
+                    if(aux.getProfesion()!=null)
+                        profesion.setText(aux.getProfesion());
+                    
+                    fechaNacimiento.setDisable(false);
+                    fechaNacimiento.setValue(aux.getNacimiento());
+                    
+                    fechaDefuncion.setDisable(false);
+                    if(aux.getDefuncion()!=null)
+                        fechaDefuncion.setValue(aux.getDefuncion());
+                    
+                    horaNacimiento.setDisable(false);
+                    horaNacimiento.getValueFactory().setValue(LocalTime.parse(aux.getHoraNacimiento()));
+                    
+                    horaDefuncion.setDisable(false);
+                    if(aux.getHoraDefuncion()!=null)
+                        horaDefuncion.getValueFactory().setValue(LocalTime.parse(aux.getHoraDefuncion()));
+                    
+                    f.setDisable(false);
+                    m.setDisable(false);
+                    if(aux.getSexo().equals(Sexo.FEMENINO))
+                        f.setSelected(true);
+                    else 
+                        m.setSelected(true);
+                    
+                    int casilla=0;
+                    region.setDisable(false);
+                    ObservableList<String>itemsRegion = region.getItems();
+                    for(String i : itemsRegion){
+                        if(i.equals(aux.getRegionDeNacimiento())){
+                            region.getSelectionModel().select(casilla);
+                            casilla = 0;
+                            break;
+                        }
+                        casilla++;
                     }
-                    casilla++;
-                }
-                
-                comuna.setDisable(false);
-                ObservableList<String>itemsComuna = comuna.getItems();
-                for(String i : itemsComuna){
-                    if(i.equals(aux.getComunaDeNacimiento())){
-                        comuna.getSelectionModel().select(casilla);
-                        casilla = 0;
-                        break;
+                    
+                    comuna.setDisable(false);
+                    ObservableList<String>itemsComuna = comuna.getItems();
+                    for(String i : itemsComuna){
+                        if(i.equals(aux.getComunaDeNacimiento())){
+                            comuna.getSelectionModel().select(casilla);
+                            casilla = 0;
+                            break;
+                        }
+                        casilla++;
                     }
-                    casilla++;
+                    
+                    comentarioNacimiento.setDisable(false);
+                    comentarioNacimiento.setText(aux.getComentarioNacimiento());
+                    
+                    comentarioDefuncion.setDisable(false);
+                    comentarioDefuncion.setText(aux.getComentarioDefuncion());
+                    
+                    parienteMadre.setDisable(false);
+                    if(aux.getParientes().existeEstado(EstadoCivil.MADRE)
+                            && !aux.getParientes().estadoEstaVacio(EstadoCivil.MADRE)){
+                        Ciudadano mama = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.MADRE, 0));
+                        madre.setText(mama.mostrarIdentificador());
+                    }
+                    
+                    parientePadre.setDisable(false);
+                    if(aux.getParientes().existeEstado(EstadoCivil.PADRE)
+                            && !aux.getParientes().estadoEstaVacio(EstadoCivil.PADRE)){
+                        Ciudadano papa = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.PADRE, 0));
+                        padre.setText(papa.mostrarIdentificador());
+                    }
+                    
+                    if(aux.getParientes().estaVacia())
+                        parientes.setDisable(true);
+                    else
+                        parientes.setDisable(false);
+                }catch(FormatoRutException | LongitudRutException e){
+                    Elementos.notificar("Error", "error en formato y/o longitud del rut");
                 }
-                
-                comentarioNacimiento.setDisable(false);
-                comentarioNacimiento.setText(aux.getComentarioNacimiento());
-                
-                comentarioDefuncion.setDisable(false);
-                comentarioDefuncion.setText(aux.getComentarioDefuncion());
-
-                parienteMadre.setDisable(false);
-                if(aux.getParientes().existeEstado(EstadoCivil.MADRE)
-                        && !aux.getParientes().estadoEstaVacio(EstadoCivil.MADRE)){
-                    Ciudadano mama = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.MADRE, 0));
-                    madre.setText(mama.mostrarIdentificador());
-                }
-                
-                parientePadre.setDisable(false);
-                if(aux.getParientes().existeEstado(EstadoCivil.PADRE)
-                        && !aux.getParientes().estadoEstaVacio(EstadoCivil.PADRE)){
-                    Ciudadano papa = poblacion.getCiudadano(aux.getParientes().ObtenerCiudadanoPorEstado(EstadoCivil.PADRE, 0));
-                    padre.setText(papa.mostrarIdentificador());
-                }
-                
-                if(aux.getParientes().estaVacia())
-                    parientes.setDisable(true);
-                else
-                    parientes.setDisable(false);
             }
-            //si es invalido o no esta registrado, no se muestra nada por pantalla
+                //si es invalido o no esta registrado, no se muestra nada por pantalla
             else{                
                 editar.setVisible(false);
                 
@@ -438,14 +445,11 @@ public class Buscar_Ciudadano {
         
         //si se clickea el boton borrar, se eliminan el rut y los datos del ciudadano
         borrar.setOnMouseClicked(lambda -> {
-            Chileno aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
             ventanaBorrar(rut, aux, 300, 100);
         });
         
         //si se clickea el boton guardar, se sobreescriben los datos del usuario
         guardar.setOnMouseClicked(lambda -> {
-            Chileno aux = (Chileno)poblacion.getPoblacion().get(rut.getText());
-            
             //requisitos minimos
             aux.setNombre(nombre.getText());
             aux.setApellido(apellido.getText());
@@ -474,7 +478,9 @@ public class Buscar_Ciudadano {
                     aux.setComentarioDefuncion(null);
             }
             
-            Ciudadano mama = poblacion.getPoblacion().get(madre.getText());
+            Ciudadano mama = poblacion.getCiudadano(madre.getText());
+            if(mama==null)
+                mama = poblacion.getCiudadanoBD(madre.getText());
             if(mama != null && aux.getParientes().buscarPariente(mama.mostrarIdentificador()) == null){
                 try{
                     aux.getParientes().agregarPariente(mama.mostrarIdentificador(), EstadoCivil.MADRE);
@@ -485,7 +491,9 @@ public class Buscar_Ciudadano {
                 }
             }
             
-            Ciudadano papa = poblacion.getPoblacion().get(padre.getText());
+            Ciudadano papa = poblacion.getCiudadano(padre.getText());
+            if(papa==null)
+                papa = poblacion.getCiudadanoBD(padre.getText());
             if(papa != null && aux.getParientes().buscarPariente(papa.mostrarIdentificador()) == null){
                 try{
                     aux.getParientes().agregarPariente(papa.mostrarIdentificador(), EstadoCivil.PADRE);
@@ -545,7 +553,7 @@ public class Buscar_Ciudadano {
             try{
                 //se comprueba que sea un rut valido y registrado
                 if(Chileno.comprobarRut(n)){
-                    if(poblacion.getPoblacion().containsKey(n)){
+                    if(poblacion.getChileno(n)!=null || poblacion.getChilenoBD(n)!=null){
                         chkbox.setVisible(true);
                         check.setVisible(true);
                     }
@@ -579,7 +587,7 @@ public class Buscar_Ciudadano {
                     }
                     //se comprueba que sea un rut valido y registrado
                     else if(Chileno.comprobarRut(n)){
-                        if(!n.equals(id.getText()) && poblacion.getPoblacion().containsKey(n)){
+                        if(!n.equals(id.getText()) && poblacion.esRegistrable(n)){
                             mark.setVisible(false);
                             check.setVisible(true);
                         }
@@ -657,7 +665,7 @@ public class Buscar_Ciudadano {
                 popup.setScene(exito.getScene());
                 ((Button)exito.getUserData()).setOnMouseClicked(alpha -> popup.close());
             }
-            else if(!poblacion.getPoblacion().get(ciudadano.mostrarIdentificador()).desvincularDeParientes()){
+            else if(!poblacion.getCiudadano(ciudadano.mostrarIdentificador()).desvincularDeParientes()){
                 Elementos.popMensaje("error de operacion", 300, 100);
             }
         });

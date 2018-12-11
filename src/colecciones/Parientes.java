@@ -3,7 +3,6 @@ package colecciones;
 
 import Enums.EstadoCivil;
 import Excepciones.CantidadParentescoException;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -126,12 +125,12 @@ public class Parientes {
      * @param estado relacion de parentesco entre las personas
      * @since Entrega b
      * @return true si puede agregar al pariente mientras cumpla con las condiciones
+     * @throws CantidadParentescoException cantidad de parientes por estado en especifico
      * necesarias, false en caso contrario
      */
     public boolean agregarPariente(String pariente, EstadoCivil estado)throws CantidadParentescoException{
         if(personas.containsKey(estado)){
-            if((estado == EstadoCivil.CASADO || estado == EstadoCivil.MADRE || estado == EstadoCivil.PADRE)
-                    && personas.get(estado).totalPorParentesco()>1)
+            if(CantidadParentescoException.exception(personas, pariente, estado))
                 throw new CantidadParentescoException();
             else{
                 personas.get(estado).agregar(pariente);

@@ -31,6 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
+import utilidades.ConexionBD;
 import utilidades.Reporte;
 
 
@@ -67,24 +68,10 @@ public class Cantidad_Nacidos {
         ObservableList<PieChart.Data> list = FXCollections.observableList(new ArrayList<PieChart.Data>());
         ArrayList<Regiones> arr = new ArrayList<>();
         
-        for(Chileno c : poblacion.getChilenos().values()) {
-            Chileno ch = (Chileno)c;
-            Iterator<Regiones> it = arr.iterator();
-            int flag = 0;
-            while(it.hasNext()){
-                Regiones region = it.next();
-                if(region.getReg().equals(ch.getRegionDeNacimiento())){
-                    region.sumar();
-                    flag = 1;
-                }
-            }
-            if(flag == 0){
-                Regiones aux = new Regiones();
-                aux.setReg(ch.getRegionDeNacimiento());
-                aux.setNum(1);
-                arr.add(aux);
-            }
-        }
+        ConexionBD.getInstancia().totalPorRegion().forEach((k,v)->{
+            arr.add(new Regiones(k,v.intValue()));
+        });
+            
         arr.sort((Regiones o1, Regiones o2) -> {
             if(o1.getReg().equals(o2.getReg()))
                 return 0;
@@ -108,7 +95,7 @@ public class Cantidad_Nacidos {
             )
         );
         PieChart pieChart = new PieChart(list);
-        pieChart.setTitle("Nacimientos registrados por region\n(total: "+poblacion.getPoblacion().size()+" )");
+        pieChart.setTitle("Nacimientos registrados por region\n(total: "+poblacion.totalPoblacionBD()+" )");
         pieChart.setLabelsVisible(false);
         pieChart.setLegendVisible(false);
         pieChart.setClockwise(true);
@@ -161,7 +148,7 @@ class Regiones{
         reg = null;
     }
 
-    public Regiones(int num, String reg) {
+    public Regiones(String reg,int num) {
         this.num = num;
         this.reg = reg;
     }

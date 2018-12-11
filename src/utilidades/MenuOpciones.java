@@ -39,7 +39,7 @@ public class MenuOpciones {
      */
     public void cantidadNacidos(MouseEvent click){
         Poblacion poblacion = Poblacion.getInstancia();
-        if(poblacion.getPoblacion() == null || poblacion.getPoblacion().isEmpty()){
+        if(ConexionBD.getInstancia().totalPorRegion()==null && poblacion.estaVacia()){
             Elementos.popMensaje("Sin poblacion agregada", 350, 100);
             return;
         }
@@ -52,7 +52,7 @@ public class MenuOpciones {
      */
     public void cantidadExtranjeros(MouseEvent click){
         Poblacion poblacion = Poblacion.getInstancia();
-        if(poblacion.getExtranjeros() == null || poblacion.getExtranjeros().isEmpty()){
+        if(ConexionBD.getInstancia().totalExtranjerosPorVisa()==null && poblacion.estaVacia()){
             Elementos.popMensaje("Sin poblacion agregada", 350, 100);
             return;
         }

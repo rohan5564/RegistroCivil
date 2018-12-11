@@ -58,53 +58,62 @@ public abstract class Ciudadano<T extends Ciudadano<T>>{
         }
 
         public Builder<T> setComentarioNacimiento(String comentarioNacimiento) {
-            this.comentarioNacimiento = comentarioNacimiento;
+            if(comentarioNacimiento!=null)
+                this.comentarioNacimiento = comentarioNacimiento;
             return this;
         }
 
         public Builder<T> setDefuncion(LocalDate defuncion) {
-            this.defuncion = defuncion;
+            if(defuncion!=null)
+                this.defuncion = defuncion;
             return this;
         }
 
         public Builder<T> setHoraDefuncion(String horaDefuncion) {
-            this.horaDefuncion = horaDefuncion;
+            if(horaDefuncion!=null)
+                this.horaDefuncion = horaDefuncion;
             return this;
         }
 
         public Builder<T> setComentarioDefuncion(String comentarioDefuncion) {
-            this.comentarioDefuncion = comentarioDefuncion;
+            if(comentarioDefuncion!=null)
+                this.comentarioDefuncion = comentarioDefuncion;
             return this;
         }
 
         public Builder<T> setProfesion(String profesion) {
-            this.profesion = profesion;
+            if(profesion!=null)
+                this.profesion = profesion;
             return this;
         }
         
         public Builder<T> setEstadoCivil(List<EstadoCivil> estadoCivil){
-            this.estadoCivil.addAll(estadoCivil);
+            if(estadoCivil!=null)
+                this.estadoCivil.addAll(estadoCivil);
             return this;
         }
     
         public Builder<T> setEstadoCivil(EstadoCivil estadoCivil){
-            if(!this.estadoCivil.contains(estadoCivil))
+            if(estadoCivil!=null && !this.estadoCivil.contains(estadoCivil))
                 this.estadoCivil.add(estadoCivil);
             return this;
         }
 
         public Builder<T> setNacionalidades(List<Nacionalidad> nacionalidades) {
-            this.nacionalidades.addAll(nacionalidades);
+            if(nacionalidades!=null)
+                this.nacionalidades.addAll(nacionalidades);
             return this;
         }
 
         public Builder<T> setNacionalidades(Nacionalidad nacionalidad) {
-            this.nacionalidades.add(nacionalidad);
+            if(nacionalidad!=null && !this.nacionalidades.contains(estadoCivil))
+                this.nacionalidades.add(nacionalidad);
             return this;
         }
         
-        public Builder<T> setParientes(Parientes parientes) {
-            this.parientes = parientes;
+        public Builder<T> setParientes(Parientes parientes){
+            if(parientes!=null)
+                this.parientes = parientes;
             return this;
         }
             
